@@ -1,0 +1,52 @@
+name: whatsapp_clone
+version: 1.0.0+1
+publish_to: none
+description: A new Flutter project.
+environment: 
+  sdk: '>=2.17.6 <3.0.0'
+
+dependencies: 
+  cupertino_icons: ^1.0.2
+  get: 4.6.5     # My state management #
+  flutter: 
+    sdk: flutter
+  flutter_screenutil: ^5.5.4          #used for responsive design
+  get_storage: ^2.0.3                 #used for storage
+
+  ### My Back-end ##
+  firebase_auth: ^3.4.1
+  firebase_storage: ^10.3.1
+  cloud_firestore: ^3.2.1
+  ### My Back-end ##
+
+  font_awesome_flutter: ^10.2.1     
+  infinite_scroll_pagination: ^3.2.0  #used EVERY WHERE
+  
+  # carousel_slider: ^4.1.1            #used in post
+  # smooth_page_indicator: ^1.0.0+2    #used in post
+  # video_player: ^2.4.7               #used in post/story
+  image_picker: ^0.8.6               #used in add post/story
+  # flutter_launcher_icons: ^0.10.0
+  # mask_text_input_formatter: ^2.4.0  #used in signup
+  internet_connection_checker: ^0.0.1+4
+  underline_indicator: ^0.0.4
+  video_viewer: ^1.2.7
+  voice_message_package: ^0.0.74
+  flutter_sound: ^9.2.13
+  permission_handler: ^10.2.0
+  extended_image: ^6.2.1
+
+  qr_flutter: ^4.0.0
+  qr_code_scanner: ^1.0.0
+  file_picker: ^5.2.4
+
+dev_dependencies: 
+  flutter_lints: 2.0.1
+  flutter_test: 
+    sdk: flutter
+
+    
+
+flutter: 
+  uses-material-design: true
+
