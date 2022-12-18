@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyFonts {
-  static TextStyle get getAppFontType => const TextStyle();
+  static TextStyle get getAppFontType => GoogleFonts.openSans();
 
   // headlines text font
-  static TextStyle get headlineTextStyle => getAppFontType;
+  static TextStyle get headlineTextStyle => getAppFontType.copyWith();
 
   // body text font
-  static TextStyle get bodyTextStyle => getAppFontType;
+  static TextStyle get bodyTextStyle => getAppFontType.copyWith();
 
   // button text font
   static TextStyle get buttonTextStyle => getAppFontType;
@@ -18,8 +19,11 @@ class MyFonts {
   // app bar text font
   static TextStyle get appBarTextStyle => getAppFontType;
 
-  // appbar font size
+  //-------------------------------- appbar font--------------------------------
   static double get appBarTittleSize => headline2TextSize;
+  static FontWeight get appBarTittleWeight => FontWeight.w600;
+
+  ///----------------------------------------------------------------------------
 
   // body font size
   static double get body1TextSize => 14.sp;
@@ -29,11 +33,16 @@ class MyFonts {
   static double get bodyLarge => 16.sp;
   static double get bodySmall => 10.sp;
 
-  // headlines font size
+  ///-----------------headlines font size--------------------------------
+  static double get headline1TextSize => 26.sp;
+  static double get headline2TextSize => 22.sp;
+  static double get headline3TextSize => 18.sp;
 
-  static double get headline1TextSize => 30.sp;
-  static double get headline2TextSize => 24.sp;
-  static double get headline3TextSize => 20.sp;
+  static FontWeight get headline1TextWeight => FontWeight.bold;
+  static FontWeight get headline2TextWeight => FontWeight.w600;
+  static FontWeight get headline3TextWeight => FontWeight.w500;
+
+  ///----------------------------------------------------------------------------
 
   //button font size
   static double get buttonTextSize => 14.sp;

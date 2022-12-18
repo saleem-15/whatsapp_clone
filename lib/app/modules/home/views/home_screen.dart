@@ -3,15 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:underline_indicator/underline_indicator.dart';
-import 'package:whatsapp_clone/app/modules/user_chats/screens/chats_view.dart';
+import 'package:whatsapp_clone/app/modules/user_chats/screens/user_chats_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/status_view.dart';
+import 'package:whatsapp_clone/app/shared_widgets/gradient_icon_button.dart';
 import 'package:whatsapp_clone/config/theme/light_theme_colors.dart';
 
 import '../controllers/home_controller.dart';
 import 'calls_veiw.dart';
 
-class HomePage extends GetView<HomeController> {
-  const HomePage({Key? key}) : super(key: key);
+class HomeScreen extends GetView<HomeController> {
+  const HomeScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -19,7 +20,21 @@ class HomePage extends GetView<HomeController> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('WhatsUp'),
+          title: const Text(
+            'WhatsUp',
+          ),
+          actions: [
+            GradientIconButton(
+              icon: Icons.search,
+              onPressed: () {},
+            ),
+            SizedBox(width: 15.sp),
+            GradientIconButton(
+              icon: Icons.more_vert,
+              onPressed: () {},
+            ),
+            SizedBox(width: 15.sp),
+          ],
         ),
         body: Column(
           children: [
@@ -56,7 +71,7 @@ class HomePage extends GetView<HomeController> {
             const Expanded(
               child: TabBarView(
                 children: [
-                  ChatsView(),
+                  ChatsTapView(),
                   StatusView(),
                   CallsView(),
                 ],

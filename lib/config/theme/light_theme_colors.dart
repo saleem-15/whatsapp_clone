@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 
 class LightThemeColors {
-
   static const Color lightGrey = Color.fromARGB(255, 230, 227, 227);
   //light swatch
   static const Color primaryColor = MyColors.Green;
@@ -23,12 +22,11 @@ class LightThemeColors {
   static const Color unselectedIconColor = Colors.grey;
 
   //BUTTON
-  static const Color buttonColor = Color(0xffdedede);
-
+  static const Color buttonColor = primaryColor;
 
   static const Color buttonTextColor = Colors.black;
-  static const Color buttonDisabledColor = Colors.grey;
-  static const Color buttonDisabledTextColor = Colors.black;
+  static const Color buttonDisabledColor = Color(0xff87dfbd);
+  static const Color buttonDisabledTextColor = Colors.white;
 
   //TEXT
   static const Color bodyTextColor = MyColors.MyBlack;
@@ -49,7 +47,7 @@ class LightThemeColors {
 
   // // Menu
   // static const Color menuColor = Color(0xff13171A);
-  
+
   // Divider
   static const Color dividerColor = Color(0xffEBEEF2);
 }

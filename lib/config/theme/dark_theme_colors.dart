@@ -12,7 +12,6 @@ class DarkThemeColors {
   //SCAFFOLD
   static const Color scaffoldBackgroundColor = Color(0xff0d0d0d);
   static const Color backgroundColor = Color(0xff171d2d);
-  static const Color cardColor = onPrimaryColor;
 
   //ICONS
   static const Color appBarIconsColor = Colors.white;
@@ -31,7 +30,7 @@ class DarkThemeColors {
   static const Color hintTextColor = Color(0xff686868);
 
   //Card
-  static const Color CardColor = onPrimaryColor;
+  static const Color cardColor = onPrimaryColor;
 
   //container
   static const Color containerColor = Color(0xff35383F);

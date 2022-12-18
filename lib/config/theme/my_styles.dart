@@ -1,12 +1,18 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pinput/pinput.dart';
 
+import 'colors.dart';
 import 'light_theme_colors.dart';
 import 'my_fonts.dart';
 
 class MyStyles {
+  MyStyles._();
+
   ///app bar theme
   static AppBarTheme getAppBarTheme() => AppBarTheme(
         /// this is status bar theme (kinda)
@@ -14,13 +20,16 @@ class MyStyles {
           statusBarIconBrightness: Brightness.dark,
           statusBarColor: Colors.transparent,
         ),
+        
         elevation: 0,
-        titleTextStyle: getTextTheme().headline1!.copyWith(
+        titleTextStyle: getTextTheme().headline3!.copyWith(
               fontSize: MyFonts.appBarTittleSize,
+              fontWeight: MyFonts.appBarTittleWeight,
               color: LightThemeColors.headlinesTextColor,
             ),
         iconTheme: const IconThemeData(
           color: LightThemeColors.appBarIconsColor,
+          
         ),
         backgroundColor: LightThemeColors.appBarColor,
       );
@@ -59,6 +68,7 @@ class MyStyles {
         ),
 
         bodyText2: (MyFonts.bodyTextStyle).copyWith(
+          fontWeight: FontWeight.w500,
           fontSize: MyFonts.body2TextSize,
           color: LightThemeColors.bodyTextColor,
         ),
@@ -66,17 +76,17 @@ class MyStyles {
         ///----------------------------- Headings --------------------------------------
         headline1: (MyFonts.headlineTextStyle).copyWith(
             fontSize: MyFonts.headline1TextSize,
-            fontWeight: FontWeight.bold,
+            fontWeight: MyFonts.headline1TextWeight,
             color: LightThemeColors.headlinesTextColor),
         //
         headline2: (MyFonts.headlineTextStyle).copyWith(
             fontSize: MyFonts.headline2TextSize,
-            fontWeight: FontWeight.bold,
+            fontWeight: MyFonts.headline2TextWeight,
             color: LightThemeColors.headlinesTextColor),
         //
         headline3: (MyFonts.headlineTextStyle).copyWith(
             fontSize: MyFonts.headline3TextSize,
-            fontWeight: FontWeight.bold,
+            fontWeight: MyFonts.headline3TextWeight,
             color: LightThemeColors.headlinesTextColor),
 
         ///----------------------------------------------------------------------------
@@ -102,12 +112,14 @@ class MyStyles {
   //elevated button theme data
   static ElevatedButtonThemeData getElevatedButtonTheme() => ElevatedButtonThemeData(
         style: ButtonStyle(
+          // maximumSize: MaterialStateProperty.all(Size(360.w, 70.sp)),
+          fixedSize: MaterialStateProperty.all(Size(340.w, 45.sp)),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.5.r)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
           ),
           elevation: MaterialStateProperty.all(0),
           textStyle: getElevatedButtonTextStyle(),
-          overlayColor: MaterialStateProperty.all(Colors.transparent),
+          // overlayColor: MaterialStateProperty.all(Colors.transparent),
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
             (Set<MaterialState> states) {
               if (states.contains(MaterialState.pressed)) {
@@ -166,52 +178,59 @@ class MyStyles {
 
   static InputDecorationTheme getInputDecorationTheme() => InputDecorationTheme(
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor: Colors.white,
+        hintStyle: getTextTheme().caption!.copyWith(
+              color: LightThemeColors.headlinesTextColor.withOpacity(.3),
+            ),
         contentPadding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 0.sp),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.r),
+          borderRadius: BorderRadius.circular(20.r),
           borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.r),
-          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
+          borderRadius: BorderRadius.circular(20.r),
+          borderSide: BorderSide(color: LightThemeColors.primaryColor, width: 1.5.sp),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.r),
-          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
+          borderRadius: BorderRadius.circular(20.r),
+          borderSide: BorderSide(color: const Color(0xffda1414), width: 1.5.sp),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.r),
+          borderRadius: BorderRadius.circular(20.r),
           borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.r),
+          borderRadius: BorderRadius.circular(20.r),
           borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
         ),
       );
+
   static InputDecoration getInputDecoration() => InputDecoration(
         filled: true,
-        fillColor: LightThemeColors.lightGrey,
-        // contentPadding: EdgeInsets.only(left: 15.sp, right: 10.sp),
+        fillColor: Colors.white,
+        hintStyle: getTextTheme().caption!.copyWith(
+              color: LightThemeColors.headlinesTextColor.withOpacity(.3),
+            ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 0.sp),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1.5),
+          borderRadius: BorderRadius.circular(20.r),
+          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1.5),
+          borderRadius: BorderRadius.circular(20.r),
+          borderSide: BorderSide(color: LightThemeColors.primaryColor, width: 1.5.sp),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1.5),
+          borderRadius: BorderRadius.circular(20.r),
+          borderSide: BorderSide(color: const Color(0xffda1414), width: 1.5.sp),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1.5),
+          borderRadius: BorderRadius.circular(20.r),
+          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(13.r),
-          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1.5),
+          borderRadius: BorderRadius.circular(20.r),
+          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
         ),
       );
 
@@ -235,4 +254,45 @@ class MyStyles {
       ),
     );
   }
+
+  ///-------------------- OTP FIELD THEME ------------------------------
+  static final OTP_FIELD_BORDER_WIDTH = 1.5.sp;
+
+  static PinTheme get getDefaultPinTheme => PinTheme(
+        width: 70.sp,
+        height: 53.sp,
+        textStyle: getTextTheme().headline2,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: const Color(0xffeaeef2),
+            width: OTP_FIELD_BORDER_WIDTH,
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+      );
+
+  static PinTheme get getFocusedPinTheme => getDefaultPinTheme.copyWith(
+        decoration: getDefaultPinTheme.decoration!.copyWith(
+          border: Border.all(
+            color: MyColors.Green,
+            width: OTP_FIELD_BORDER_WIDTH,
+          ),
+        ),
+      );
+  static PinTheme get getErrorPinTheme => getDefaultPinTheme.copyDecorationWith(
+        border: Border.all(
+          color: MyColors.red,
+          width: OTP_FIELD_BORDER_WIDTH,
+        ),
+      );
+
+  static PinTheme get getSubmittedPinTheme => getDefaultPinTheme.copyDecorationWith(
+        border: Border.all(
+          color: MyColors.Green,
+          width: OTP_FIELD_BORDER_WIDTH,
+        ),
+      );
+
+  ///-------------------- OTP FIELD THEME ------------------------------
+
 }

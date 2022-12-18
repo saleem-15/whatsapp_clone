@@ -13,8 +13,15 @@ class MyColors {
 
   static const Color LightGrey = Color(0xff545D69);
 
-
   //msg card color
   static const Color cc = Color(0xfff4f6f9);
 
+  static const Gradient myGradient = LinearGradient(
+    colors: [
+      Color(0xff01ef93),
+      Color(0xff0fc57f),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }

@@ -1,7 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 class Assets {
-  static const app_icon = 'assets/icons/instagram_app_icon.png';
+  static const illustraion = 'assets/illustration 1.png';
   
   static const default_user_image = 'assets/default_user_image.jpg';
   static const chat_background_dark = 'assets/chat_background_black.jpg';

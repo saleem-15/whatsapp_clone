@@ -17,6 +17,8 @@ class MyTheme {
         
       ),
 
+      
+
       scrollbarTheme: const ScrollbarThemeData(),
 
       primaryColor: LightThemeColors.primaryColor, // secondary color (for checkbox,float button, radio..etc)

@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
+import 'package:whatsapp_clone/app/modules/auth/controllers/otp_form_controller.dart';
+import 'package:whatsapp_clone/app/modules/auth/controllers/signin_controller.dart';
+import 'package:whatsapp_clone/app/modules/auth/controllers/signup_controller.dart';
+import 'package:whatsapp_clone/app/modules/auth/screens/otp_screen.dart';
 
 import 'app/routes/app_pages.dart';
 import 'app/storage/my_shared_pref.dart';
 import 'config/theme/my_theme.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await MySharedPref.init();
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+  );
+  Get.lazyPut(() => SigninController(), fenix: true);
+  Get.lazyPut(() => SignupController(), fenix: true);
+  Get.lazyPut(() => OTPScreenController(), fenix: true);
 
   runApp(const Main());
 }
@@ -19,6 +31,21 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // return GetMaterialApp(
+    //   getPages: AppPages.routes,
+    //   debugShowCheckedModeBanner: false,
+    //   home: ScreenUtilInit(
+    //     builder: (context, child) => Theme(
+    //       data: MyTheme.getThemeData(),
+    //       child: Directionality(
+    //         textDirection: TextDirection.ltr,
+    //         child: PixelPerfect.extended(
+    //           child: const SigninScreen(),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
     return ScreenUtilInit(
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
@@ -34,7 +61,7 @@ class Main extends StatelessWidget {
             ),
           );
         },
-        home: const HomePage(),
+        home: const OTPScreen(),
         // home: Get.find<AuthController>().isAuthorized ? const MyApp() : const SigninScreen(),
         // const SigninScreen()
       ),

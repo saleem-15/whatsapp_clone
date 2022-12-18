@@ -1,5 +1,6 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:whatsapp_clone/app/models/user.dart';
 
 class Api {
   static final db = FirebaseFirestore.instance;
@@ -9,10 +10,7 @@ class Api {
   static const apikey = 'p@ssword123';
 
 //auth
-x(){
-  
-
-}
+  x() {}
   static const SIGN_IN_URL = '/auth/user/login';
   static const SIGN_UP_URL = '/auth/user/register';
   static const MY_INFO = '/auth/user/info';

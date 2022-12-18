@@ -6,7 +6,7 @@ environment:
   sdk: '>=2.17.6 <3.0.0'
 
 dependencies: 
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.5
   get: 4.6.5     # My state management #
   flutter: 
     sdk: flutter
@@ -14,12 +14,12 @@ dependencies:
   get_storage: ^2.0.3                 #used for storage
 
   ### My Back-end ##
-  firebase_auth: ^3.4.1
-  firebase_storage: ^10.3.1
-  cloud_firestore: ^3.2.1
+  firebase_auth: ^4.2.1
+  firebase_storage: ^11.0.8
+  cloud_firestore: ^4.2.0
   ### My Back-end ##
 
-  font_awesome_flutter: ^10.2.1     
+  font_awesome_flutter: ^10.3.0
   infinite_scroll_pagination: ^3.2.0  #used EVERY WHERE
   
   # carousel_slider: ^4.1.1            #used in post
@@ -28,7 +28,7 @@ dependencies:
   image_picker: ^0.8.6               #used in add post/story
   # flutter_launcher_icons: ^0.10.0
   # mask_text_input_formatter: ^2.4.0  #used in signup
-  internet_connection_checker: ^0.0.1+4
+  # internet_connection_checker: ^1.0.0+1
   underline_indicator: ^0.0.4
   video_viewer: ^1.2.7
   voice_message_package: ^0.0.74
@@ -39,14 +39,21 @@ dependencies:
   qr_flutter: ^4.0.0
   qr_code_scanner: ^1.0.0
   file_picker: ^5.2.4
+  google_fonts: ^3.0.1 # fonts
+  pinput: ^2.2.16   # otp field 
 
 dev_dependencies: 
   flutter_lints: 2.0.1
   flutter_test: 
     sdk: flutter
 
+  pixel_perfect: ^1.1.1
     
 
 flutter: 
   uses-material-design: true
+
+  assets:
+    - assets/
+
 
