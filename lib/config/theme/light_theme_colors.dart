@@ -17,7 +17,7 @@ class LightThemeColors {
   static const Color cardColor = Colors.white;
 
   //ICONS
-  static const Color appBarIconsColor = Colors.black;
+  static const Color appBarIconsColor = primaryColor;
   static const Color iconColor = Colors.black;
   static const Color unselectedIconColor = Colors.grey;
 

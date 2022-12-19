@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CustomSnackBar {
+  CustomSnackBar._();
+
   static showCustomSnackBar({
     String title = 'Done successfully!',
     required String message,

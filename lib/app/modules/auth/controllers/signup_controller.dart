@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/routes/app_pages.dart';
 
+import '../services/auth_provider.dart';
+
 class SignupController extends GetxController {
   final formKey = GlobalKey<FormState>();
 
@@ -25,8 +27,9 @@ class SignupController extends GetxController {
     if (!isValid) {
       return;
     }
+
     isWaitingResponse(true);
-    // final isSuccessfull = await signInService(phoneNumber, password);
+    await AuthProvider.signUpService('+$phoneNumber');
     isWaitingResponse(false);
 
     // if (isSuccessfull) {
@@ -35,8 +38,12 @@ class SignupController extends GetxController {
   }
 
   String? phoneNumberFieldValidator(String? value) {
-    if (phoneNumber.isBlank!) {
+    if (value.isBlank!) {
       return 'required';
+    }
+
+    if (!value!.isPhoneNumber) {
+      return 'Invalid phone number';
     }
 
     return null;

@@ -8,7 +8,7 @@ abstract class Routes {
   static const HOME = _Paths.HOME;
   static const SIGNUP = _Paths.SIGNUP;
   static const SIGN_IN = _Paths.SIGN_IN;
-  static const O_T_P_SCREEN = _Paths.OTP_SCREEN;
+  static const OTP_SCREEN = _Paths.OTP_SCREEN;
 }
 
 abstract class _Paths {

@@ -9,6 +9,8 @@ import 'package:whatsapp_clone/config/theme/my_styles.dart';
 
 import '../controllers/otp_form_controller.dart';
 
+///**This page is not ready for horizntal view **/// 
+
 class OTPScreen extends GetView<OTPScreenController> {
   const OTPScreen({Key? key}) : super(key: key);
 
@@ -37,20 +39,23 @@ class OTPScreen extends GetView<OTPScreenController> {
               ),
 
               /// OTP Text Field
-              Pinput(
-                // forceErrorState: true,
-                length: OTPScreenController.otpCodeLength,
-                controller: controller.otpTextController,
-                defaultPinTheme: MyStyles.getDefaultPinTheme,
-                focusedPinTheme: MyStyles.getFocusedPinTheme,
-                submittedPinTheme: MyStyles.getSubmittedPinTheme,
-                errorPinTheme: MyStyles.getErrorPinTheme,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                onChanged: controller.onOtpFieldChanged,
-
-                onCompleted: controller.onOtpFieldCompleted,
+              Form(
+                key: controller.OTPFieldKey,
+                child: Pinput(
+                  pinputAutovalidateMode: PinputAutovalidateMode.disabled,
+                  // forceErrorState: true,
+                  length: OTPScreenController.otpCodeLength,
+                  controller: controller.otpTextController,
+                  defaultPinTheme: MyStyles.getDefaultPinTheme,
+                  focusedPinTheme: MyStyles.getFocusedPinTheme,
+                  submittedPinTheme: MyStyles.getSubmittedPinTheme,
+                  errorPinTheme: MyStyles.getErrorPinTheme,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  onChanged: controller.onOtpFieldChanged,
+                  validator: (value) => controller.isValidCode ? null : 'Invalid OTP code',
+                ),
               ),
 
               SizedBox(

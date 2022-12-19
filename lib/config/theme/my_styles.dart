@@ -20,7 +20,7 @@ class MyStyles {
           statusBarIconBrightness: Brightness.dark,
           statusBarColor: Colors.transparent,
         ),
-        
+
         elevation: 0,
         titleTextStyle: getTextTheme().headline3!.copyWith(
               fontSize: MyFonts.appBarTittleSize,
@@ -29,7 +29,6 @@ class MyStyles {
             ),
         iconTheme: const IconThemeData(
           color: LightThemeColors.appBarIconsColor,
-          
         ),
         backgroundColor: LightThemeColors.appBarColor,
       );

@@ -1,74 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/app/modules/auth/services/auth_provider.dart';
+import 'package:whatsapp_clone/app/routes/app_pages.dart';
 
 class OTPScreenController extends GetxController {
   /// the length of the verfication code that is sent to the user
-  static const int otpCodeLength = 4;
+  static const int otpCodeLength = 6;
 
   /// used to display the phone number that the(verfication code was sent to) to the user
   late final String phoneNumber;
 
   final otpTextController = TextEditingController();
 
+  /// these variables are used to change the UI according to the changes
   RxBool isVerifiyButtonDisabled = true.obs;
   RxBool isWaitingResponse = false.obs;
   RxBool isVerificationCodeSent = false.obs;
   RxInt timeRemainingToBeAbleToReSend = 60.obs;
-  
+
+  GlobalKey<FormState> OTPFieldKey = GlobalKey<FormState>();
+
+  bool isValidCode = false;
+
+  ///its used by the OTP screen to display the phone number obsucred
   String obsucuredPhoneNumber() {
     return phoneNumber.replaceRange(5, 10, '******');
   }
 
   @override
   void onInit() {
-    phoneNumber = '+970567244416';
-    // email = Get.parameters['email']!;
+    phoneNumber = Get.parameters['phoneNumber']!;
     super.onInit();
   }
 
-  Future<void> onConfirmButtonPressed() async {
+  Future<void> onVerifyButtonPressed() async {
+    final code = otpTextController.text;
+
     isWaitingResponse(true);
-    // final isSuccessfull = await forgetPasswordService(email);
+    final isSuccess = await AuthProvider.verifyTheSentCode(code);
     isWaitingResponse(false);
 
-    // if (isSuccessfull) {
-    //   Get.toNamed(Routes.OTP_FORM);
-    // }
-  }
+    if (isSuccess) {
+      ///close all the screens and go to the home screen
+      isValidCode = true;
+      Get.offAllNamed(Routes.HOME);
+      return;
+    }
 
-  /// this method must be called whenever a field changes
-  ///
-  /// it checks if all the fields are full so it enables the confirm button
-  void changeConfirmButtonStatus() {
-    // if (isAllOtpFieldsFull) {
-    //   isVerifiyButtonDisabled(false);
-    // } else {
-    //   isVerifiyButtonDisabled(true);
-    // }
-  }
-
-  Future<void> onVerifyButtonPressed() async {
-    // isWaitingResponse(true);
-    // final isSuccess = await verifyCodeService(
-    //   email: email,
-    //   code: verificationCode,
-    // );
-    // isWaitingResponse(false);
-
-    // if (isSuccess) {
-    //   Get.toNamed(Routes.RESET_PASSWORD, parameters: {
-    //     'email': email,
-    //     'code': verificationCode,
-    //   });
-    // }
+    isValidCode = false;
+    OTPFieldKey.currentState!.validate();
   }
 
   void resendCode() {}
 
-  void onOtpFieldCompleted(String pinCode) {
-    // isVerifiyButtonDisabled(false);
-  }
-
+  ///must be called when the OTP field value changes
   void onOtpFieldChanged(String pinCode) {
     if (pinCode.length == otpCodeLength) {
       isVerifiyButtonDisabled(false);
