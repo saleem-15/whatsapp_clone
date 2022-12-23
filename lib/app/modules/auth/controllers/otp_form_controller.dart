@@ -18,7 +18,7 @@ class OTPScreenController extends GetxController {
   RxBool isVerificationCodeSent = false.obs;
   RxInt timeRemainingToBeAbleToReSend = 60.obs;
 
-  GlobalKey<FormState> OTPFieldKey = GlobalKey<FormState>();
+  GlobalKey<FormState> otpFieldKey = GlobalKey<FormState>();
 
   bool isValidCode = false;
 
@@ -48,7 +48,7 @@ class OTPScreenController extends GetxController {
     }
 
     isValidCode = false;
-    OTPFieldKey.currentState!.validate();
+    otpFieldKey.currentState!.validate();
   }
 
   void resendCode() {}

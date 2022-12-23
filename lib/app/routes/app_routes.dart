@@ -9,6 +9,9 @@ abstract class Routes {
   static const SIGNUP = _Paths.SIGNUP;
   static const SIGN_IN = _Paths.SIGN_IN;
   static const OTP_SCREEN = _Paths.OTP_SCREEN;
+
+  ///YOU HAVE TO PASS [Chat] ARGUMENT Ass (argument)
+  static const CHAT_SCREEN = _Paths.CHAT_SCREEN;
 }
 
 abstract class _Paths {
@@ -17,4 +20,5 @@ abstract class _Paths {
   static const SIGNUP = '/SIGNUP';
   static const SIGN_IN = '/SIGN_IN';
   static const OTP_SCREEN = '/otp-screen';
+  static const CHAT_SCREEN = '/chat-screen';
 }

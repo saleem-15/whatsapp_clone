@@ -88,7 +88,7 @@ extension ListExtensions on List {
   }
 }
 
-Future<bool> CheckUserConnection() async {
+Future<bool> checkUserConnection() async {
   try {
     Stopwatch stopwatch = Stopwatch()..start();
 

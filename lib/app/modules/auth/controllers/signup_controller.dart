@@ -9,8 +9,10 @@ class SignupController extends GetxController {
   final formKey = GlobalKey<FormState>();
 
   final phoneNumberFieledController = TextEditingController();
+  final userNameController = TextEditingController();
 
   String get phoneNumber => phoneNumberFieledController.text.trim();
+  String get userName => userNameController.text.trim();
 
   RxBool isButtonDisable = true.obs;
   RxBool isWaitingResponse = false.obs;
@@ -29,24 +31,12 @@ class SignupController extends GetxController {
     }
 
     isWaitingResponse(true);
-    await AuthProvider.signUpService('+$phoneNumber');
+    await AuthProvider.signUpService('+$phoneNumber', userName);
     isWaitingResponse(false);
 
     // if (isSuccessfull) {
     //   // Get.offAllNamed(Routes.MY_APP);
     // }
-  }
-
-  String? phoneNumberFieldValidator(String? value) {
-    if (value.isBlank!) {
-      return 'required';
-    }
-
-    if (!value!.isPhoneNumber) {
-      return 'Invalid phone number';
-    }
-
-    return null;
   }
 
   void goToLogIn() {
@@ -61,5 +51,29 @@ class SignupController extends GetxController {
       }
       isButtonDisable(false);
     });
+  }
+
+  String? phoneNumberFieldValidator(String? value) {
+    if (value.isBlank!) {
+      return 'required';
+    }
+
+    if (!value!.isPhoneNumber) {
+      return 'Invalid phone number';
+    }
+
+    return null;
+  }
+
+  String? userNameValidator(String? value) {
+    if (value.isBlank!) {
+      return 'required';
+    }
+
+    if (!GetUtils.isUsername(value!)) {
+      return 'Invalid User Name';
+    }
+
+    return null;
   }
 }

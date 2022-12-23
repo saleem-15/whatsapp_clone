@@ -104,6 +104,7 @@ class MySharedPref {
       name: name!,
       image: image,
       uid: userId,
+      phoneNumber: '',
     );
   }
 

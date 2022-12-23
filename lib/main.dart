@@ -1,5 +1,7 @@
 // ignore_for_file: unused_import
 
+// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,16 +13,20 @@ import 'package:whatsapp_clone/app/modules/auth/controllers/otp_form_controller.
 import 'package:whatsapp_clone/app/modules/auth/controllers/signin_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/signup_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/screens/signup_screen.dart';
+import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
+import 'package:whatsapp_clone/app/modules/user_chats/service/chats_provider.dart';
 
 import 'app/modules/auth/screens/otp_screen.dart';
-import 'app/modules/user_chats/chats_view_controller.dart';
+import 'app/modules/auth/services/auth_provider.dart';
+import 'app/modules/user_chats/controllers/chats_view_controller.dart';
 import 'app/routes/app_pages.dart';
 import 'app/storage/my_shared_pref.dart';
 import 'config/theme/my_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
+  await Firebase.initializeApp();
+  // FirebaseAuth.instance.signOut();
 
   await MySharedPref.init();
   SystemChrome.setSystemUIOverlayStyle(
@@ -69,7 +75,18 @@ class Main extends StatelessWidget {
             ),
           );
         },
-        home: const SignUpScreen(),
+        home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, AsyncSnapshot<User?> snapshot) {
+            /// if user == null => the user is not Authenticated
+            if (snapshot.data == null) {
+              return const SignUpScreen();
+            }
+
+            // return const SignUpScreen();
+            return const HomeScreen();
+          },
+        ),
         // const OTPScreen(),
         // home: Get.find<AuthController>().isAuthorized ? const MyApp() : const SigninScreen(),
         // const SigninScreen()

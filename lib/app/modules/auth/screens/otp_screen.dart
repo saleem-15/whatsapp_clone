@@ -9,7 +9,7 @@ import 'package:whatsapp_clone/config/theme/my_styles.dart';
 
 import '../controllers/otp_form_controller.dart';
 
-///**This page is not ready for horizntal view **/// 
+///**This page is not ready for horizntal view **///
 
 class OTPScreen extends GetView<OTPScreenController> {
   const OTPScreen({Key? key}) : super(key: key);
@@ -40,7 +40,7 @@ class OTPScreen extends GetView<OTPScreenController> {
 
               /// OTP Text Field
               Form(
-                key: controller.OTPFieldKey,
+                key: controller.otpFieldKey,
                 child: Pinput(
                   pinputAutovalidateMode: PinputAutovalidateMode.disabled,
                   // forceErrorState: true,

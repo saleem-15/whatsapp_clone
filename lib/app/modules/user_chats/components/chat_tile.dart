@@ -1,62 +1,43 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: must_be_immutable
 
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/modules/user_chats/chats_view_controller.dart';
 
-import '../../../models/message_type.dart';
+import 'package:whatsapp_clone/app/models/chat_interface.dart';
+import 'package:whatsapp_clone/app/modules/user_chats/controllers/chats_view_controller.dart';
 
 class ChatTile extends StatelessWidget {
-  ChatTile({
-    this.isGroupChat = true,
-    required this.chatPath,
-    super.key,
-  });
-
-  ChatTile.user({
-    this.isGroupChat = false,
-    required this.userId,
-    required this.chatPath,
-    super.key,
-  });
+  const ChatTile({
+    Key? key,
+    required this.chat,
+  }) : super(key: key);
 
   // (In case of group chat) userId = null
-  String? userId;
-  final String chatPath;
-  late String image;
-  final bool isGroupChat;
+  final Chat chat;
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ChatsViewController>(
       builder: (controller) {
-        late final String name;
-        // if (isGroupChat) {
-        //   final group = controller.getGroupChatbyId(chatPath);
-        //   image = group.image;
-        //   name = group.name;
-        // } else {
-        //   final user = controller.getUserbyId(userId!);
-        //   name = user.name;
-        //   image = user.image;
-        // }
-
-        name = 'test';
-
         return ListTile(
-          onTap: controller.onChatTilePressed,
+          onTap: () => controller.onChatTilePressed(chat),
+
+          ///--------- chat image---------
           leading: CircleAvatar(
-            radius: 25,
-            backgroundImage: FileImage(File(image)),
+            radius: 25.sp,
+            backgroundImage: chat.imageProvider,
+            // backgroundImage: FileImage(File(image)),
           ),
+
+          ///--------- chat name ---------
           title: Text(
-            name,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            chat.name,
+            style: Theme.of(context).textTheme.headline6,
           ),
+
+          ///--------- number of unread messages ---------
           trailing: Container(
             decoration: BoxDecoration(
               color: Colors.grey[400],
@@ -70,70 +51,72 @@ class ChatTile extends StatelessWidget {
               ),
             ),
           ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 7),
-            child: Obx(() {
-              final chat = controller.myChatsList.firstWhere((chat) => chat.value.chatPath == chatPath);
-              final messagesList = chat.value.messages;
 
-              log('messages: ${chat.value.messages.length}');
-              if (messagesList.isEmpty) {
-                return const SizedBox.shrink();
-              }
+          /// --------- last message ---------
+          // subtitle: Padding(
+          //   padding: const EdgeInsets.only(top: 7),
+          //   child: Obx(() {
+          //     final chat = controller.myChatsList.firstWhere((chat) => chat.value.chatPath == chatPath);
+          //     final messagesList = chat.value.messages;
 
-              final lastMessage = chat.value.messages.last;
-              switch (lastMessage.type) {
-                case MessageType.text:
-                  return Text(lastMessage.text!);
+          //     log('messages: ${chat.value.messages.length}');
+          //     if (messagesList.isEmpty) {
+          //       return const SizedBox.shrink();
+          //     }
 
-                case MessageType.photo:
-                  return Row(
-                    children: const [
-                      Icon(
-                        Icons.photo,
-                        size: 15,
-                      ),
-                      SizedBox(width: 5),
-                      Text('Photo'),
-                    ],
-                  );
+          //     final lastMessage = chat.value.messages.last;
+          //     switch (lastMessage.type) {
+          //       case MessageType.text:
+          //         return Text(lastMessage.text!);
 
-                case MessageType.video:
-                  return Row(
-                    children: const [
-                      FaIcon(
-                        FontAwesomeIcons.video,
-                        size: 15,
-                      ),
-                      SizedBox(width: 5),
-                      Text('Video'),
-                    ],
-                  );
+          //       case MessageType.photo:
+          //         return Row(
+          //           children: const [
+          //             Icon(
+          //               Icons.photo,
+          //               size: 15,
+          //             ),
+          //             SizedBox(width: 5),
+          //             Text('Photo'),
+          //           ],
+          //         );
 
-                case MessageType.audio:
-                  return Row(
-                    children: const [
-                      Icon(
-                        Icons.mic,
-                        size: 18,
-                      ),
-                      Text('Audio'),
-                    ],
-                  );
+          //       case MessageType.video:
+          //         return Row(
+          //           children: const [
+          //             FaIcon(
+          //               FontAwesomeIcons.video,
+          //               size: 15,
+          //             ),
+          //             SizedBox(width: 5),
+          //             Text('Video'),
+          //           ],
+          //         );
 
-                default:
-                  return Row(
-                    children: const [
-                      FaIcon(
-                        FontAwesomeIcons.solidFile,
-                        size: 15,
-                      ),
-                      Text('File'),
-                    ],
-                  );
-              }
-            }),
-          ),
+          //       case MessageType.audio:
+          //         return Row(
+          //           children: const [
+          //             Icon(
+          //               Icons.mic,
+          //               size: 18,
+          //             ),
+          //             Text('Audio'),
+          //           ],
+          //         );
+
+          //       default:
+          //         return Row(
+          //           children: const [
+          //             FaIcon(
+          //               FontAwesomeIcons.solidFile,
+          //               size: 15,
+          //             ),
+          //             Text('File'),
+          //           ],
+          //         );
+          //     }
+          //   }),
+          // ),
         );
       },
     );

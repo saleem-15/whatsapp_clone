@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/app/modules/chat/screens/chat_screen.dart';
 
 import '../modules/auth/screens/otp_screen.dart';
 import '../modules/auth/screens/signin_screen.dart';
@@ -6,7 +7,6 @@ import '../modules/auth/screens/signup_screen.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_screen.dart';
 
-// ignore_for_file: constant_identifier_names
 
 part 'app_routes.dart';
 
@@ -32,6 +32,10 @@ class AppPages {
     GetPage(
       name: _Paths.OTP_SCREEN,
       page: () => const OTPScreen(),
+    ),
+    GetPage(
+      name: _Paths.CHAT_SCREEN,
+      page: () =>  ChatScreen(),
     ),
   ];
 }

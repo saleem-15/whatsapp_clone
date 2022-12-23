@@ -30,7 +30,7 @@ class GradientButton extends StatelessWidget {
             ),
         child: Ink(
           decoration: BoxDecoration(
-            gradient: isWaitingForResponse.isTrue || isButtonDisable.isTrue ? null :  MyColors.myGradient,
+            gradient: isWaitingForResponse.isTrue || isButtonDisable.isTrue ? null : MyColors.myGradient,
           ),
           child: Container(
             alignment: Alignment.center,

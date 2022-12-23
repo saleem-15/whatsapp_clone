@@ -1,35 +1,19 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/modules/chat/screens/chat_screen_controller.dart';
-import 'package:whatsapp_clone/app/modules/chat/components/chat_text_field.dart';
-import 'package:whatsapp_clone/app/modules/chat/components/messages.dart';
+
+import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/helpers/message_bubble_settings.dart';
-import 'package:whatsapp_clone/helpers/utils.dart';
 
-class ChatScreen extends GetView<ChatScreenController> {
-  ChatScreen({
-    Key? key,
-    required this.chatPath,
-    required this.name,
-    required this.image,
-    required this.userId,
-  }) : super(key: key);
+class ChatScreen extends StatelessWidget {
+  ChatScreen({Key? key})
+      : controller = Get.put(ChatScreenController()),
+        super(key: key);
 
-  final String chatPath;
-  final String name;
-  final String image;
-  final String? userId;
-
-  String? lastSeen;
+  final ChatScreenController controller;
 
   @override
   Widget build(BuildContext context) {
-    final bool isGroupChat = Utils.getCollectionId(chatPath) == 'Group_chats' ? true : false;
     Rx<ChatBacground> chatBackgroundType = MessageBubbleSettings.backgroundType;
-    log('image path: $image');
     return Scaffold(
       appBar: AppBar(
         title: InkWell(
@@ -37,9 +21,9 @@ class ChatScreen extends GetView<ChatScreenController> {
           child: Row(
             children: [
               Hero(
-                tag: image,
+                tag: controller.chat.image!,
                 child: CircleAvatar(
-                  backgroundImage: FileImage(File(image)),
+                  backgroundImage: controller.chat.imageProvider,
                   maxRadius: 20,
                 ),
               ),
@@ -50,38 +34,12 @@ class ChatScreen extends GetView<ChatScreenController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
-                    style: const TextStyle(fontSize: 18),
+                    controller.chat.name,
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                   const SizedBox(
                     height: 3,
                   ),
-                  // if (!isGroupChat)
-                  //   GetBuilder<ChatScreenController>(
-                  //     builder: (controller) => FutureBuilder(
-                  //       future: controller.getLastTimeOnline(userId!),
-                  //       builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  //         if (snapshot.connectionState == ConnectionState.waiting) {
-                  //           // if (lastSeen == null) {
-                  //           return Text(
-                  //             'Connecting ...',
-                  //             style: TextStyle(color: Colors.grey[200], fontSize: 12),
-                  //           );
-
-                  //           // }
-                  //           //    return Text(
-                  //           //   lastSeen!,
-                  //           //   style: TextStyle(color: Colors.grey[200], fontSize: 12),
-                  //           // );
-                  //         }
-
-                  //         return Text(
-                  //           snapshot.data,
-                  //           style: TextStyle(color: Colors.grey[200], fontSize: 12),
-                  //         );
-                  //       },
-                  //     ),
-                  //   ),
                 ],
               ),
             ],
@@ -105,15 +63,15 @@ class ChatScreen extends GetView<ChatScreenController> {
             ),
           ),
           Column(
-            children: [
-              Expanded(
-                child: Messages(
-                  chatPath: chatPath,
-                ),
-              ),
-              ChatTextField(
-                chatPath: chatPath,
-              ),
+            children: const [
+              // Expanded(
+              //   child: Messages(
+              //     chatId: chatId,
+              //   ),
+              // ),
+              // ChatTextField(
+              //   chatId: controller.chat.id,
+              // ),
             ],
           ),
         ],

@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/helpers/message_bubble_settings.dart';
-import 'package:whatsapp_clone/utils/utils.dart';
+import 'package:whatsapp_clone/helpers/utils.dart';
 
 class MessageBubble extends StatelessWidget {
   const MessageBubble(
