@@ -3,8 +3,12 @@ import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/controllers/chats_view_controller.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/components/chat_tile.dart';
 
-class ChatsTapView extends GetView<ChatsViewController> {
-  const ChatsTapView({Key? key}) : super(key: key);
+class ChatsTapView extends StatelessWidget {
+  ChatsTapView({Key? key})
+      : controller = Get.put(ChatsViewController()),
+        super(key: key);
+
+  final ChatsViewController controller;
 
   @override
   Widget build(BuildContext context) {

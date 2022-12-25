@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/routes/app_pages.dart';
+import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
 import '../services/auth_provider.dart';
 

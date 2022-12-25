@@ -6,13 +6,16 @@ import 'package:pinput/pinput.dart';
 import 'package:whatsapp_clone/app/shared_widgets/gradient_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/config/theme/my_styles.dart';
-
 import '../controllers/otp_form_controller.dart';
 
 ///**This page is not ready for horizntal view **///
 
-class OTPScreen extends GetView<OTPScreenController> {
-  const OTPScreen({Key? key}) : super(key: key);
+class OTPScreen extends StatelessWidget {
+  OTPScreen({Key? key})
+      : controller = Get.put(OTPScreenController()),
+        super(key: key);
+
+  final OTPScreenController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +89,12 @@ class OTPScreen extends GetView<OTPScreenController> {
                     )
                   : const SizedBox.shrink()),
               const Spacer(),
+                GradientButton(
+                text: 'Verify',
+                onPressed: controller.onVerifyButtonPressed,
+                isWaitingForResponse: controller.isWaitingResponse,
+                isButtonDisable: controller.isVerifiyButtonDisabled,
+              ),
 
 //  OutlinedButton(
 //                     onPressed: controller.resendCode,
@@ -98,12 +107,6 @@ class OTPScreen extends GetView<OTPScreenController> {
 //                     child: const Text('Resend Code'),
 //                   ),
               /// resend && confrim buttons
-              GradientButton(
-                text: 'Verify',
-                onPressed: controller.onVerifyButtonPressed,
-                isWaitingForResponse: controller.isWaitingResponse,
-                isButtonDisable: controller.isVerifiyButtonDisabled,
-              ),
             ],
           ),
         ),
@@ -111,3 +114,4 @@ class OTPScreen extends GetView<OTPScreenController> {
     );
   }
 }
+

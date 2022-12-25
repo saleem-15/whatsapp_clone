@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/modules/chat/screens/image_message_screen.dart';
-import 'package:whatsapp_clone/helpers/message_bubble_settings.dart';
+import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 
 
 ///this is documentaion

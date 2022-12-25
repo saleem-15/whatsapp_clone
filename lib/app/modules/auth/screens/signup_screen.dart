@@ -6,10 +6,13 @@ import 'package:whatsapp_clone/app/modules/auth/controllers/signup_controller.da
 import 'package:whatsapp_clone/app/shared_widgets/gradient_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 
-import 'package:whatsapp_clone/utils/constants/assets.dart';
+import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
-class SignUpScreen extends GetView<SignupController> {
-  const SignUpScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatelessWidget {
+   SignUpScreen({Key? key}) :controller = Get.put(SignupController()),super(key: key);
+
+    final SignupController controller;
+
 
   @override
   Widget build(BuildContext context) {

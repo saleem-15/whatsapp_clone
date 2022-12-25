@@ -1,17 +1,18 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'message_type.dart';
-
 
 class Message {
   bool isSent = false;
   bool isSeen = false;
 
-  final String chatPath;
+  final String chatId;
 
-  final String senderId;
+  String? senderId;
+  final bool isAmItheSender;
 
   final DateTime timeSent = DateTime.now();
 
@@ -19,56 +20,96 @@ class Message {
 
   final MessageType type;
 
-  String? image; // the file path stored in the device
+  String? image; //the file path stored in the device
 
-  String? video; // the file path stored in the device
+  String? video; //the file path stored in the device
 
-  String? audio; // the file path stored in the device
+  String? audio; //the file path stored in the device
 
-  String? file; // the file path stored in the device
+  String? file; //the file path stored in the device
 
   Message({
     this.type = MessageType.text,
-    required this.chatPath,
+    this.isAmItheSender = false,
+    this.senderId,
+    required this.chatId,
     required this.text,
-    required this.senderId,
-  });
+  }) {
+    assert(isAmItheSender && senderId == null || !isAmItheSender && senderId != null,
+        'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
+
+    if (isAmItheSender) {
+      senderId = FirebaseAuth.instance.currentUser!.uid;
+    }
+  }
 
   Message.image({
-    required this.chatPath,
-    this.text,
     this.type = MessageType.photo,
+    required this.chatId,
+    this.isAmItheSender = false,
+    this.senderId,
+    this.text,
     required this.image,
-    required this.senderId,
-  });
+  }) {
+    assert(isAmItheSender && senderId == null || !isAmItheSender && senderId != null,
+        'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
+
+    if (isAmItheSender) {
+      senderId = FirebaseAuth.instance.currentUser!.uid;
+    }
+  }
 
   Message.video({
-    required this.chatPath,
-    this.text,
     this.type = MessageType.video,
+    required this.chatId,
+    this.text,
     required this.video,
-    required this.senderId,
-  });
+    this.isAmItheSender = false,
+    this.senderId,
+  }) {
+    assert(isAmItheSender && senderId == null || !isAmItheSender && senderId != null,
+        'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
+
+    if (isAmItheSender) {
+      senderId = FirebaseAuth.instance.currentUser!.uid;
+    }
+  }
 
   Message.file({
-    required this.chatPath,
-    this.text,
     this.type = MessageType.file,
+    required this.chatId,
+    this.text,
     required this.file,
-    required this.senderId,
-  });
+    this.isAmItheSender = false,
+    this.senderId,
+  }) {
+    assert(isAmItheSender && senderId == null || !isAmItheSender && senderId != null,
+        'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
+
+    if (isAmItheSender) {
+      senderId = FirebaseAuth.instance.currentUser!.uid;
+    }
+  }
 
   Message.audio({
-    required this.chatPath,
-    this.text,
     this.type = MessageType.audio,
+    required this.chatId,
+    this.text,
     required this.audio,
-    required this.senderId,
-  });
+    this.isAmItheSender = false,
+    this.senderId,
+  }) {
+    assert(isAmItheSender && senderId == null || !isAmItheSender && senderId != null,
+        'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
+
+    if (isAmItheSender) {
+      senderId = FirebaseAuth.instance.currentUser!.uid;
+    }
+  }
 
   Map<String, dynamic> toMap() {
     return {
-      'chatPath': chatPath,
+      'chatPath': chatId,
       'text': text,
       'type': type.name,
       'image': image,
@@ -96,7 +137,7 @@ class Message {
   bool operator ==(covariant Message other) {
     if (identical(this, other)) return true;
 
-    return other.chatPath == chatPath &&
+    return other.chatId == chatId &&
         other.text == text &&
         other.type == type &&
         other.image == image &&
@@ -107,7 +148,7 @@ class Message {
 
   @override
   int get hashCode {
-    return chatPath.hashCode ^
+    return chatId.hashCode ^
         text.hashCode ^
         type.hashCode ^
         image.hashCode ^

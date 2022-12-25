@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get_storage/get_storage.dart';
 
-import '../../config/translations/localization_service.dart';
-import '../models/user.dart';
+import '../config/translations/localization_service.dart';
+import '../app/models/user.dart';
 
 class MySharedPref {
   // get storage

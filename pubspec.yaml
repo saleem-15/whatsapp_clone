@@ -30,7 +30,7 @@ dependencies:
   # mask_text_input_formatter: ^2.4.0  #used in signup
   # internet_connection_checker: ^1.0.0+1
   underline_indicator: ^0.0.4
-  # video_viewer: ^1.2.7
+  video_viewer: ^1.2.7
   voice_message_package: ^0.0.74
   flutter_sound: ^9.2.13
   permission_handler: ^10.2.0

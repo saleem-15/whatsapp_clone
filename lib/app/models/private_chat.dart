@@ -4,7 +4,7 @@ import 'package:whatsapp_clone/app/models/message.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:whatsapp_clone/utils/constants/assets.dart';
+import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 import 'message.dart';
 

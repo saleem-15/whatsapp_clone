@@ -6,8 +6,9 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/routes/app_pages.dart';
-import 'package:whatsapp_clone/utils/custom_snackbar.dart';
+import 'package:whatsapp_clone/config/routes/app_pages.dart';
+import 'package:whatsapp_clone/storage/my_shared_pref.dart';
+import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
 
 /// it returnes true if signup process is successful
 
@@ -25,6 +26,9 @@ class AuthProvider {
     await verifyPhone(phoneNumber);
 
     await _createUserDoc(name, phoneNumber);
+
+    MySharedPref.setUserName(name);
+    MySharedPref.setUserPhoneNumber(phoneNumber);
   }
 
   static Future<void> verifyPhone(String phoneNumber) => auth.verifyPhoneNumber(
@@ -70,7 +74,7 @@ class AuthProvider {
             Routes.OTP_SCREEN,
             parameters: {'phoneNumber': phoneNumber},
           );
-          
+
           verificationId = _verificationId;
         },
 

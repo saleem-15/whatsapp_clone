@@ -14,10 +14,7 @@ class MyTheme {
         // secondary: LightThemeColors.primaryColor,
 
         primary: LightThemeColors.primaryColor,
-        
       ),
-
-      
 
       scrollbarTheme: const ScrollbarThemeData(),
 
@@ -29,10 +26,18 @@ class MyTheme {
       cardColor: LightThemeColors.cardColor,
       // hint text color
       hintColor: LightThemeColors.hintTextColor,
+
+      highlightColor: Colors.transparent,
+
+      //splash effect (this is faster than the default)
+      splashFactory: InkRipple.splashFactory,
+
       // divider color
       dividerColor: LightThemeColors.dividerColor,
       // app background color
       backgroundColor: LightThemeColors.backgroundColor,
+
+      //
       scaffoldBackgroundColor: LightThemeColors.scaffoldBackgroundColor,
 
       // progress bar theme
@@ -49,7 +54,6 @@ class MyTheme {
 
       //text button theme
       textButtonTheme: MyStyles.getTextButtonTheme(),
-
 
       // text theme
       textTheme: MyStyles.getTextTheme(),

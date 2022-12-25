@@ -5,12 +5,16 @@ import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/shared_widgets/gradient_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 
-import 'package:whatsapp_clone/utils/constants/assets.dart';
+import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 import '../controllers/signin_controller.dart';
 
-class SigninScreen extends GetView<SigninController> {
-  const SigninScreen({Key? key}) : super(key: key);
+class SigninScreen extends StatelessWidget {
+  SigninScreen({Key? key})
+      : controller = Get.put(SigninController()),
+        super(key: key);
+
+  final SigninController controller;
 
   @override
   Widget build(BuildContext context) {

@@ -22,10 +22,11 @@ class GradientIconButton extends StatelessWidget {
     final borderRadius = BorderRadius.circular(10.r);
 
     return SizedBox.square(
-      dimension: 40.sp,
+      dimension: 35.sp,
       child: FittedBox(
         child: InkWell(
-          splashColor: Colors.transparent,
+          
+          highlightColor: Colors.transparent,
           borderRadius: borderRadius,
           onTap: onPressed,
           child: SizedBox.square(

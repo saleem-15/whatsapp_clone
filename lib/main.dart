@@ -19,23 +19,20 @@ import 'package:whatsapp_clone/app/modules/user_chats/service/chats_provider.dar
 import 'app/modules/auth/screens/otp_screen.dart';
 import 'app/modules/auth/services/auth_provider.dart';
 import 'app/modules/user_chats/controllers/chats_view_controller.dart';
-import 'app/routes/app_pages.dart';
-import 'app/storage/my_shared_pref.dart';
+import 'package:whatsapp_clone/config/routes/app_pages.dart';
+import 'storage/my_shared_pref.dart';
 import 'config/theme/my_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   // FirebaseAuth.instance.signOut();
 
   await MySharedPref.init();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
-  Get.lazyPut(() => SigninController(), fenix: true);
-  Get.lazyPut(() => SignupController(), fenix: true);
-  Get.lazyPut(() => OTPScreenController(), fenix: true);
-  Get.lazyPut(() => ChatsViewController(), fenix: true);
 
   runApp(const Main());
 }
@@ -80,7 +77,7 @@ class Main extends StatelessWidget {
           builder: (context, AsyncSnapshot<User?> snapshot) {
             /// if user == null => the user is not Authenticated
             if (snapshot.data == null) {
-              return const SignUpScreen();
+              return SignUpScreen();
             }
 
             // return const SignUpScreen();

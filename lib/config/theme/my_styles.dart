@@ -294,4 +294,25 @@ class MyStyles {
 
   ///-------------------- OTP FIELD THEME ------------------------------
 
+  static InputDecoration getChatTextFieldStyle() => InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        hintStyle: getTextTheme().caption!.copyWith(
+              color: LightThemeColors.headlinesTextColor.withOpacity(.3),
+            ),
+          
+        contentPadding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 0.sp),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide(color: LightThemeColors.lightGrey, width: 1.sp),
+        ),
+      );
 }

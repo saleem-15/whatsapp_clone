@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
-import 'package:whatsapp_clone/helpers/message_bubble_settings.dart';
+import 'package:whatsapp_clone/app/shared_widgets/gradient_icon_button.dart';
+import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
+
+import '../components/chat_text_field.dart';
+import '../components/messages.dart';
 
 class ChatScreen extends StatelessWidget {
   ChatScreen({Key? key})
@@ -13,7 +18,6 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Rx<ChatBacground> chatBackgroundType = MessageBubbleSettings.backgroundType;
     return Scaffold(
       appBar: AppBar(
         title: InkWell(
@@ -45,36 +49,57 @@ class ChatScreen extends StatelessWidget {
             ],
           ),
         ),
-        actions: const [Icon(Icons.more_vert)],
+        actions: [
+          GradientIconButton(
+            icon: Icons.more_vert,
+            onPressed: () {},
+          )
+        ],
       ),
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Obx(
-            () => Positioned.fill(
-              child: chatBackgroundType.value == ChatBacground.image
-                  ? Image.asset(
-                      MessageBubbleSettings.chatBackgroundImage.value,
-                      fit: BoxFit.cover,
-                    )
-                  : Ink(
-                      color: MessageBubbleSettings.chatBackgroundColor.value,
-                    ),
-            ),
-          ),
+          const ChatBackground(),
           Column(
-            children: const [
-              // Expanded(
-              //   child: Messages(
-              //     chatId: chatId,
-              //   ),
-              // ),
-              // ChatTextField(
-              //   chatId: controller.chat.id,
-              // ),
+            children: [
+              Expanded(
+                child: Messages(
+                  chatId: controller.chat.id,
+                ),
+              ),
+              Container(
+                  margin: EdgeInsets.only(
+                    left: 15.w,
+                    right: 15.w,
+                    bottom: 20.sp,
+                  ),
+                  child: const ChatTextField()),
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ChatBackground extends StatelessWidget {
+  const ChatBackground({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Ink(
+      color: Colors.grey[50],
+    );
+    return Obx(
+      () => Positioned.fill(
+        child: MessageBubbleSettings.backgroundType.value == ChatBacground.image
+            ? Image.asset(
+                MessageBubbleSettings.chatBackgroundImage.value,
+                fit: BoxFit.cover,
+              )
+            : Ink(
+                color: MessageBubbleSettings.chatBackgroundColor.value,
+              ),
       ),
     );
   }

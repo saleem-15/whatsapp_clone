@@ -28,17 +28,17 @@ class MessageBubbleSettings {
 
   static Rx<ChatBacground> get backgroundType => _backgroundType;
 
-  static setchatBackgroundType(ChatBacground type) async {
+  static setChatBackgroundType(ChatBacground type) async {
     _backgroundType.value = type;
   }
 
   static RxString get chatBackgroundImage => _chatBackgroundImage;
 
-  static setchatBackgroundImage(String imagePath) async {
+  static setChatBackgroundImage(String imagePath) async {
     chatBackgroundImage.value = imagePath;
   }
 
-  static setchatBackgroundColor(Color color) async {
+  static setChatBackgroundColor(Color color) async {
     _chatBackgroundColor.value = color;
   }
 

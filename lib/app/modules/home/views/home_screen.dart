@@ -68,12 +68,12 @@ class HomeScreen extends GetView<HomeController> {
                 ),
               ),
             ),
-            const Expanded(
+            Expanded(
               child: TabBarView(
                 children: [
                   ChatsTapView(),
-                  StatusView(),
-                  CallsView(),
+                  const StatusView(),
+                  const CallsView(),
                 ],
               ),
             ),
