@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whatsapp_clone/app/models/message.dart';
@@ -15,10 +13,13 @@ class ChattingProvider {
 
   static String myUid = FirebaseAuth.instance.currentUser!.uid;
 
+  static Stream<QuerySnapshot> getMessagesStream(String chatId) {
+    return messagesCollection(chatId).orderBy('createdAt').snapshots();
+  }
+
   static Future<void> sendTextMessage(Message textMessage) async {
     final myName = MySharedPref.getUserName;
     final myImage = MySharedPref.getUserImage;
-
 
     await messagesCollection(textMessage.chatId).add({
       'text': textMessage.text,
@@ -26,6 +27,7 @@ class ChattingProvider {
       'senderId': myUid,
       'senderName': myName,
       'senderImage': myImage,
+      'type': textMessage.type.name,
     });
   }
   // static Future<void> sendPhoto(Message imageMessage, String senderName, String senderImage) async {

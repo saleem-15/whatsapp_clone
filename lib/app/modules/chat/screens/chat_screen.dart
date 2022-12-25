@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/app/modules/chat/components/messages.dart';
 
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/app/shared_widgets/gradient_icon_button.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 
 import '../components/chat_text_field.dart';
-import '../components/messages.dart';
 
 class ChatScreen extends StatelessWidget {
   ChatScreen({Key? key})
@@ -21,8 +22,10 @@ class ChatScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: InkWell(
+          borderRadius: BorderRadius.circular(3.sp),
           onTap: controller.onAppBarPressed,
           child: Row(
+            // mainAxisSize: MainAxisSize.min,
             children: [
               Hero(
                 tag: controller.chat.image!,
@@ -51,9 +54,28 @@ class ChatScreen extends StatelessWidget {
         ),
         actions: [
           GradientIconButton(
+            icon: FontAwesomeIcons.video,
+            size: 18.sp,
+            onPressed: () {},
+          ),
+          SizedBox(
+            width: 5.sp,
+          ),
+          GradientIconButton(
+            icon: FontAwesomeIcons.phone,
+            size: 18.sp,
+            onPressed: () {},
+          ),
+          SizedBox(
+            width: 5.sp,
+          ),
+          GradientIconButton(
             icon: Icons.more_vert,
             onPressed: () {},
-          )
+          ),
+          SizedBox(
+            width: 5.sp,
+          ),
         ],
       ),
       body: Stack(
@@ -67,6 +89,8 @@ class ChatScreen extends StatelessWidget {
                   chatId: controller.chat.id,
                 ),
               ),
+
+              /// Chat Text Field
               Container(
                   margin: EdgeInsets.only(
                     left: 15.w,

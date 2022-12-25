@@ -3,26 +3,20 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/app/models/message.dart';
 import 'package:whatsapp_clone/app/modules/chat/screens/image_message_screen.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
-
+import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 ///this is documentaion
 class ImageMessageBubble extends StatelessWidget {
   const ImageMessageBubble({
     Key? key,
-    required this.image,
-    this.text,
-    required this.timeSent,
-    required this.username,
-    required this.isMyMessage,
+    required this.message,
   }) : super(key: key);
 
-  final File image;
-  final String? text;
-  final String timeSent;
-  final String username;
-  final bool isMyMessage;
+  final Message message;
+
   final double borderRadius = 15;
 
   @override
@@ -30,7 +24,7 @@ class ImageMessageBubble extends StatelessWidget {
     var fontSize = MessageBubbleSettings.fontSize;
 
     return Row(
-      mainAxisAlignment: isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisAlignment: message.isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         InkWell(
           onTap: () {
@@ -38,9 +32,9 @@ class ImageMessageBubble extends StatelessWidget {
             FocusScope.of(context).unfocus();
 
             Get.to(() => ImageMessageScreen(
-                  image: image,
-                  senderName: username,
-                  timeSent: timeSent,
+                  image: File(message.image!),
+                  senderName:message. senderName,
+                  timeSent:  Utils.formatDate(message.timeSent),
                 ));
 
             // Get.to(
@@ -53,8 +47,8 @@ class ImageMessageBubble extends StatelessWidget {
           child: Container(
             width: 300,
             margin: EdgeInsets.only(
-              right: isMyMessage ? 8 : 0,
-              left: isMyMessage ? 0 : 8,
+              right: message.isMyMessage ? 8 : 0,
+              left: message.isMyMessage ? 0 : 8,
               bottom: 5,
               top: 3,
             ),
@@ -68,7 +62,7 @@ class ImageMessageBubble extends StatelessWidget {
                   offset: const Offset(0, 2), // changes position of shadow
                 ),
               ],
-              color: isMyMessage
+              color: message.isMyMessage
                   ? MessageBubbleSettings.myMessageColor
                   : MessageBubbleSettings.othersMessageColor,
               borderRadius: BorderRadius.circular(borderRadius),
@@ -77,22 +71,22 @@ class ImageMessageBubble extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (!isMyMessage)
+                if (!message.isMyMessage)
                   Padding(
                     padding: const EdgeInsets.only(left: 5, bottom: 8, top: 3),
                     child: Text(
-                      username,
+             message.         senderName,
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 Stack(
                   children: [
                     Hero(
-                      tag: image.path,
+                      tag: message.image!,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(borderRadius),
                         child: Image.file(
-                          image,
+                        File(message.  image!),
 
                           /// this code is for Image.network
                           // loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
@@ -105,17 +99,17 @@ class ImageMessageBubble extends StatelessWidget {
                       bottom: 5,
                       right: 8,
                       child: Text(
-                        timeSent,
+                        Utils.formatDate(message.timeSent),
                         style: const TextStyle(color: Colors.white),
                       ),
                     )
                   ],
                 ),
-                if (text != null)
+                if (message.text != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
                     child: Text(
-                      text!,
+                     message. text!,
                       style: TextStyle(fontSize: fontSize.value.toDouble()),
                     ),
                   ),

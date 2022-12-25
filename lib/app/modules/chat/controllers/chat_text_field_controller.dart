@@ -10,9 +10,10 @@ import 'package:whatsapp_clone/app/models/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/message.dart';
 import 'package:whatsapp_clone/app/models/message_type.dart';
 import 'package:whatsapp_clone/app/modules/chat/components/send_attachement_bottom_sheet.dart';
+import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
 import '../screens/picked_photo_viewer.dart';
-import '../services/chat_provider.dart';
+import '../services/chatting_provider.dart';
 
 class ChatTextFieldController extends GetxController {
   late final Chat chat;
@@ -32,7 +33,7 @@ class ChatTextFieldController extends GetxController {
     myID = FirebaseAuth.instance.currentUser!.uid;
     recorder = FlutterSoundRecorder();
 
-    initRecorder();
+    // initRecorder();
   }
 
   void onAppBarPressed() {
@@ -103,6 +104,8 @@ class ChatTextFieldController extends GetxController {
       chatId: chat.id,
       audio: audioFile.path,
       senderId: myID,
+      senderName: MySharedPref.getUserName!,
+      senderImage: MySharedPref.getUserImage,
     );
   }
 
@@ -113,6 +116,8 @@ class ChatTextFieldController extends GetxController {
       type: MessageType.photo,
       image: image.path,
       senderId: myID,
+      senderName: MySharedPref.getUserName!,
+      senderImage: MySharedPref.getUserImage,
     );
   }
 
@@ -123,22 +128,18 @@ class ChatTextFieldController extends GetxController {
       type: MessageType.video,
       video: video.path,
       senderId: myID,
+      senderName: MySharedPref.getUserName!,
+      senderImage: MySharedPref.getUserImage,
     );
-  }
-
-  @override
-  void dispose() {
-    recorder.closeRecorder();
-    textController.dispose();
-
-    super.dispose();
   }
 
   void sendMessage() {
     final msg = Message(
       chatId: chat.id,
-      isAmItheSender: true,
+      isMyMessage: true,
       text: text.trim(),
+      senderName: MySharedPref.getUserName!,
+      senderImage: MySharedPref.getUserImage,
     );
     ChattingProvider.sendTextMessage(msg);
 
@@ -200,5 +201,13 @@ class ChatTextFieldController extends GetxController {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    recorder.closeRecorder();
+    textController.dispose();
+
+    super.dispose();
   }
 }

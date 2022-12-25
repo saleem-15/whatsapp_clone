@@ -6,8 +6,6 @@ import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get_utils/get_utils.dart';
 
-import 'message.dart';
-
 class GroupChat implements Chat {
   @override
   String id;

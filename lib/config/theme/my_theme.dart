@@ -11,7 +11,7 @@ class MyTheme {
       // main color (app bar,tabs..etc)
       colorScheme: const ColorScheme.light().copyWith(
         /// this color affects the (over scroll Glowing color)
-        // secondary: LightThemeColors.primaryColor,
+        secondary: LightThemeColors.primaryColor,
 
         primary: LightThemeColors.primaryColor,
       ),

@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'message_type.dart';
@@ -12,7 +12,10 @@ class Message {
   final String chatId;
 
   String? senderId;
-  final bool isAmItheSender;
+  String? senderImage;
+  String senderName;
+
+  final bool isMyMessage;
 
   final DateTime timeSent = DateTime.now();
 
@@ -30,15 +33,37 @@ class Message {
 
   Message({
     this.type = MessageType.text,
-    this.isAmItheSender = false,
+    this.isMyMessage = false,
     this.senderId,
     required this.chatId,
     required this.text,
+    required this.senderImage,
+    required this.senderName,
   }) {
-    assert(isAmItheSender && senderId == null || !isAmItheSender && senderId != null,
+    assert(isMyMessage && senderId == null || !isMyMessage && senderId != null,
         'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
 
-    if (isAmItheSender) {
+    if (isMyMessage) {
+      senderId = FirebaseAuth.instance.currentUser!.uid;
+    }
+  }
+  Message._generic({
+    this.type = MessageType.text,
+    this.isMyMessage = false,
+    this.senderId,
+    required this.chatId,
+    required this.text,
+    required this.video,
+    required this.audio,
+    required this.image,
+    required this.file,
+    required this.senderImage,
+    required this.senderName,
+  }) {
+    assert(isMyMessage && senderId == null || !isMyMessage && senderId != null,
+        'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
+
+    if (isMyMessage) {
       senderId = FirebaseAuth.instance.currentUser!.uid;
     }
   }
@@ -46,15 +71,17 @@ class Message {
   Message.image({
     this.type = MessageType.photo,
     required this.chatId,
-    this.isAmItheSender = false,
+    this.isMyMessage = false,
     this.senderId,
     this.text,
     required this.image,
+    required this.senderImage,
+    required this.senderName,
   }) {
-    assert(isAmItheSender && senderId == null || !isAmItheSender && senderId != null,
+    assert(isMyMessage && senderId == null || !isMyMessage && senderId != null,
         'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
 
-    if (isAmItheSender) {
+    if (isMyMessage) {
       senderId = FirebaseAuth.instance.currentUser!.uid;
     }
   }
@@ -64,13 +91,15 @@ class Message {
     required this.chatId,
     this.text,
     required this.video,
-    this.isAmItheSender = false,
+    this.isMyMessage = false,
     this.senderId,
+    required this.senderImage,
+    required this.senderName,
   }) {
-    assert(isAmItheSender && senderId == null || !isAmItheSender && senderId != null,
+    assert(isMyMessage && senderId == null || !isMyMessage && senderId != null,
         'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
 
-    if (isAmItheSender) {
+    if (isMyMessage) {
       senderId = FirebaseAuth.instance.currentUser!.uid;
     }
   }
@@ -80,13 +109,15 @@ class Message {
     required this.chatId,
     this.text,
     required this.file,
-    this.isAmItheSender = false,
+    this.isMyMessage = false,
     this.senderId,
+    required this.senderImage,
+    required this.senderName,
   }) {
-    assert(isAmItheSender && senderId == null || !isAmItheSender && senderId != null,
+    assert(isMyMessage && senderId == null || !isMyMessage && senderId != null,
         'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
 
-    if (isAmItheSender) {
+    if (isMyMessage) {
       senderId = FirebaseAuth.instance.currentUser!.uid;
     }
   }
@@ -96,13 +127,15 @@ class Message {
     required this.chatId,
     this.text,
     required this.audio,
-    this.isAmItheSender = false,
+    this.isMyMessage = false,
     this.senderId,
+    required this.senderImage,
+    required this.senderName,
   }) {
-    assert(isAmItheSender && senderId == null || !isAmItheSender && senderId != null,
+    assert(isMyMessage && senderId == null || !isMyMessage && senderId != null,
         'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
 
-    if (isAmItheSender) {
+    if (isMyMessage) {
       senderId = FirebaseAuth.instance.currentUser!.uid;
     }
   }
@@ -119,6 +152,24 @@ class Message {
     };
   }
 
+  factory Message.fromDoc(QueryDocumentSnapshot map) {
+    return Message._generic(
+      // isSent: map['isSent'],
+      // isSeen: map['isSeen'],
+      chatId: map.id,
+      senderId: map['senderId'],
+      senderName: map['senderName'],
+      senderImage: map['senderImage'],
+      isMyMessage: map['senderId'] == FirebaseAuth.instance.currentUser!.uid,
+      text: map['text'],
+      type: msgTypeEnumfromString(map['type']),
+      image: map['image'],
+      video: map['video'],
+      audio: map['audio'],
+      file: map['file'],
+    );
+  }
+
   // factory Message.fromMap(Map<String, dynamic> map) {
   //   return Message(
   //     chatPath: map['chatPath'],
@@ -130,7 +181,6 @@ class Message {
   //     file: File.fromMap(map['file']),
   //   );
   // }
-  String toJson() => json.encode(toMap());
 //  factory Message.fromJson(String source) => Message.fromMap(json.decode(source));
 
   @override

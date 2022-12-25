@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/controllers/chats_view_controller.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/components/chat_tile.dart';
@@ -27,8 +28,11 @@ class ChatsTapView extends StatelessWidget {
             //
             final chat = myChats[index].value;
 
-            return ChatTile(
-              chat: chat,
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 4.sp),
+              child: ChatTile(
+                chat: chat,
+              ),
             );
           },
         );
