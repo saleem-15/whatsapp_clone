@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/config/theme/colors.dart';
 
 class PickedPhotoViewer extends StatelessWidget {
   PickedPhotoViewer({
@@ -17,9 +18,9 @@ class PickedPhotoViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black54,
+      backgroundColor: MyColors.BlackScaffold,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
         title: const Text('test'),
       ),
       body: SingleChildScrollView(
@@ -36,7 +37,6 @@ class PickedPhotoViewer extends StatelessWidget {
                     width: MediaQuery.of(context).size.width - 80,
                     decoration: const BoxDecoration(
                       color: Colors.white,
-                      //Colors.grey[300],
                       borderRadius: BorderRadius.all(Radius.circular(25)),
                     ),
                     margin: const EdgeInsets.only(top: 5, right: 10, left: 10, bottom: 10),
@@ -48,7 +48,6 @@ class PickedPhotoViewer extends StatelessWidget {
                         contentPadding: const EdgeInsets.only(left: 20, top: 15, bottom: 5),
                         border: InputBorder.none,
                         hintText: 'Add a caption',
-                        fillColor: Colors.red,
                         prefixIcon: IconButton(
                           icon: const Icon(Icons.emoji_emotions_outlined),
                           onPressed: () {},
@@ -70,7 +69,7 @@ class PickedPhotoViewer extends StatelessWidget {
 
                         sendImage(
                           image,
-                          message.isEmpty ? null : message,
+                          message.isBlank! ? null : message,
                         );
 
                         Get.back();

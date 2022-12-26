@@ -42,6 +42,7 @@ dependencies:
   google_fonts: ^3.0.1 # fonts
   pinput: ^2.2.16   # otp field 
   flutter_contacts: ^1.1.5+1
+  chewie: ^1.1.0
 
 dev_dependencies: 
   flutter_lints: 2.0.1

@@ -1,8 +1,10 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/app/shared_widgets/generic_button.dart';
 import 'package:whatsapp_clone/config/theme/my_styles.dart';
 
 import '../controllers/chat_text_field_controller.dart';
@@ -12,62 +14,66 @@ class ChatTextField extends GetView<ChatTextFieldController> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      minLines: 1,
-      maxLines: 5,
-      controller: controller.textController,
-      decoration: MyStyles.getChatTextFieldStyle().copyWith(
-        hintText: 'Message',
-        suffixIcon: Obx(
-          () => controller.text.trim().isEmpty
-              ?
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            minLines: 1,
+            maxLines: 5,
+            controller: controller.textController,
+            decoration: MyStyles.getChatTextFieldStyle().copyWith(
+              hintText: 'Message',
 
-              ///(Attach file,record audio,camera) Icons (shown When the textfield is empty)
+              ///(Attach file,camera) Icons (hidden When recording audio)
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ///recording time (shown when recording)
+                  if (controller.recorder.isRecording) controller.recordingTime(),
 
-              Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (controller.recorder.isRecording) controller.recordingTime(),
-                    if (!controller.recorder.isRecording)
-
-                      ///Attach file Icon
-                      IconButton(
-                        color: Theme.of(context).primaryColor,
-                        icon: const FaIcon(FontAwesomeIcons.paperclip, size: 20),
-                        onPressed: controller.showBottomSheet,
-                      ),
+                  ///Attach file Icon
+                  if (!controller.recorder.isRecording)
                     IconButton(
                       color: Theme.of(context).primaryColor,
-                      icon: Icon(controller.recorder.isRecording ? Icons.stop : Icons.mic),
-                      onPressed: controller.onMicIconPressed,
+                      icon: const FaIcon(FontAwesomeIcons.paperclip, size: 20),
+                      onPressed: controller.showBottomSheet,
                     ),
-                    if (!controller.recorder.isRecording)
-                      IconButton(
-                        color: Theme.of(context).primaryColor,
-                        icon: const Icon(Icons.camera_alt_rounded),
-                        onPressed: controller.onCameraIconPressed,
-                      ),
-                  ],
+
+                  /// Camera Icon
+                  if (!controller.recorder.isRecording)
+                    IconButton(
+                      color: Theme.of(context).primaryColor,
+                      icon: const Icon(Icons.camera_alt_rounded),
+                      onPressed: controller.onCameraIconPressed,
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 10.sp,
+        ),
+
+        ///(Send --OR-- record audio) Icon
+        Obx(
+          () => controller.text.isEmpty
+              ?
+
+              /// Microphone Icon (shown When the textfield is empty)
+              GradientGenericButton(
+                  onPressed: controller.onMicIconPressed,
+                  child: Icon(controller.recorder.isRecording ? Icons.stop : Icons.mic),
                 )
               :
 
               /// Send Icon (shown When there is text in the textfield )
-              IconButton(
-                  icon: const Icon(Icons.send_rounded),
+              GradientGenericButton(
                   onPressed: controller.sendMessage,
+                  child: const Icon(Icons.send_rounded),
                 ),
         ),
-      ),
-      onChanged: controller.onTextChanged,
+      ],
     );
   }
 }
-
-// Container(
-//       width: MediaQuery.of(context).size.width,
-//       decoration: const BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.all(Radius.circular(10)),
-//       ),
-//       padding: const EdgeInsets.only(left: 20),
-//       margin: const EdgeInsets.only(top: 5, right: 10, left: 10, bottom: 10),

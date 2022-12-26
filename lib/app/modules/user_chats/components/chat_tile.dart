@@ -22,6 +22,11 @@ class ChatTile extends StatelessWidget {
     return GetBuilder<ChatsViewController>(
       builder: (controller) {
         return ListTile(
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 4.sp,
+          ),
+
           onTap: () => controller.onChatTilePressed(chat),
 
           ///--------- chat image---------

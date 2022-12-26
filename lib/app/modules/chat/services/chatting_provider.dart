@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:whatsapp_clone/app/models/message.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
 class ChattingProvider {
   ChattingProvider._();
@@ -9,81 +10,60 @@ class ChattingProvider {
   static final CollectionReference chatsCollection = db.collection('cahts');
 
   static CollectionReference messagesCollection(String chatId) =>
-      chatsCollection.doc(chatId).collection('messages');
+      chatsCollection.doc(chatId).collection('messages').withConverter<Message>(
+            fromFirestore: (snapshot, _) => Message.fromDoc(snapshot),
+            toFirestore: (message, _) => message.toMap(),
+          );
 
-  static String myUid = FirebaseAuth.instance.currentUser!.uid;
+//-------------------------------------------------------------------------------------
 
-  static Stream<QuerySnapshot> getMessagesStream(String chatId) {
-    return messagesCollection(chatId).orderBy('createdAt').snapshots();
+  static Stream<QuerySnapshot<Message>> getMessagesStream(String chatId) {
+    return messagesCollection(chatId)
+        .orderBy('createdAt', descending: true)
+        .withConverter<Message>(
+          fromFirestore: (snapshot, _) => Message.fromDoc(snapshot),
+          toFirestore: (message, _) => message.toMap(),
+        )
+        .snapshots();
   }
 
   static Future<void> sendTextMessage(Message textMessage) async {
-    final myName = MySharedPref.getUserName;
-    final myImage = MySharedPref.getUserImage;
-
-    await messagesCollection(textMessage.chatId).add({
-      'text': textMessage.text,
-      'createdAt': Timestamp.now(),
-      'senderId': myUid,
-      'senderName': myName,
-      'senderImage': myImage,
-      'type': textMessage.type.name,
-    });
+    await messagesCollection(textMessage.chatId).add(textMessage);
   }
-  // static Future<void> sendPhoto(Message imageMessage, String senderName, String senderImage) async {
-  //   final imageFileId = imageMessage.image!.hashCode + DateTime.now().hashCode;
 
-  //   final imageRef = FirebaseStorage.instance.ref().child('chats/${imageMessage.chatPath}/$imageFileId.jpg');
+  static Future<void> sendImageMessage(Message imageMessage, File imageFile) async {
+    final imageUrl = await uploadFileToFirestorage(imageMessage.chatId, imageFile);
 
-  //   await imageRef.putFile(File(imageMessage.image!)).whenComplete(() => null);
-  //   final imageUrl = await imageRef.getDownloadURL();
+    /// add the message to firestore
+    await messagesCollection(imageMessage.chatId).add(imageMessage..image = imageUrl);
+  }
 
-  //   db.doc(imageMessage.chatPath).collection('messages').add({
-  //     'type': 'image',
-  //     'image': imageUrl,
-  //     'text': imageMessage.text,
-  //     'createdAt': Timestamp.now(),
-  //     'senderId': myUid,
-  //     'senderName': senderName,
-  //     'senderImage': senderImage,
-  //   });
-  // }
+  static Future<void> sendAudioMessage(Message audioMessage, File audioFile) async {
+    final audioUrl = await uploadFileToFirestorage(audioMessage.chatId, audioFile);
 
-  // static void sendVideo(Message videoMessage, String senderName, String senderImage) async {
-  //   final videoFileId = videoMessage.video!.hashCode + DateTime.now().hashCode;
+    /// add the message to firestore
+    await messagesCollection(audioMessage.chatId).add(audioMessage..audio = audioUrl);
+  }
 
-  //   final videoRef = FirebaseStorage.instance.ref().child('chats/${videoMessage.chatPath}/$videoFileId');
+  static Future<void> sendVideoMessage(Message videoMessage, File videoFile) async {
+    final videoUrl = await uploadFileToFirestorage(videoMessage.chatId, videoFile);
 
-  //   await videoRef.putFile(File(videoMessage.video!)).whenComplete(() => null);
-  //   final videoUrl = await videoRef.getDownloadURL();
+    /// add the message to firestore
+    await messagesCollection(videoMessage.chatId).add(videoMessage..video = videoUrl);
+  }
 
-  //   db.doc(videoMessage.chatPath).collection('messages').add({
-  //     'type': 'video',
-  //     'video': videoUrl,
-  //     'text': videoMessage.text,
-  //     'createdAt': Timestamp.now(),
-  //     'senderId': myUid,
-  //     'senderName': senderName,
-  //     'senderImage': senderImage,
-  //   });
-  // }
+  ///returnes the file Url in the firestorage
+  static Future<String> uploadFileToFirestorage(String chatId, File file) async {
+    final fileId = file.hashCode + DateTime.now().hashCode;
 
-  // static void sendAudio(Message audioMessage, String senderName, String senderImage) async {
-  //   final audioFileId = audioMessage.audio!.hashCode + DateTime.now().hashCode;
-  //   final audioRef =
-  //       FirebaseStorage.instance.ref().child('chats/${audioMessage.chatPath}').child('$audioFileId');
+    final imageRef = FirebaseStorage.instance.ref().child('chats/$chatId/$fileId');
 
-  //   await audioRef.putFile(File(audioMessage.audio!)).whenComplete(() => null);
-  //   final audioUrl = await audioRef.getDownloadURL();
+    /// upload image to fireStorage
+    await imageRef.putFile(File(file.path)).whenComplete(() => null);
 
-  //   db.doc(audioMessage.chatPath).collection('messages').add({
-  //     'type': 'audio',
-  //     'audio': audioUrl,
-  //     'text': audioMessage.text,
-  //     'createdAt': Timestamp.now(),
-  //     'senderId': myUid,
-  //     'senderName': senderName,
-  //     'senderImage': senderImage,
-  //   });
-  // }
+    ///  imageUrl in fireStorage
+    final fileUrl = await imageRef.getDownloadURL();
+
+    return fileUrl;
+  }
 }

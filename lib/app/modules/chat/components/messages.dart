@@ -46,8 +46,8 @@ class Messages extends GetView<ChatScreenController> {
 
               case MessageType.video:
                 return VideoMessageBubble(
-                  video: File(messages[index].video!),
-                  isMyMessage: message.isMyMessage,
+                  message: message,
+                  video: message.video!,
                 );
 
               case MessageType.audio:

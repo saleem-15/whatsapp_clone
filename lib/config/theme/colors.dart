@@ -3,9 +3,14 @@
 import 'package:flutter/material.dart';
 
 class MyColors {
+  MyColors._();
   static const Color MyBlack = Color(0xff09101D);
+  static const Color BlackScaffold = Colors.black54;
+  static const Color LightBlack = Color(0xff363f48);
 
   static const Color Green = Color(0xff10C17D);
+  static const Color MyMessageColor = Color(0xffd1fee5);
+  static const Color OtherMessageColor = Color(0xffedf0f5);
   static Color LightGreen = Green.withOpacity(.1);
 
   static const Color red = Color(0xffFF1843);

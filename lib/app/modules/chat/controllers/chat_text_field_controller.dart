@@ -1,5 +1,7 @@
-import 'dart:io';
+// ignore_for_file: depend_on_referenced_packages, implementation_imports
 
+import 'dart:io';
+import 'package:logger/src/logger.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -10,7 +12,7 @@ import 'package:whatsapp_clone/app/models/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/message.dart';
 import 'package:whatsapp_clone/app/models/message_type.dart';
 import 'package:whatsapp_clone/app/modules/chat/components/send_attachement_bottom_sheet.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
+import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 
 import '../screens/picked_photo_viewer.dart';
 import '../services/chatting_provider.dart';
@@ -30,8 +32,12 @@ class ChatTextFieldController extends GetxController {
     super.onInit();
     chat = Get.arguments;
 
+    textController.addListener(() {
+      text(textController.text);
+    });
+
     myID = FirebaseAuth.instance.currentUser!.uid;
-    recorder = FlutterSoundRecorder();
+    recorder = FlutterSoundRecorder(logLevel: Level.nothing);
 
     // initRecorder();
   }
@@ -92,62 +98,24 @@ class ChatTextFieldController extends GetxController {
   }
 
   void showBottomSheet() async {
-    await Get.bottomSheet(SendFileBottomSheet(
-      sendImage: sendImage,
-      sendVideo: sendVideo,
-      sendAudio: sendAudio,
-    ));
-  }
-
-  void sendAudio(File audioFile) {
-    final msg = Message.audio(
-      chatId: chat.id,
-      audio: audioFile.path,
-      senderId: myID,
-      senderName: MySharedPref.getUserName!,
-      senderImage: MySharedPref.getUserImage,
-    );
-  }
-
-  void sendImage(File image, String? message) {
-    final imageMessage = Message.image(
-      chatId: chat.id,
-      text: message,
-      type: MessageType.photo,
-      image: image.path,
-      senderId: myID,
-      senderName: MySharedPref.getUserName!,
-      senderImage: MySharedPref.getUserImage,
-    );
-  }
-
-  void sendVideo(File video, String? message) {
-    final videoMessage = Message.video(
-      chatId: chat.id,
-      text: message,
-      type: MessageType.video,
-      video: video.path,
-      senderId: myID,
-      senderName: MySharedPref.getUserName!,
-      senderImage: MySharedPref.getUserImage,
+    await Get.bottomSheet(
+      SendFileBottomSheet(
+        sendAudio: Get.find<ChatScreenController>().sendAudio,
+      ),
+      settings: RouteSettings(arguments: chat),
     );
   }
 
   void sendMessage() {
-    final msg = Message(
+    final msg = Message.toSend(
       chatId: chat.id,
-      isMyMessage: true,
+      msgType: MessageType.text,
       text: text.trim(),
-      senderName: MySharedPref.getUserName!,
-      senderImage: MySharedPref.getUserImage,
     );
+
     ChattingProvider.sendTextMessage(msg);
 
     textController.clear();
-  }
-
-  void onTextChanged(String value) {
-    text(value);
   }
 
   void onCameraIconPressed() async {
@@ -163,7 +131,7 @@ class ChatTextFieldController extends GetxController {
     final imageFile = File(pickedImage.path);
 
     Get.to(() => PickedPhotoViewer(
-          sendImage: sendImage,
+          sendImage: Get.find<ChatScreenController>().sendImage,
           image: imageFile,
         ));
   }
@@ -195,7 +163,7 @@ class ChatTextFieldController extends GetxController {
         ElevatedButton(
           child: const Text('Send'),
           onPressed: () {
-            sendAudio(audioFile);
+            Get.find<ChatScreenController>().sendAudio(audioFile);
             Get.back();
           },
         ),

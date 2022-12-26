@@ -9,12 +9,10 @@ import 'package:whatsapp_clone/utils/helpers/utils.dart';
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
     Key? key,
-
     required this.message,
   }) : super(key: key);
 
   final Message message;
- 
 
   @override
   Widget build(BuildContext context) {
@@ -23,31 +21,26 @@ class MessageBubble extends StatelessWidget {
     final Rx<bool> isNeedPAdding = c[0].obs;
     final Rx<bool> isNeedNewLine = c[1].obs;
     final hasEmoji = Utils.hasEmoji(message.text!);
-    // log('Need padding: ${isNeedPAdding.value}');
-    // log('Need line: ${isNeedNewLine.value}');
 
     var fontSize = MessageBubbleSettings.fontSize;
     return Row(
       mainAxisAlignment: message.isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         Container(
-          margin: EdgeInsets.only(
-            right: message.isMyMessage ? 8 : 0,
-            left: message.isMyMessage ? 0 : 8,
-            bottom: 5,
-            top: 3,
+          margin: MessageBubbleSettings.messageMargin(
+            isMyMessage: message.isMyMessage,
           ),
           constraints: BoxConstraints(maxWidth: messageMaxWidth),
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
           decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: const Color.fromARGB(255, 199, 197, 197).withOpacity(0.8),
-                spreadRadius: 1,
-                blurRadius: 2,
-                offset: const Offset(0, 1), // changes position of shadow
-              ),
-            ],
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: const Color.fromARGB(255, 199, 197, 197).withOpacity(0.8),
+            //     spreadRadius: 1,
+            //     blurRadius: 2,
+            //     offset: const Offset(0, 1), // changes position of shadow
+            //   ),
+            // ],
             borderRadius: BorderRadius.only(
               topRight: message.isMyMessage ? Radius.zero : const Radius.circular(20),
               topLeft: message.isMyMessage ? const Radius.circular(20) : Radius.zero,
@@ -64,10 +57,12 @@ class MessageBubble extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (!message.isMyMessage)
+
+                    /// sender Name
                     Padding(
                       padding: const EdgeInsets.only(bottom: 5),
                       child: Text(
-                       message. senderName,
+                        message.senderName,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -77,17 +72,18 @@ class MessageBubble extends StatelessWidget {
                         bottom: isNeedNewLine.value ? 20 : 0,
                         right: isNeedPAdding.value || hasEmoji ? 55 : 0,
                       ),
+
+                      /// text
                       child: Text(
                         message.text!,
-                        style: TextStyle(
-                          fontSize: fontSize.value.toDouble(),
-                          color: message.isMyMessage ? Colors.white : null,
-                        ),
+                        style: MessageBubbleSettings.messageTextStyle,
                       ),
                     ),
                   ),
                 ],
               ),
+
+              /// time sent
               Positioned(
                 bottom: -3,
                 right: 0,

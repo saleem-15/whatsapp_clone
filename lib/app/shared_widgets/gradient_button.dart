@@ -14,6 +14,7 @@ class GradientButton extends StatelessWidget {
     required this.isButtonDisable,
   }) : super(key: key);
 
+  
   final String text;
   final Function() onPressed;
   final RxBool isWaitingForResponse;
@@ -21,6 +22,7 @@ class GradientButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Obx(
       () => ElevatedButton(
         clipBehavior: Clip.antiAliasWithSaveLayer,

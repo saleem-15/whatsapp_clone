@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/controllers/chats_view_controller.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/components/chat_tile.dart';
+import 'package:whatsapp_clone/config/theme/colors.dart';
+import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 class ChatsTapView extends StatelessWidget {
   ChatsTapView({Key? key})
@@ -13,13 +15,32 @@ class ChatsTapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ChatsViewController>(
-      builder: (controller) {
+    return Obx(
+      () {
         final myChats = controller.myChatsList;
 
         if (myChats.isEmpty) {
-          return const Center(
-            child: Text('There is no chats'),
+          return Align(
+            alignment: const Alignment(0, -.4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  Assets.empty_chats,
+                  width: 200,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(
+                  height: 30.sp,
+                ),
+                Text(
+                  'You haven\'t chat yet',
+                  style: Theme.of(context).textTheme.headline2!.copyWith(
+                        color: MyColors.Green,
+                      ),
+                ),
+              ],
+            ),
           );
         }
         return ListView.builder(
@@ -28,11 +49,8 @@ class ChatsTapView extends StatelessWidget {
             //
             final chat = myChats[index].value;
 
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 4.sp),
-              child: ChatTile(
-                chat: chat,
-              ),
+            return ChatTile(
+              chat: chat,
             );
           },
         );

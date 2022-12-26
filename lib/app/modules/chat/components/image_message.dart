@@ -1,15 +1,13 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/message.dart';
-import 'package:whatsapp_clone/app/modules/chat/screens/image_message_screen.dart';
+import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 ///this is documentaion
-class ImageMessageBubble extends StatelessWidget {
+class ImageMessageBubble extends GetView<ChatScreenController> {
   const ImageMessageBubble({
     Key? key,
     required this.message,
@@ -21,36 +19,17 @@ class ImageMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var fontSize = MessageBubbleSettings.fontSize;
+    final ImageProvider image = NetworkImage(message.image!);
 
     return Row(
       mainAxisAlignment: message.isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         InkWell(
-          onTap: () {
-            //to remove the keyboaed (better animation)
-            FocusScope.of(context).unfocus();
-
-            Get.to(() => ImageMessageScreen(
-                  image: File(message.image!),
-                  senderName:message. senderName,
-                  timeSent:  Utils.formatDate(message.timeSent),
-                ));
-
-            // Get.to(
-            //   ImageEditor(
-            //     image: image.readAsBytesSync(), // <-- Uint8List of image
-            //     appBar: Colors.blue,
-            //   ),
-            // );
-          },
+          onTap: () => controller.onImagePressed(message, image),
           child: Container(
             width: 300,
-            margin: EdgeInsets.only(
-              right: message.isMyMessage ? 8 : 0,
-              left: message.isMyMessage ? 0 : 8,
-              bottom: 5,
-              top: 3,
+            margin: MessageBubbleSettings.messageMargin(
+              isMyMessage: message.isMyMessage,
             ),
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
@@ -71,30 +50,29 @@ class ImageMessageBubble extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// Sender Name (shown if its not my message)
                 if (!message.isMyMessage)
                   Padding(
                     padding: const EdgeInsets.only(left: 5, bottom: 8, top: 3),
                     child: Text(
-             message.         senderName,
+                      message.senderName,
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
+
+                /// image && time sent
                 Stack(
                   children: [
+                    /// The image
                     Hero(
-                      tag: message.image!,
+                      tag: image.hashCode,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(borderRadius),
-                        child: Image.file(
-                        File(message.  image!),
-
-                          /// this code is for Image.network
-                          // loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                          //   return Center(child: child);
-                          // },
-                        ),
+                        child: Image(image: image),
                       ),
                     ),
+
+                    /// time sent
                     Positioned(
                       bottom: 5,
                       right: 8,
@@ -105,12 +83,14 @@ class ImageMessageBubble extends StatelessWidget {
                     )
                   ],
                 ),
+
+                /// Text (shown if there is any)
                 if (message.text != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
                     child: Text(
-                     message. text!,
-                      style: TextStyle(fontSize: fontSize.value.toDouble()),
+                      message.text!,
+                      style: MessageBubbleSettings.messageTextStyle,
                     ),
                   ),
               ],

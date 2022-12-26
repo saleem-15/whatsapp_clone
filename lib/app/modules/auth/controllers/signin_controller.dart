@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/modules/auth/services/auth_provider.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
-
 class SigninController extends GetxController {
   final formKey = GlobalKey<FormState>();
 
@@ -44,7 +43,6 @@ class SigninController extends GetxController {
     return null;
   }
 
-
   void goToSignup() {
     Get.offNamed(Routes.SIGNUP);
   }
@@ -57,8 +55,5 @@ class SigninController extends GetxController {
       }
       isButtonDisable(false);
     });
-
   }
-
-
 }

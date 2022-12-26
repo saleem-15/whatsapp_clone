@@ -1,34 +1,22 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:whatsapp_clone/app/modules/chat/screens/picked_photo_viewer.dart';
-import 'package:whatsapp_clone/app/modules/chat/screens/picked_video_viewer.dart';
-
+import 'package:whatsapp_clone/app/modules/chat/controllers/attach_file_controller.dart';
 
 class SendFileBottomSheet extends StatelessWidget {
-  const SendFileBottomSheet({
-    Key? key,
-    required this.sendImage,
-    required this.sendVideo,
+  SendFileBottomSheet({
+    super.key,
     required this.sendAudio,
-  }) : super(key: key);
+  }) : controller = Get.put(AttachFileController());
 
-  final void Function(File image, String? message) sendImage;
-
-  final void Function(File videoFile, String? message) sendVideo;
-
+  final AttachFileController controller;
   final void Function(File audioFile) sendAudio;
 
   @override
   Widget build(BuildContext context) {
-    final selectedIcon = 'image'.obs;
-
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -43,27 +31,9 @@ class SendFileBottomSheet extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          ///image
           GestureDetector(
-            onTap: () async {
-              Get.back();
-
-              selectedIcon.value = 'image';
-
-              final pickedImage = await ImagePicker().pickImage(
-                source: ImageSource.gallery,
-              );
-
-              if (pickedImage == null) {
-                return;
-              }
-
-              final imageFile = File(pickedImage.path);
-
-              Get.to(() => PickedPhotoViewer(
-                    sendImage: sendImage,
-                    image: imageFile,
-                  ));
-            },
+            onTap: controller.onImageIconPressed,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -83,27 +53,9 @@ class SendFileBottomSheet extends StatelessWidget {
               ],
             ),
           ),
+          //video
           GestureDetector(
-            onTap: () async {
-              Get.back();
-              selectedIcon.value = 'video';
-
-              final pickedVideo = await ImagePicker().pickVideo(
-                source: ImageSource.gallery,
-              );
-
-              if (pickedVideo == null) {
-                log('video path ${pickedVideo!.path}');
-                return;
-              }
-
-              final videoFile = File(pickedVideo.path);
-
-              Get.to(() => PickedVideoScreen(
-                    video: videoFile,
-                    sendVideo: sendVideo,
-                  ));
-            },
+            onTap: controller.onVideoIconPressed,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -123,39 +75,10 @@ class SendFileBottomSheet extends StatelessWidget {
               ],
             ),
           ),
+
+          ///Audio
           GestureDetector(
-            onTap: () async {
-              selectedIcon.value = 'audio';
-
-              final result = await FilePicker.platform.pickFiles(type: FileType.audio);
-
-              if (result == null) {
-                return;
-              }
-
-              File audioFile = File(result.paths[0]!);
-
-              Get.defaultDialog(
-                title: 'Do you want to send the audio?',
-                titlePadding: const EdgeInsets.only(top: 10, right: 15, left: 15),
-                middleText: '',
-                confirm: ElevatedButton(
-                  child: const Text('Send'),
-                  onPressed: () {
-                    sendAudio(audioFile);
-                    Get.back();
-                    Get.back();
-                  },
-                ),
-                cancel: TextButton(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    Get.back();
-                    Get.back();
-                  },
-                ),
-              );
-            },
+            onTap: controller.onAudioIconPressed,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -175,19 +98,10 @@ class SendFileBottomSheet extends StatelessWidget {
               ],
             ),
           ),
+
+          ///File
           GestureDetector(
-            onTap: () async {
-              selectedIcon.value = 'file';
-
-              final result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.any);
-
-              if (result != null) {
-                // ignore: unused_local_variable
-                List<File> files = result.paths.map((path) => File(path!)).toList();
-              } else {
-                // User canceled the picker
-              }
-            },
+            onTap: controller.onFileIconPressed,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

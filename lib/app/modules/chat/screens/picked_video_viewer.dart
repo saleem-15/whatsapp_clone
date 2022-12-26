@@ -1,11 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:video_viewer/video_viewer.dart';
+import 'package:whatsapp_clone/app/shared_widgets/generic_button.dart';
+import 'package:whatsapp_clone/config/theme/colors.dart';
+import 'package:whatsapp_clone/config/theme/my_styles.dart';
 
-class PickedVideoScreen extends StatelessWidget {
-  PickedVideoScreen({
+class PickedVideoScreen extends StatefulWidget {
+  const PickedVideoScreen({
     Key? key,
     required this.video,
     required this.sendVideo,
@@ -14,50 +18,54 @@ class PickedVideoScreen extends StatelessWidget {
   final File video;
   final void Function(File video, String? message) sendVideo;
 
+  @override
+  State<PickedVideoScreen> createState() => _PickedVideoScreenState();
+}
+
+class _PickedVideoScreenState extends State<PickedVideoScreen> {
   final _textController = TextEditingController();
 
-  final VideoViewerController controller = VideoViewerController();
+  late final VideoViewerController controller;
+
+  @override
+  void initState() {
+    controller = VideoViewerController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black54,
+      backgroundColor: MyColors.BlackScaffold,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text('test'),
+        backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            ///Video Preview
             VideoViewer(
               controller: controller,
               source: {
                 "SubRip Text": VideoSource(
-                  video: VideoPlayerController.file(video),
+                  video: VideoPlayerController.file(widget.video),
                 )
               },
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
+
+            ///TextField + Send Button
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.sp),
               child: Row(
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width - 80,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      //Colors.grey[300],
-                      borderRadius: BorderRadius.all(Radius.circular(25)),
-                    ),
-                    margin: const EdgeInsets.only(top: 5, right: 10, left: 10, bottom: 10),
+                  ///TextFiled
+                  Expanded(
                     child: TextField(
                       minLines: 1,
                       maxLines: 4,
                       controller: _textController,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.only(left: 20, top: 15, bottom: 5),
-                        border: InputBorder.none,
+                      decoration: MyStyles.getMessageInputDecoration().copyWith(
                         hintText: 'Add a caption',
-                        fillColor: Colors.red,
                         prefixIcon: IconButton(
                           icon: const Icon(Icons.emoji_emotions_outlined),
                           onPressed: () {},
@@ -65,61 +73,37 @@ class PickedVideoScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  //send button
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: Colors.blue,
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.send,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        final message = _textController.text.trim();
 
-                        sendVideo(
-                          video,
-                          message.isEmpty ? null : message,
-                        );
+                  SizedBox(
+                    width: 10.sp,
+                  ),
 
-                        Get.back();
-                      },
-                    ),
+                  ///send button
+                  GradientGenericButton(
+                    onPressed: () {
+                      final message = _textController.text.trim();
+
+                      widget.sendVideo(
+                        widget.video,
+                        message.isEmpty ? null : message,
+                      );
+
+                      Get.back();
+                    },
+                    child: const Icon(Icons.send_rounded),
                   ),
                 ],
               ),
             ),
-
-            // Padding(
-            //   padding: const EdgeInsets.all(10.0),
-            //   child: TextFormField(
-            //     controller: _textController,
-            //     style: const TextStyle(color: Colors.white),
-            //     decoration: InputDecoration(
-            //       isCollapsed: true,
-            //       suffixIcon: IconButton(
-            //         icon: const Icon(Icons.send),
-            //         onPressed: () {
-            //           final message = _textController.text.trim();
-
-            //           sendVideo(
-            //             video,
-            //             message.isEmpty ? null : message,
-            //           );
-
-            //           Get.back();
-            //         },
-            //       ),
-            //       filled: true,
-            //       fillColor: Colors.black26,
-            //       hintText: 'Add a caption',
-            //       hintStyle: const TextStyle(color: Colors.grey),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

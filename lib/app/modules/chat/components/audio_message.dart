@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:voice_message_package/voice_message_package.dart';
+import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 
 class AudioMessage extends StatelessWidget {
@@ -30,8 +32,17 @@ class AudioMessage extends StatelessWidget {
           child: Stack(
             children: [
               VoiceMessage(
+                meBgColor: MyColors.Green,
+                // meFgColor: MyColors.LightBlack,
+
+                // mePlayIconColor: MyColors.LightBlack,
+                // contactFgColor: MyColors.red,
+                // contactPlayIconColor: MyColors.red,
+
                 audioSrc: audioPath,
-                contactBgColor: isMyMessage ? MessageBubbleSettings.myMessageColor : MessageBubbleSettings.othersMessageColor,
+                contactBgColor: isMyMessage
+                    ? MessageBubbleSettings.myMessageColor
+                    : MessageBubbleSettings.othersMessageColor,
 
                 //  played: true, // To show played badge or not.
                 me: isMyMessage, // Set message side.
@@ -42,7 +53,10 @@ class AudioMessage extends StatelessWidget {
                 right: 5,
                 child: Text(
                   timeSent,
-                  style: const TextStyle(fontSize: 11, color: Colors.white),
+                  style: MessageBubbleSettings.messageTextStyle.copyWith(
+                    fontSize: 11.sp,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

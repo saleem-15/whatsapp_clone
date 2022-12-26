@@ -1,20 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:io';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:whatsapp_clone/app/models/message.dart';
+import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
-class ImageMessageScreen extends StatelessWidget {
-  const ImageMessageScreen({
+class ImageViewerScreen extends StatelessWidget {
+  const ImageViewerScreen({
     Key? key,
     required this.image,
-    required this.senderName,
-    required this.timeSent,
+    required this.imageMessage,
   }) : super(key: key);
 
-  final File image;
-  final String senderName;
-  final String timeSent;
+  final ImageProvider image;
+  final Message imageMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +25,14 @@ class ImageMessageScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              senderName,
+              imageMessage.senderName,
               style: const TextStyle(fontSize: 16, color: Colors.white70),
             ),
             const SizedBox(
               height: 4,
             ),
             Text(
-              timeSent,
+              Utils.formatDate(imageMessage.timeSent),
               style: const TextStyle(fontSize: 12, color: Colors.white70),
             ),
           ],
@@ -41,9 +40,9 @@ class ImageMessageScreen extends StatelessWidget {
       ),
       body: Center(
         child: Hero(
-          tag: image.path,
-          child: ExtendedImage.file(
-            image,
+          tag: image.hashCode,
+          child: ExtendedImage(
+            image: image,
             fit: BoxFit.contain,
             mode: ExtendedImageMode.gesture,
           ),

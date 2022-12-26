@@ -254,6 +254,14 @@ class MyStyles {
     );
   }
 
+  static InputDecoration getMessageInputDecoration() => MyStyles.getInputDecoration().copyWith(
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.r),
+          borderSide: BorderSide.none,
+        ),
+        
+      );
+
   ///-------------------- OTP FIELD THEME ------------------------------
   static final OTP_FIELD_BORDER_WIDTH = 1.5.sp;
 
@@ -300,18 +308,17 @@ class MyStyles {
         hintStyle: getTextTheme().caption!.copyWith(
               color: LightThemeColors.headlinesTextColor.withOpacity(.3),
             ),
-          
-        contentPadding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 0.sp),
+        contentPadding: EdgeInsets.symmetric(horizontal: 13.sp, vertical: 0.sp),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: BorderRadius.circular(13.r),
           borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: BorderRadius.circular(13.r),
           borderSide: const BorderSide(color: LightThemeColors.lightGrey, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: BorderRadius.circular(13.r),
           borderSide: BorderSide(color: LightThemeColors.lightGrey, width: 1.sp),
         ),
       );

@@ -25,7 +25,6 @@ class GradientIconButton extends StatelessWidget {
       dimension: 35.sp,
       child: FittedBox(
         child: InkWell(
-          
           highlightColor: Colors.transparent,
           borderRadius: borderRadius,
           onTap: onPressed,
@@ -33,7 +32,7 @@ class GradientIconButton extends StatelessWidget {
             dimension: 40.sp,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: MyColors.LightGreen,
+                color:  MyColors.LightGreen,
                 borderRadius: borderRadius,
               ),
               child: GradientIcon(

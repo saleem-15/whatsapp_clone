@@ -92,12 +92,13 @@ class ChatScreen extends StatelessWidget {
 
               /// Chat Text Field
               Container(
-                  margin: EdgeInsets.only(
-                    left: 15.w,
-                    right: 15.w,
-                    bottom: 20.sp,
-                  ),
-                  child: const ChatTextField()),
+                margin: EdgeInsets.only(
+                  left: 15.w,
+                  right: 15.w,
+                  bottom: 20.sp,
+                ),
+                child: const ChatTextField(),
+              ),
             ],
           ),
         ],
@@ -112,7 +113,7 @@ class ChatBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Ink(
-      color: Colors.grey[50],
+      color: Theme.of(context).scaffoldBackgroundColor,
     );
     return Obx(
       () => Positioned.fill(
