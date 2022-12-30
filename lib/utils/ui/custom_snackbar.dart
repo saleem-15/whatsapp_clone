@@ -1,28 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/config/theme/colors.dart';
 
 class CustomSnackBar {
   CustomSnackBar._();
 
   static showCustomSnackBar({
-    String title = 'Done successfully!',
     required String message,
-    Color color = Colors.green,
-    Duration duration = const Duration(seconds: 3),
+    Duration duration = const Duration(seconds: 5),
+  }) {
+    // backgroundColor: MyColors.red.withOpacity(.8),
+    myCustomSnackBar(
+      message: message,
+      color: MyColors.Green.withOpacity(.7),
+      duration: duration,
+    );
+  }
+
+  static myCustomSnackBar({
+    required String message,
+    Color color = MyColors.SnackBarColor,
+    Duration duration = const Duration(seconds: 5),
     double? blurScreen,
   }) {
-    Get.snackbar(
-      title.tr,
-      message.tr,
-      duration: duration,
-      margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
-      colorText: Colors.white,
+    Get.rawSnackbar(
       backgroundColor: color,
-      icon: const Icon(
-        Icons.check_circle,
-        color: Colors.white,
-      ),
+      barBlur: 10,
+      message: message,
+      snackStyle: SnackStyle.FLOATING,
+      margin: const EdgeInsets.all(15),
+      borderRadius: 5.r,
+      animationDuration: const Duration(milliseconds: 500),
+      snackPosition: SnackPosition.TOP,
     );
   }
 
@@ -55,6 +66,8 @@ class CustomSnackBar {
     Color color = Colors.green,
     Duration duration = const Duration(seconds: 3),
   }) {
+
+    // Get.
     Get.rawSnackbar(
       title: title,
       message: message.tr,

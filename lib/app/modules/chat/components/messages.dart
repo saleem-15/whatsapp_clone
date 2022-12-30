@@ -1,16 +1,21 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/models/message.dart';
 import 'package:whatsapp_clone/app/models/message_type.dart';
+import 'package:whatsapp_clone/app/models/messages/file_message.dart';
+import 'package:whatsapp_clone/app/models/messages/image_message.dart';
+import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
+import 'package:whatsapp_clone/app/models/messages/text_message.dart';
+import 'package:whatsapp_clone/app/models/messages/video_message.dart';
+import 'package:whatsapp_clone/app/models/messages/voice_message.dart';
+import 'package:whatsapp_clone/app/modules/chat/components/messages/file_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
-import 'audio_message.dart';
-import 'image_message.dart';
-import 'message_bubble.dart';
-import 'video_message.dart';
+import 'messages/audio_message.dart';
+import 'messages/image_message.dart';
+import 'messages/message_bubble.dart';
+import 'messages/video_message.dart';
 
 class Messages extends GetView<ChatScreenController> {
   const Messages({required this.chatId, super.key});
@@ -18,7 +23,7 @@ class Messages extends GetView<ChatScreenController> {
   final String chatId;
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Message>>(
+    return StreamBuilder<List<MessageInterface>>(
       stream: controller.getMessagesStream(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -34,28 +39,34 @@ class Messages extends GetView<ChatScreenController> {
           itemBuilder: (_, index) {
             final message = messages[index];
 
+            if (index == messages.length) {
+              log('last message');
+            }
+
             switch (message.type) {
               case MessageType.text:
                 return MessageBubble(
-                  message: message,
+                  message: message as TextMessage,
                 );
               case MessageType.photo:
                 return ImageMessageBubble(
-                  message: message,
+                  message: message as ImageMessage,
                 );
 
               case MessageType.video:
                 return VideoMessageBubble(
-                  message: message,
-                  video: message.video!,
+                  message: message as VideoMessage,
+                  video: message.video,
                 );
 
               case MessageType.audio:
-                return AudioMessage(
+                return AudioMessageBubble(
                   isMyMessage: message.isMyMessage,
-                  audioPath: messages[index].audio!,
+                  audioPath: (message as AudioMessage).audio,
                   timeSent: Utils.formatDate(message.timeSent),
                 );
+              case MessageType.file:
+                return FileMessageBubble(message: message as FileMessage);
 
               default:
                 return Row(

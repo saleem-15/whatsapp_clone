@@ -7,6 +7,7 @@ class MyColors {
   static const Color MyBlack = Color(0xff09101D);
   static const Color BlackScaffold = Colors.black54;
   static const Color LightBlack = Color(0xff363f48);
+  static const Color SnackBarColor = Color(0xff333333);
 
   static const Color Green = Color(0xff10C17D);
   static const Color MyMessageColor = Color(0xffd1fee5);

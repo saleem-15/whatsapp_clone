@@ -23,4 +23,12 @@ class User {
       image: doc['imageUrl'],
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'name': name,
+      'phoneNumber': phoneNumber,
+      'imageUrl': image,
+    };
+  }
 }

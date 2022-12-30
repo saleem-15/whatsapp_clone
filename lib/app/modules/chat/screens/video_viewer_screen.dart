@@ -3,7 +3,7 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:video_viewer/video_viewer.dart';
 
-import 'package:whatsapp_clone/app/models/message.dart';
+import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
@@ -14,7 +14,7 @@ class VideoViewerScreen extends StatefulWidget {
     required this.videoPlayerController,
   }) : super(key: key);
 
-  final Message videoMessage;
+  final VideoMessage videoMessage;
 
   final VideoPlayerController videoPlayerController;
 
@@ -54,7 +54,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
       ),
       body: Center(
         child: Hero(
-          tag: widget.videoMessage.video!,
+          tag: widget.videoMessage.video,
           child: Theme(
             data: Theme.of(context).copyWith(
                 dialogBackgroundColor: Colors.black54,

@@ -33,8 +33,10 @@ class ChatsProvider {
       }
     }
 
-    final myPrivateChats = await _getAllPrivateChats(privateChats);
-    myChats.addAll(myPrivateChats);
+    if (privateChats.isNotEmpty) {
+      final myPrivateChats = await _getAllPrivateChats(privateChats);
+      myChats.addAll(myPrivateChats);
+    }
 
     return myChats;
   }

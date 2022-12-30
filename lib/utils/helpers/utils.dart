@@ -1,5 +1,6 @@
-import 'package:firebase_storage/firebase_storage.dart';
 // ignore: depend_on_referenced_packages
+import 'dart:io';
+
 import 'package:intl/intl.dart';
 
 class Utils {
@@ -9,18 +10,32 @@ class Utils {
     return myTimeFormat.format(time);
   }
 
-  static String getCollectionId(String docPath) {
-    return docPath.split('/')[0];
+  // static String _getFileName_(String url) {
+  //   final name = FirebaseStorage.instance.refFromURL(url).name;
+  //   // log('name from firebase is: $name');
+  //   return name;
+  // }
+
+  /// if file path was (/data/file_picker/HomeWork 1.docx)
+  /// it will return (HomeWork 1.docx)
+  static String getFilName(String filePath) {
+    return filePath.split('/').last;
   }
 
-  static String getdocId(String docPath) {
-    return docPath.split('/')[1];
+  /// returnes file size as double
+ static double getFileSize(File file) {
+    int sizeInBytes = file.lengthSync();
+    double sizeInMb = sizeInBytes / (1024 * 1024);
+    return sizeInMb;
   }
 
-  static String getFileName(String url) {
-    final name = FirebaseStorage.instance.refFromURL(url).name;
-    // log('name from firebase is: $name');
-    return name;
+  /// if file path was (/data/file_picker/HomeWork 1.docx)
+  /// it will return (.docx)
+  static String getFileExtension(String filePath) {
+    final fileName = getFilName(filePath);
+    final extenstion = fileName.split('.').last;
+
+    return '.$extenstion';
   }
 
   static bool hasEmoji(String text) {

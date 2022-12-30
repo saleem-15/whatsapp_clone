@@ -28,6 +28,10 @@ class MessageBubbleSettings {
     fontSize: _fontSize.value,
     color: MyColors.LightBlack,
   );
+  static TextStyle timeSentTextStyle = TextStyle(
+    fontSize: 11.sp,
+    color: MyColors.LightBlack,
+  );
 
   static List<String> backgroundImages = [
     'assets/chat_background_light.png',

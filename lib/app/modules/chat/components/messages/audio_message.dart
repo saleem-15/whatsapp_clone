@@ -5,8 +5,8 @@ import 'package:voice_message_package/voice_message_package.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 
-class AudioMessage extends StatelessWidget {
-  const AudioMessage({
+class AudioMessageBubble extends StatelessWidget {
+  const AudioMessageBubble({
     Key? key,
     required this.isMyMessage,
     required this.audioPath,

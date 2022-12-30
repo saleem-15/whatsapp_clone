@@ -4,8 +4,9 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
@@ -18,15 +19,38 @@ class AuthProvider {
   static FirebaseAuth auth = FirebaseAuth.instance;
   static FirebaseFirestore db = FirebaseFirestore.instance;
 
+  static CollectionReference usersCollection = db.collection('users');
+
   ///used when verifiying the verification code (SMS Message)
   static String? verificationId;
 
   /// the phone number must begin with '+' (with internationl code)
   static Future<void> signUpService(String phoneNumber, String name) async {
+    /// used to check if the user already exists
+    final user = await getUserInfo(phoneNumber);
+
     await verifyPhone(phoneNumber);
+
+    /// if user alreay exists
+    if (user != null) {
+      MySharedPref.storeUserData(
+        id: user.uid,
+        name: user.name,
+        image: user.image,
+        phone: user.phoneNumber,
+      );
+
+      return;
+    }
 
     await _createUserDoc(name, phoneNumber);
 
+    // MySharedPref.storeUserData(
+    //   id: user.uid,
+    //   name: name,
+    //   image: user.image,
+    //   phone: phoneNumber,
+    // );
     MySharedPref.setUserName(name);
     MySharedPref.setUserPhoneNumber(phoneNumber);
   }
@@ -124,7 +148,50 @@ class AuthProvider {
   }
 
   /// the phone number must begin with '+' (with internationl code)
-  static signInService(String phoneNumber) async {
-    await verifyPhone(phoneNumber);
+  static Future<bool> signInService(String phoneNumber) async {
+    final User? user = await getUserInfo(phoneNumber);
+
+    ///user exists
+    if (user != null) {
+      MySharedPref.storeUserData(
+        id: user.uid,
+        name: user.name,
+        image: user.image,
+        phone: user.phoneNumber,
+      );
+      return true;
+    }
+
+    /// ------ user does not exists ------
+    CustomSnackBar.showCustomSnackBar(
+      message: 'You dont have an account!',
+    );
+
+    /// if the user does not have an account
+    Get.toNamed(Routes.SIGNUP);
+    return false;
+  }
+
+  /// returns null if the user does not exist
+  static Future<User?> getUserInfo(String phoneNumber) async {
+    final queryResult = await usersCollection
+        .where(
+          'phoneNumber',
+          isEqualTo: phoneNumber,
+        )
+        .limit(1)
+        .get();
+
+    if (queryResult.docs.isEmpty) {
+      return null;
+    }
+
+    return User.fromDoc(queryResult.docs.first);
+  }
+
+  static Future<bool> checkIsUserExists(String phoneNumber) async {
+    final user = await getUserInfo(phoneNumber);
+
+    return user != null;
   }
 }

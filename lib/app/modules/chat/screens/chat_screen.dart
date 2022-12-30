@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,6 +10,7 @@ import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controll
 import 'package:whatsapp_clone/app/shared_widgets/gradient_icon_button.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 
+import '../../../../utils/ui/custom_snackbar.dart';
 import '../components/chat_text_field.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -19,6 +22,8 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('chat screen');
+
     return Scaffold(
       appBar: AppBar(
         title: InkWell(
@@ -56,7 +61,12 @@ class ChatScreen extends StatelessWidget {
           GradientIconButton(
             icon: FontAwesomeIcons.video,
             size: 18.sp,
-            onPressed: () {},
+            onPressed: () {
+              // CustomSnackBar.showCustomSnackBar(message: 'message');
+              CustomSnackBar.showCustomToast(message: 'message');
+              // CustomSnackBar.showCustomToast(message: 'message');
+              // CustomSnackBar.showCustomErrorToast(message: 'message');
+            },
           ),
           SizedBox(
             width: 5.sp,

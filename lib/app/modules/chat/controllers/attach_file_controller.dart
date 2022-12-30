@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:whatsapp_clone/app/models/chat_interface.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/app/modules/chat/screens/picked_photo_viewer.dart';
+import 'package:whatsapp_clone/app/modules/chat/services/chatting_provider.dart';
 
 import '../screens/picked_video_viewer.dart';
 
@@ -95,13 +96,27 @@ class AttachFileController extends GetxController {
   }
 
   void onFileIconPressed() async {
-    final result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.any);
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      type: FileType.any,
+    );
 
-    if (result != null) {
-      // ignore: unused_local_variable
-      List<File> files = result.paths.map((path) => File(path!)).toList();
-    } else {
-      // User canceled the picker
+    if (result == null) {
+      return;
     }
+
+    List<File> files = result.paths.map((path) => File(path!)).toList();
+
+    log('file path: ${files.first.path}');
+    log('file name: ${files.first.path.split("/").last}');
+    // return;
+
+    // final fileMessage = FileMessage.toSend(
+    //   chatId: chat.id,
+    //   file: files.first.path,
+
+    // );
+
+    ChattingProvider.sendFileMessage(chat.id, files[0]);
   }
 }

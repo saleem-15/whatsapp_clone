@@ -2,7 +2,7 @@
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:whatsapp_clone/app/models/message.dart';
+import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 class ImageViewerScreen extends StatelessWidget {
@@ -13,7 +13,7 @@ class ImageViewerScreen extends StatelessWidget {
   }) : super(key: key);
 
   final ImageProvider image;
-  final Message imageMessage;
+  final ImageMessage imageMessage;
 
   @override
   Widget build(BuildContext context) {

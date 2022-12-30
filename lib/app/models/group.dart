@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/app/models/chat_interface.dart';
-import 'package:whatsapp_clone/app/models/message.dart';
+import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get_utils/get_utils.dart';
@@ -20,7 +20,7 @@ class GroupChat implements Chat {
   List<String> usersIds;
 
   @override
-  List<Message> messages = [];
+  List<MessageInterface> messages = [];
 
   @override
   bool get isGroupChat => true;

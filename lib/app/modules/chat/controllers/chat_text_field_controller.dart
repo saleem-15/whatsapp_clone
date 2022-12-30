@@ -9,8 +9,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:whatsapp_clone/app/models/chat_interface.dart';
-import 'package:whatsapp_clone/app/models/message.dart';
-import 'package:whatsapp_clone/app/models/message_type.dart';
+import 'package:whatsapp_clone/app/models/messages/text_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/components/send_attachement_bottom_sheet.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 
@@ -107,9 +106,8 @@ class ChatTextFieldController extends GetxController {
   }
 
   void sendMessage() {
-    final msg = Message.toSend(
+    final msg = TextMessage.toSend(
       chatId: chat.id,
-      msgType: MessageType.text,
       text: text.trim(),
     );
 

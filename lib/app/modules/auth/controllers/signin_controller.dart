@@ -30,9 +30,9 @@ class SigninController extends GetxController {
     final isSuccessfull = await AuthProvider.signInService('+$phoneNumber');
     isWaitingResponse(false);
 
-    // if (isSuccessfull) {
-    //   // Get.offAllNamed(Routes.MY_APP);
-    // }
+    if (isSuccessfull) {
+      Get.offAllNamed(Routes.HOME);
+    }
   }
 
   String? phoneNumberFieldValidator(String? value) {

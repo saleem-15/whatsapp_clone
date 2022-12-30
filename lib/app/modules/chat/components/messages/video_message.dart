@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:video_viewer/video_viewer.dart';
 
-import 'package:whatsapp_clone/app/models/message.dart';
+import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 
@@ -18,7 +18,7 @@ class VideoMessageBubble extends StatefulWidget {
   }) : super(key: key);
 
   final String video;
-  final Message message;
+  final VideoMessage message;
 
   @override
   State<VideoMessageBubble> createState() => _VideoMessageBubbleState();
@@ -37,6 +37,21 @@ class _VideoMessageBubbleState extends State<VideoMessageBubble> {
     videoPlayerController = VideoPlayerController.network(
       widget.video,
     );
+
+    chewieController = ChewieController(
+      videoPlayerController: videoPlayerController,
+      allowMuting: false,
+      autoInitialize: true,
+      allowedScreenSleep: false,
+      allowPlaybackSpeedChanging: false,
+      allowFullScreen: false,
+      showControls: false,
+      customControls: const CupertinoControls(
+        backgroundColor: Colors.black54,
+        iconColor: Colors.white70,
+      ),
+    );
+
     controller = Get.find<ChatScreenController>();
 
     super.initState();
@@ -65,6 +80,7 @@ class _VideoMessageBubbleState extends State<VideoMessageBubble> {
             ),
             padding: const EdgeInsets.all(5),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ///video
                 Container(
@@ -84,19 +100,6 @@ class _VideoMessageBubbleState extends State<VideoMessageBubble> {
                               child: CircularProgressIndicator(),
                             );
                           }
-
-                          chewieController = ChewieController(
-                            videoPlayerController: videoPlayerController,
-                            allowMuting: false,
-                            allowedScreenSleep: false,
-                            allowPlaybackSpeedChanging: false,
-                            allowFullScreen: false,
-                            showControls: false,
-                            customControls: const CupertinoControls(
-                              backgroundColor: Colors.black54,
-                              iconColor: Colors.white70,
-                            ),
-                          );
 
                           return Stack(
                             children: [

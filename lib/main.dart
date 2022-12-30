@@ -15,6 +15,7 @@ import 'package:whatsapp_clone/app/modules/auth/controllers/signup_controller.da
 import 'package:whatsapp_clone/app/modules/auth/screens/signup_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/service/chats_provider.dart';
+import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
 
 import 'app/modules/auth/screens/otp_screen.dart';
 import 'app/modules/auth/services/auth_provider.dart';
@@ -26,10 +27,10 @@ import 'config/theme/my_theme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
-  // FirebaseAuth.instance.signOut();
-
   await MySharedPref.init();
+
+  // resetApp();
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
@@ -57,6 +58,7 @@ class Main extends StatelessWidget {
     //     ),
     //   ),
     // );
+
     return ScreenUtilInit(
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
@@ -80,14 +82,16 @@ class Main extends StatelessWidget {
               return SignUpScreen();
             }
 
-            // return const SignUpScreen();
             return const HomeScreen();
           },
         ),
-        // const OTPScreen(),
-        // home: Get.find<AuthController>().isAuthorized ? const MyApp() : const SigninScreen(),
-        // const SigninScreen()
       ),
     );
   }
+}
+
+/// clears all the stored data & signs out
+void resetApp() {
+  FirebaseAuth.instance.signOut();
+  MySharedPref.clearAllData();
 }

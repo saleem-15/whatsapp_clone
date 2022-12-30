@@ -5,10 +5,14 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_viewer/video_viewer.dart';
 import 'package:whatsapp_clone/app/models/chat_interface.dart';
-import 'package:whatsapp_clone/app/models/message.dart';
-import 'package:whatsapp_clone/app/models/message_type.dart';
+import 'package:whatsapp_clone/app/models/messages/file_message.dart';
+import 'package:whatsapp_clone/app/models/messages/image_message.dart';
+import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
+import 'package:whatsapp_clone/app/models/messages/video_message.dart';
+import 'package:whatsapp_clone/app/models/messages/voice_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/screens/video_viewer_screen.dart';
 import 'package:whatsapp_clone/app/modules/chat/services/chatting_provider.dart';
 
@@ -28,23 +32,14 @@ class ChatScreenController extends GetxController {
     chat = Get.arguments;
   }
 
-  Stream<List<Message>> getMessagesStream() {
-    ChattingProvider.getMessagesStream(chat.id).listen((event) {
-      log('messages stream$event');
-      log('messages num: ${event.docs.length}');
-
-      for (var element in event.docs) {
-        log(element.data().toString());
-      }
-    });
-
+  Stream<List<MessageInterface>> getMessagesStream() {
     return ChattingProvider.getMessagesStream(chat.id).map((event) {
       final messageDocs = event.docs;
 
-      final List<Message> messages = [];
+      final List<MessageInterface> messages = [];
 
       for (QueryDocumentSnapshot messageDoc in messageDocs) {
-        messages.add(Message.fromDoc(messageDoc));
+        messages.add(MessageInterface.fromDoc(messageDoc));
       }
 
       log('messages num: ${messages.length}');
@@ -83,7 +78,7 @@ class ChatScreenController extends GetxController {
     return videoController;
   }
 
-  void onImagePressed(Message message, ImageProvider image) {
+  void onImagePressed(ImageMessage message, ImageProvider image) {
     //to remove the keyboaed (better animation)
     Get.focusScope?.unfocus();
 
@@ -100,7 +95,7 @@ class ChatScreenController extends GetxController {
     // );
   }
 
-  onViedeoPressed(Message message, String video, VideoPlayerController videoViewerController) {
+  onViedeoPressed(VideoMessage message, String video, VideoPlayerController videoViewerController) {
     //to remove the keyboaed (better animation)
     Get.focusScope?.unfocus();
 
@@ -111,9 +106,9 @@ class ChatScreenController extends GetxController {
   }
 
   void sendImage(File image, String? message) {
-    final imageMessage = Message.toSend(
+    final imageMessage = ImageMessage.toSend(
+      text: message,
       chatId: chat.id,
-      msgType: MessageType.photo,
       image: image.path,
     );
 
@@ -121,9 +116,8 @@ class ChatScreenController extends GetxController {
   }
 
   void sendAudio(File audioFile) {
-    final audioMessage = Message.toSend(
+    final audioMessage = AudioMessage.toSend(
       chatId: chat.id,
-      msgType: MessageType.audio,
       audio: audioFile.path,
     );
 
@@ -131,12 +125,25 @@ class ChatScreenController extends GetxController {
   }
 
   void sendVideo(File video, String? message) {
-    final videoMessage = Message.toSend(
+    final videoMessage = VideoMessage.toSend(
       chatId: chat.id,
-      msgType: MessageType.video,
+      text: message,
       video: video.path,
     );
 
     ChattingProvider.sendVideoMessage(videoMessage, video);
+  }
+
+  onFilePressed(FileMessage message) {
+    // _launchUrl(message.file);
+    log('file ${message.file} is pressed ');
+  }
+
+  Future<void> _launchUrl(String url) async {
+    final Uri uri = Uri.parse('file:/$url');
+
+    if (!await launchUrl(uri)) {
+      throw 'Could not launch $uri';
+    }
   }
 }

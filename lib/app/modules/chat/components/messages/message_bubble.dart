@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:whatsapp_clone/app/models/message.dart';
+import 'package:whatsapp_clone/app/models/messages/text_message.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
@@ -12,15 +12,15 @@ class MessageBubble extends StatelessWidget {
     required this.message,
   }) : super(key: key);
 
-  final Message message;
+  final TextMessage message;
 
   @override
   Widget build(BuildContext context) {
     final messageMaxWidth = MediaQuery.of(context).size.width - 40;
-    final List<bool> c = _calcLastLineEnd(context, messageMaxWidth - 10, message.text!);
+    final List<bool> c = _calcLastLineEnd(context, messageMaxWidth - 10, message.text);
     final Rx<bool> isNeedPAdding = c[0].obs;
     final Rx<bool> isNeedNewLine = c[1].obs;
-    final hasEmoji = Utils.hasEmoji(message.text!);
+    final hasEmoji = Utils.hasEmoji(message.text);
 
     var fontSize = MessageBubbleSettings.fontSize;
     return Row(
@@ -75,7 +75,7 @@ class MessageBubble extends StatelessWidget {
 
                       /// text
                       child: Text(
-                        message.text!,
+                        message.text,
                         style: MessageBubbleSettings.messageTextStyle,
                       ),
                     ),
@@ -89,7 +89,7 @@ class MessageBubble extends StatelessWidget {
                 right: 0,
                 child: Text(
                   Utils.formatDate(message.timeSent),
-                  style: const TextStyle(fontSize: 11),
+                  style: MessageBubbleSettings.timeSentTextStyle,
                 ),
               ),
             ],

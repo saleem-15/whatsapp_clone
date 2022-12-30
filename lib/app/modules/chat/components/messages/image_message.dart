@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/models/message.dart';
+import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
@@ -13,13 +13,13 @@ class ImageMessageBubble extends GetView<ChatScreenController> {
     required this.message,
   }) : super(key: key);
 
-  final Message message;
+  final ImageMessage message;
 
   final double borderRadius = 15;
 
   @override
   Widget build(BuildContext context) {
-    final ImageProvider image = NetworkImage(message.image!);
+    final ImageProvider image = NetworkImage(message.image);
 
     return Row(
       mainAxisAlignment: message.isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,

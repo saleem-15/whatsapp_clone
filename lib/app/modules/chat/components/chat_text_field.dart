@@ -33,18 +33,28 @@ class ChatTextField extends GetView<ChatTextFieldController> {
 
                   ///Attach file Icon
                   if (!controller.recorder.isRecording)
-                    IconButton(
-                      color: Theme.of(context).primaryColor,
-                      icon: const FaIcon(FontAwesomeIcons.paperclip, size: 20),
-                      onPressed: controller.showBottomSheet,
+                    Material(
+                      color: Colors.transparent,
+                      clipBehavior: Clip.antiAlias,
+                      type: MaterialType.circle,
+                      child: IconButton(
+                        color: Theme.of(context).primaryColor,
+                        icon: const FaIcon(FontAwesomeIcons.paperclip, size: 20),
+                        onPressed: controller.showBottomSheet,
+                      ),
                     ),
 
                   /// Camera Icon
                   if (!controller.recorder.isRecording)
-                    IconButton(
-                      color: Theme.of(context).primaryColor,
-                      icon: const Icon(Icons.camera_alt_rounded),
-                      onPressed: controller.onCameraIconPressed,
+                    Material(
+                      color: Colors.transparent,
+                      clipBehavior: Clip.antiAlias,
+                      type: MaterialType.circle,
+                      child: IconButton(
+                        color: Theme.of(context).primaryColor,
+                        icon: const Icon(Icons.camera_alt_rounded),
+                        onPressed: controller.onCameraIconPressed,
+                      ),
                     ),
                 ],
               ),
