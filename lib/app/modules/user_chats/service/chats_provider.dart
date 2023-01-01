@@ -4,6 +4,7 @@ import 'package:whatsapp_clone/app/models/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/group.dart';
 import 'package:whatsapp_clone/app/models/private_chat.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
+import 'package:whatsapp_clone/utils/extensions/my_extensions.dart';
 
 class ChatsProvider {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
@@ -13,11 +14,15 @@ class ChatsProvider {
   static String myUid = FirebaseAuth.instance.currentUser!.uid;
 
   static Future<List<Chat>> getAllMyChats() async {
-    List<Chat> myChats = [];
-    List<QueryDocumentSnapshot> privateChats = [];
-
     List<String> chatIds = await _getMyChatsId();
 
+    /// if there is not any chats => dont retrive Chat objects!!
+    if (chatIds.isEmpty) {
+      return [] ;
+    }
+
+    List<QueryDocumentSnapshot> privateChats = [];
+    List<Chat> myChats = [];
     ///my chats Documents (private chats & Groups)
     final result = await chatsCollection.where(FieldPath.documentId, whereIn: chatIds).get();
     final chats = result.docs;
@@ -88,11 +93,23 @@ class ChatsProvider {
     return otherUsers;
   }
 
+  /// returnes the ids of users chats (private & group chats)
   static Future<List<String>> _getMyChatsId() async {
+    List<String> chatsIds = [];
+
     final myDoc = await usersCollection.doc(myUid).get();
 
-    final chats = (myDoc['chats'] as List)..addAll(myDoc['groups'] as List);
+    final List? privateChats = myDoc.safeGet('chats') as List?;
+    final List? myGroups = myDoc.safeGet('groups') as List?;
 
-    return List.castFrom<dynamic, String>(chats);
+    if (privateChats != null) {
+      chatsIds.addAll(List.castFrom<dynamic,String>(privateChats));
+    }
+
+    if (myGroups != null) {
+      chatsIds.addAll(List.castFrom<dynamic,String>(myGroups));
+    }
+
+    return chatsIds;
   }
 }

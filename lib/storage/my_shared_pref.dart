@@ -66,7 +66,7 @@ class MySharedPref {
     return User(
       uid: userId,
       name: MySharedPref.getUserName!,
-      image: MySharedPref.getUserImage,
+      imageUrl: MySharedPref.getUserImage,
       phoneNumber: MySharedPref.getUserPhoneNumber!,
     );
   }
@@ -82,6 +82,12 @@ class MySharedPref {
     MySharedPref.setUserName(name);
     MySharedPref.setUserImage(image);
     MySharedPref.setUserPhoneNumber(phone);
+  }
+  static void saveUser(User user) {
+    MySharedPref.setUserId(user.uid);
+    MySharedPref.setUserName(user.name);
+    MySharedPref.setUserImage(user.imageUrl);
+    MySharedPref.setUserPhoneNumber(user.phoneNumber);
   }
 
   static void clearAllData() {

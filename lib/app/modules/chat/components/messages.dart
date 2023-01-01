@@ -13,9 +13,9 @@ import 'package:whatsapp_clone/app/modules/chat/components/messages/file_message
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 import 'messages/audio_message.dart';
-import 'messages/image_message.dart';
+import '../../image/components/image_message.dart';
 import 'messages/message_bubble.dart';
-import 'messages/video_message.dart';
+import '../../video/components/video_message_bubble.dart';
 
 class Messages extends GetView<ChatScreenController> {
   const Messages({required this.chatId, super.key});
@@ -56,7 +56,7 @@ class Messages extends GetView<ChatScreenController> {
               case MessageType.video:
                 return VideoMessageBubble(
                   message: message as VideoMessage,
-                  video: message.video,
+                  video: message.videoUrl,
                 );
 
               case MessageType.audio:

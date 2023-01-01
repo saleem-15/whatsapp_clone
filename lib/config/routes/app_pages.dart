@@ -3,6 +3,7 @@ import 'package:whatsapp_clone/app/modules/auth/screens/otp_screen.dart';
 import 'package:whatsapp_clone/app/modules/auth/screens/signin_screen.dart';
 import 'package:whatsapp_clone/app/modules/auth/screens/signup_screen.dart';
 import 'package:whatsapp_clone/app/modules/chat/screens/chat_screen.dart';
+import 'package:whatsapp_clone/app/modules/video/screens/video_viewer_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
 
 part 'app_routes.dart';
@@ -32,6 +33,10 @@ class AppPages {
     GetPage(
       name: _Paths.CHAT_SCREEN,
       page: () => ChatScreen(),
+    ),
+    GetPage(
+      name: _Paths.VIDEO_VIEWER_SCREEN,
+      page: () => VideoViewerScreen(),
     ),
   ];
 }

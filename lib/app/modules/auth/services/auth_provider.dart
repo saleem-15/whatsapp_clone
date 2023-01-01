@@ -18,7 +18,6 @@ class AuthProvider {
 
   static FirebaseAuth auth = FirebaseAuth.instance;
   static FirebaseFirestore db = FirebaseFirestore.instance;
-
   static CollectionReference usersCollection = db.collection('users');
 
   ///used when verifiying the verification code (SMS Message)
@@ -26,33 +25,47 @@ class AuthProvider {
 
   /// the phone number must begin with '+' (with internationl code)
   static Future<void> signUpService(String phoneNumber, String name) async {
-    /// used to check if the user already exists
-    final user = await getUserInfo(phoneNumber);
-
-    await verifyPhone(phoneNumber);
+    /// used to check if the user have an account
+    final User? user = await getUserInfo(phoneNumber);
 
     /// if user alreay exists
     if (user != null) {
       MySharedPref.storeUserData(
         id: user.uid,
         name: user.name,
-        image: user.image,
+        image: user.imageUrl,
         phone: user.phoneNumber,
       );
 
+      CustomSnackBar.myCustomSnackBar(
+        message: 'This number is already used',
+      );
+
+      Get.toNamed(Routes.SIGN_IN);
       return;
     }
 
-    await _createUserDoc(name, phoneNumber);
+    await verifyPhone(phoneNumber);
+    MySharedPref.saveUser(await _createUserDoc(name, phoneNumber));
+  }
 
-    // MySharedPref.storeUserData(
-    //   id: user.uid,
-    //   name: name,
-    //   image: user.image,
-    //   phone: phoneNumber,
-    // );
-    MySharedPref.setUserName(name);
-    MySharedPref.setUserPhoneNumber(phoneNumber);
+  /// the phone number must begin with '+' (with internationl code)
+  static Future<void> signInService(String phoneNumber) async {
+    final User? user = await getUserInfo(phoneNumber);
+
+    ///user does not exists (dont have an account)
+    if (user == null) {
+      CustomSnackBar.myCustomSnackBar(
+        message: 'You dont have an account!',
+      );
+
+      /// if the user does not have an account
+      Get.toNamed(Routes.SIGNUP);
+      return;
+    }
+
+    MySharedPref.saveUser(user);
+    await verifyPhone(phoneNumber);
   }
 
   static Future<void> verifyPhone(String phoneNumber) => auth.verifyPhoneNumber(
@@ -112,17 +125,27 @@ class AuthProvider {
         },
       );
 
-  static Future<void> _createUserDoc(String name, String phoneNumber) async {
+  ///used when the user has signed up,
+  ///to create a record for the user in the database
+  static Future<User> _createUserDoc(String name, String phoneNumber) async {
+    /// ensure that the user sign in process is completed
+    /// by using loop with timer
     while (FirebaseAuth.instance.currentUser == null) {
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 1));
     }
 
-    await db.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).set({
-      'name': name,
-      'phoneNumber': phoneNumber,
-      'photoUrl': null,
-      'chats': null,
-    });
+    final user = User(
+      name: name,
+      phoneNumber: phoneNumber,
+      imageUrl: null,
+      uid: FirebaseAuth.instance.currentUser!.uid,
+    );
+
+    await usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).set(
+          user.toMap(),
+        );
+
+    return user;
   }
 
   /// returnes true if the sent code is verified, Otherwise returnes false
@@ -147,31 +170,6 @@ class AuthProvider {
     }
   }
 
-  /// the phone number must begin with '+' (with internationl code)
-  static Future<bool> signInService(String phoneNumber) async {
-    final User? user = await getUserInfo(phoneNumber);
-
-    ///user exists
-    if (user != null) {
-      MySharedPref.storeUserData(
-        id: user.uid,
-        name: user.name,
-        image: user.image,
-        phone: user.phoneNumber,
-      );
-      return true;
-    }
-
-    /// ------ user does not exists ------
-    CustomSnackBar.showCustomSnackBar(
-      message: 'You dont have an account!',
-    );
-
-    /// if the user does not have an account
-    Get.toNamed(Routes.SIGNUP);
-    return false;
-  }
-
   /// returns null if the user does not exist
   static Future<User?> getUserInfo(String phoneNumber) async {
     final queryResult = await usersCollection
@@ -189,6 +187,7 @@ class AuthProvider {
     return User.fromDoc(queryResult.docs.first);
   }
 
+  ///it uses [getUserInfo] method to work
   static Future<bool> checkIsUserExists(String phoneNumber) async {
     final user = await getUserInfo(phoneNumber);
 

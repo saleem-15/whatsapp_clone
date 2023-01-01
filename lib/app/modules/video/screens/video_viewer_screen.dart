@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:video_viewer/video_viewer.dart';
 
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
@@ -8,24 +9,31 @@ import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 class VideoViewerScreen extends StatefulWidget {
-  const VideoViewerScreen({
-    Key? key,
-    required this.videoMessage,
-    required this.videoPlayerController,
-  }) : super(key: key);
+  VideoViewerScreen({super.key}) {
+    videoMessage = Get.arguments['videoMessage'];
+    videoPlayerController = Get.arguments['videoController'];
+  }
 
-  final VideoMessage videoMessage;
-
-  final VideoPlayerController videoPlayerController;
+  late final VideoMessage videoMessage;
+  late final VideoPlayerController videoPlayerController;
 
   @override
   State<VideoViewerScreen> createState() => _VideoViewerScreenState();
 }
 
 class _VideoViewerScreenState extends State<VideoViewerScreen> {
+  late final ChewieController chewieController;
   @override
   void initState() {
-    widget.videoPlayerController.play();
+    /// create a new [ChewieController],cuz it has different settings than
+    /// the [ChewieController] in the video message bubble
+    chewieController = ChewieController(
+      videoPlayerController: widget.videoPlayerController,
+      allowMuting: false,
+      allowedScreenSleep: false,
+      allowPlaybackSpeedChanging: false,
+      allowFullScreen: false,
+    );
     super.initState();
   }
 
@@ -53,22 +61,17 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
         ),
       ),
       body: Center(
-        child: Hero(
-          tag: widget.videoMessage.video,
-          child: Theme(
-            data: Theme.of(context).copyWith(
-                dialogBackgroundColor: Colors.black54,
-                iconTheme: Theme.of(context).iconTheme.copyWith(color: Colors.white)),
+        child: Theme(
+          data: Theme.of(context).copyWith(
+              dialogBackgroundColor: Colors.black54,
+              iconTheme: Theme.of(context).iconTheme.copyWith(color: Colors.white)),
+          child: Hero(
+            tag: widget.videoMessage.videoUrl,
             child: Material(
               color: Colors.transparent,
               child: Chewie(
-                controller: ChewieController(
-                  videoPlayerController: widget.videoPlayerController,
-                  allowMuting: false,
-                  allowedScreenSleep: false,
-                  allowPlaybackSpeedChanging: false,
-                  allowFullScreen: false,
-                ),
+                controller: chewieController,
+                // controller:widget. chewieController,
               ),
             ),
           ),
@@ -79,7 +82,10 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
 
   @override
   void dispose() {
+    ///pause the video
     widget.videoPlayerController.pause();
+
+    ///go to the start (if the user wants to watch the video, he wathces it from the start)
     widget.videoPlayerController.seekTo(Duration.zero);
     super.dispose();
   }

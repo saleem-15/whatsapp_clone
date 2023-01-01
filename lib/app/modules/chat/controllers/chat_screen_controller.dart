@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_viewer/video_viewer.dart';
@@ -13,10 +12,11 @@ import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/models/messages/voice_message.dart';
-import 'package:whatsapp_clone/app/modules/chat/screens/video_viewer_screen.dart';
 import 'package:whatsapp_clone/app/modules/chat/services/chatting_provider.dart';
+import 'package:whatsapp_clone/app/modules/image/screens/image_viewer_screen.dart';
+import 'package:whatsapp_clone/config/routes/app_pages.dart';
+import 'package:whatsapp_clone/storage/files_manager.dart';
 
-import '../screens/image_viewer_screen.dart';
 import 'chat_text_field_controller.dart';
 
 class ChatScreenController extends GetxController {
@@ -58,10 +58,6 @@ class ChatScreenController extends GetxController {
     // );
   }
 
-  String getUserbyId(senderId) {
-    return '';
-  }
-
   Future<VideoPlayerController> initilizeVideoController(String videoUrl) async {
     ///check if the video controller already exists
     if (videos.containsKey(videoUrl)) {
@@ -78,13 +74,20 @@ class ChatScreenController extends GetxController {
     return videoController;
   }
 
-  void onImagePressed(ImageMessage message, ImageProvider image) {
+  Future<void> onImagePressed(ImageMessage message) async {
+    final isImageStored = await FileManager.isFileSaved(message.imageName, message.chatId);
+    if (!isImageStored) {
+      return;
+    }
+
     //to remove the keyboaed (better animation)
     Get.focusScope?.unfocus();
 
+    final imageFile = await FileManager.getFile(message.imageName, message.chatId);
+
     Get.to(() => ImageViewerScreen(
-          image: image,
           imageMessage: message,
+          imageFile: imageFile,
         ));
 
     // Get.to(
@@ -95,21 +98,33 @@ class ChatScreenController extends GetxController {
     // );
   }
 
-  onViedeoPressed(VideoMessage message, String video, VideoPlayerController videoViewerController) {
+  onViedeoPressed(VideoMessage videoMessage) async {
+    final isVideoLoaded = await FileManager.isFileSaved(videoMessage.videoName, videoMessage.chatId);
+    if (!isVideoLoaded) {
+      return;
+    }
+
     //to remove the keyboaed (better animation)
     Get.focusScope?.unfocus();
 
-    Get.to(() => VideoViewerScreen(
-          videoMessage: message,
-          videoPlayerController: videoViewerController,
-        ));
+    /// this video controller was injected in the video message bubble
+    final videoPlayerController = Get.find<VideoPlayerController>(tag: videoMessage.videoUrl);
+
+    Get.toNamed(
+      Routes.VIDEO_VIEWER_SCREEN,
+      arguments: {
+        'videoController': videoPlayerController,
+        'videoMessage': videoMessage,
+      },
+    );
   }
 
   void sendImage(File image, String? message) {
     final imageMessage = ImageMessage.toSend(
       text: message,
       chatId: chat.id,
-      image: image.path,
+      imageUrl: image.path,
+      imageName: '',
     );
 
     ChattingProvider.sendImageMessage(imageMessage, image);
@@ -128,7 +143,8 @@ class ChatScreenController extends GetxController {
     final videoMessage = VideoMessage.toSend(
       chatId: chat.id,
       text: message,
-      video: video.path,
+      videoUrl: video.path,
+      videoName: '',
     );
 
     ChattingProvider.sendVideoMessage(videoMessage, video);

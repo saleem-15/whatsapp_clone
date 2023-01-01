@@ -23,6 +23,10 @@ class MessageBubbleSettings {
         bottom: 5,
         top: 3,
       );
+  static BoxDecoration messageDecoration({required bool isMyMessage}) => BoxDecoration(
+        color: isMyMessage ? myMessageColor : othersMessageColor,
+        borderRadius: borderRadius,
+      );
 
   static TextStyle messageTextStyle = TextStyle(
     fontSize: _fontSize.value,

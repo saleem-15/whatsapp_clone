@@ -11,11 +11,11 @@ import 'package:whatsapp_clone/config/theme/my_styles.dart';
 class PickedVideoScreen extends StatefulWidget {
   const PickedVideoScreen({
     Key? key,
-    required this.video,
+    required this.videoFile,
     required this.sendVideo,
   }) : super(key: key);
 
-  final File video;
+  final File videoFile;
   final void Function(File video, String? message) sendVideo;
 
   @override
@@ -30,6 +30,7 @@ class _PickedVideoScreenState extends State<PickedVideoScreen> {
   @override
   void initState() {
     controller = VideoViewerController();
+
     super.initState();
   }
 
@@ -48,7 +49,7 @@ class _PickedVideoScreenState extends State<PickedVideoScreen> {
               controller: controller,
               source: {
                 "SubRip Text": VideoSource(
-                  video: VideoPlayerController.file(widget.video),
+                  video: VideoPlayerController.file(widget.videoFile),
                 )
               },
             ),
@@ -84,7 +85,7 @@ class _PickedVideoScreenState extends State<PickedVideoScreen> {
                       final message = _textController.text.trim();
 
                       widget.sendVideo(
-                        widget.video,
+                        widget.videoFile,
                         message.isEmpty ? null : message,
                       );
 
@@ -103,7 +104,9 @@ class _PickedVideoScreenState extends State<PickedVideoScreen> {
 
   @override
   void dispose() {
-    controller.dispose();
+    // controller.dispose();
+
+    _textController.dispose();
     super.dispose();
   }
 }

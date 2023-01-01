@@ -30,7 +30,7 @@ class PrivateChat implements Chat {
     required this.usersIds,
   }) {
     name = user.name;
-    image = user.image;
+    image = user.imageUrl;
   }
 
   @override

@@ -90,7 +90,7 @@ class Main extends StatelessWidget {
   }
 }
 
-/// clears all the stored data & signs out
+/// clears all the stored data & signs out (used when developing the app)
 void resetApp() {
   FirebaseAuth.instance.signOut();
   MySharedPref.clearAllData();

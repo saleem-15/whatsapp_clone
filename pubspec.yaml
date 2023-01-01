@@ -45,6 +45,7 @@ dependencies:
   chewie: ^1.1.0
   flutter_chat_ui: ^1.6.6
   url_launcher: ^6.1.7
+  dio: ^4.0.6
 
 dev_dependencies: 
   flutter_lints: 2.0.1

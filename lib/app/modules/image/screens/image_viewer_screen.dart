@@ -1,19 +1,22 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:io';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 class ImageViewerScreen extends StatelessWidget {
   const ImageViewerScreen({
     Key? key,
-    required this.image,
     required this.imageMessage,
+    required this.imageFile,
   }) : super(key: key);
 
-  final ImageProvider image;
   final ImageMessage imageMessage;
+  final File imageFile;
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +43,9 @@ class ImageViewerScreen extends StatelessWidget {
       ),
       body: Center(
         child: Hero(
-          tag: image.hashCode,
+          tag: imageMessage.imageUrl,
           child: ExtendedImage(
-            image: image,
+            image: FileImage(imageFile),
             fit: BoxFit.contain,
             mode: ExtendedImageMode.gesture,
           ),

@@ -41,7 +41,7 @@ class ChattingProvider {
   }
 
   static MessageInterface fromFirestoreConverter(DocumentSnapshot<Map<String, dynamic>> snapshot) {
-    throw 'Fuck You';
+    throw '-----------Fuck You-----------';
     switch (msgTypeEnumfromString(snapshot['type'])) {
       case MessageType.text:
         return TextMessage.fromDoc(snapshot);
@@ -65,16 +65,18 @@ class ChattingProvider {
   }
 
   static Future<void> sendImageMessage(ImageMessage imageMessage, File imageFile) async {
-    String fileId = genereteFileId(myId, imageFile.path);
+    String fileName = genereteFileId(myId, imageFile.path);
+
+    imageMessage.imageName = fileName;
 
     final imageUrl = await uploadFileToFirestorage(
       chatId: imageMessage.chatId,
       file: imageFile,
-      fileId: fileId,
+      fileId: fileName,
     );
 
     /// add the message to firestore
-    await messagesCollection(imageMessage.chatId).add(imageMessage..image = imageUrl);
+    await messagesCollection(imageMessage.chatId).add(imageMessage..imageUrl = imageUrl);
   }
 
   static Future<void> sendAudioMessage(AudioMessage audioMessage, File audioFile) async {
@@ -98,9 +100,12 @@ class ChattingProvider {
       file: videoFile,
       fileId: fileId,
     );
+    videoMessage
+      ..videoUrl = videoUrl
+      ..videoName = Utils.getFilName(videoFile.path);
 
     /// add the message to firestore
-    await messagesCollection(videoMessage.chatId).add(videoMessage..video = videoUrl);
+    await messagesCollection(videoMessage.chatId).add(videoMessage);
   }
 
   static Future<void> sendFileMessage(String chatId, File file) async {
@@ -155,6 +160,7 @@ class ChattingProvider {
   ///Becuase firebase storage does not offer unique id generating
   ///
   ///I use the sender ID +(currnet time in Microsecends) + file extension
+  ///the return looks like this (name.jpg)
   static String genereteFileId(String senderId, String filePath) {
     /// file extension (.png/.jpg/.mp4/.pdf/.....)
     final fileExtension = Utils.getFileExtension(filePath);

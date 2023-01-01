@@ -7,10 +7,10 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:whatsapp_clone/app/models/chat_interface.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
-import 'package:whatsapp_clone/app/modules/chat/screens/picked_photo_viewer.dart';
+import 'package:whatsapp_clone/app/modules/image/screens/picked_photo_viewer.dart';
 import 'package:whatsapp_clone/app/modules/chat/services/chatting_provider.dart';
 
-import '../screens/picked_video_viewer.dart';
+import '../../video/screens/picked_video_viewer.dart';
 
 class AttachFileController extends GetxController {
   late final Chat chat;
@@ -27,10 +27,11 @@ class AttachFileController extends GetxController {
     ///close the bottom sheet
     Get.back();
 
-    final pickedVideo = await ImagePicker().pickVideo(
+    final XFile? pickedVideo = await ImagePicker().pickVideo(
       source: ImageSource.gallery,
     );
 
+    ///if the user did not choose anything
     if (pickedVideo == null) {
       return;
     }
@@ -40,7 +41,7 @@ class AttachFileController extends GetxController {
     final videoFile = File(pickedVideo.path);
 
     Get.to(() => PickedVideoScreen(
-          video: videoFile,
+          videoFile: videoFile,
           sendVideo: chatController.sendVideo,
         ));
   }

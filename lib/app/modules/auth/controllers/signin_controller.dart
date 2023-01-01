@@ -5,7 +5,7 @@ import 'package:whatsapp_clone/app/modules/auth/services/auth_provider.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
 class SigninController extends GetxController {
-  final formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final phoneNumberFieledController = TextEditingController();
 
@@ -27,12 +27,8 @@ class SigninController extends GetxController {
       return;
     }
     isWaitingResponse(true);
-    final isSuccessfull = await AuthProvider.signInService('+$phoneNumber');
+    await AuthProvider.signInService('+$phoneNumber');
     isWaitingResponse(false);
-
-    if (isSuccessfull) {
-      Get.offAllNamed(Routes.HOME);
-    }
   }
 
   String? phoneNumberFieldValidator(String? value) {

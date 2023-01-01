@@ -22,7 +22,7 @@ class MessageBubble extends StatelessWidget {
     final Rx<bool> isNeedNewLine = c[1].obs;
     final hasEmoji = Utils.hasEmoji(message.text);
 
-    var fontSize = MessageBubbleSettings.fontSize;
+  
     return Row(
       mainAxisAlignment: message.isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [

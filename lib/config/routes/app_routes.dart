@@ -10,6 +10,10 @@ abstract class Routes {
   static const SIGN_IN = _Paths.SIGN_IN;
   static const OTP_SCREEN = _Paths.OTP_SCREEN;
 
+  ///Requires as argumets: [VideoMessage] & [VideoPlayerController] for the video
+
+  static const VIDEO_VIEWER_SCREEN = _Paths.VIDEO_VIEWER_SCREEN;
+
   ///YOU HAVE TO PASS [Chat] ARGUMENT Ass (argument)
   static const CHAT_SCREEN = _Paths.CHAT_SCREEN;
 }
@@ -21,4 +25,5 @@ abstract class _Paths {
   static const SIGN_IN = '/SIGN_IN';
   static const OTP_SCREEN = '/otp-screen';
   static const CHAT_SCREEN = '/chat-screen';
+  static const VIDEO_VIEWER_SCREEN = '/video-viewer-screen';
 }

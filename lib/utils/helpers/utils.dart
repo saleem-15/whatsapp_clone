@@ -1,6 +1,7 @@
 // ignore: depend_on_referenced_packages
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 
 class Utils {
@@ -10,11 +11,11 @@ class Utils {
     return myTimeFormat.format(time);
   }
 
-  // static String _getFileName_(String url) {
-  //   final name = FirebaseStorage.instance.refFromURL(url).name;
-  //   // log('name from firebase is: $name');
-  //   return name;
-  // }
+  static String getFileNameFireStorage(String url) {
+    final name = FirebaseStorage.instance.refFromURL(url).name;
+    // log('name from firebase is: $name');
+    return name;
+  }
 
   /// if file path was (/data/file_picker/HomeWork 1.docx)
   /// it will return (HomeWork 1.docx)

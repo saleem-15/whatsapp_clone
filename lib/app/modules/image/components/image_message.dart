@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
+import 'package:whatsapp_clone/app/shared_widgets/my_image.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
@@ -19,14 +20,14 @@ class ImageMessageBubble extends GetView<ChatScreenController> {
 
   @override
   Widget build(BuildContext context) {
-    final ImageProvider image = NetworkImage(message.image);
-
     return Row(
       mainAxisAlignment: message.isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         InkWell(
-          onTap: () => controller.onImagePressed(message, image),
+          splashColor: Colors.transparent,
+          onTap: () => controller.onImagePressed(message),
           child: Container(
+            // height: 100,
             width: 300,
             margin: MessageBubbleSettings.messageMargin(
               isMyMessage: message.isMyMessage,
@@ -65,10 +66,14 @@ class ImageMessageBubble extends GetView<ChatScreenController> {
                   children: [
                     /// The image
                     Hero(
-                      tag: image.hashCode,
+                      tag: message.imageUrl,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(borderRadius),
-                        child: Image(image: image),
+                        child: NetworkOrLocalImage(
+                          chatId: message.chatId,
+                          fileName: message.imageName,
+                          imageUrl: message.imageUrl,
+                        ),
                       ),
                     ),
 

@@ -6,6 +6,10 @@ import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import '../message_type.dart';
 
 class ImageMessage extends MessageInterface {
+  /// json fields names (to ensure that i always (send) and (recieve) the right field name)
+  static const image_name = 'imageName';
+  static const image_url = 'imageUrl';
+
   ImageMessage({
     required super.isSent,
     required super.isSeen,
@@ -15,10 +19,12 @@ class ImageMessage extends MessageInterface {
     super.senderImage,
     required super.senderId,
     this.text,
-    required this.image,
+    required this.imageUrl,
+    required this.imageName,
   }) : super(type: MessageType.photo);
 
-  String image;
+  String imageUrl;
+  String imageName;
   String? text;
 
   @override
@@ -26,7 +32,8 @@ class ImageMessage extends MessageInterface {
     return super.toMap()
       ..addAll({
         'text': text,
-        'image': image,
+        image_url: imageUrl,
+        image_name: imageName,
       });
   }
 
@@ -41,7 +48,8 @@ class ImageMessage extends MessageInterface {
       senderId: map['senderId'],
       senderName: map['senderName'],
       senderImage: map['senderImage'],
-      image: map['image'],
+      imageUrl: map[image_url],
+      imageName: map[image_name],
       text: map['text'],
       timeSent: (map['createdAt'] as Timestamp).toDate(),
     );
@@ -49,7 +57,12 @@ class ImageMessage extends MessageInterface {
 
   ///parameters are => chatId
   @override
-  factory ImageMessage.toSend({required String chatId, required String? text, required String image}) {
+  factory ImageMessage.toSend({
+    required String chatId,
+    required String? text,
+    required String imageUrl,
+    required String imageName,
+  }) {
     return ImageMessage(
       isSent: false,
       isSeen: false,
@@ -59,7 +72,8 @@ class ImageMessage extends MessageInterface {
       senderImage: MySharedPref.getUserImage,
       timeSent: DateTime.now(),
       text: text,
-      image: image,
+      imageUrl: imageUrl,
+      imageName: imageName,
     );
   }
 }
