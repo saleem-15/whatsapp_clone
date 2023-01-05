@@ -60,7 +60,7 @@ class ChatScreen extends StatelessWidget {
         actions: [
           GradientIconButton(
             icon: FontAwesomeIcons.video,
-            size: 18.sp,
+            iconSize: 18.sp,
             onPressed: () {
               // CustomSnackBar.showCustomSnackBar(message: 'message');
               CustomSnackBar.showCustomToast(message: 'message');
@@ -73,7 +73,7 @@ class ChatScreen extends StatelessWidget {
           ),
           GradientIconButton(
             icon: FontAwesomeIcons.phone,
-            size: 18.sp,
+            iconSize: 18.sp,
             onPressed: () {},
           ),
           SizedBox(

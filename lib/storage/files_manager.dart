@@ -5,16 +5,8 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
-
-
-import 'package:flutter/material.dart';
 
 // ...
-
-
-
-
 
 class FileManager {
   FileManager._();
@@ -27,7 +19,7 @@ class FileManager {
   ///notihing will happen
   static Future<void> initFiles() async {
     final appDir = await getExternalStorageDirectory();
-    
+
     await Directory('${appDir!.path}/chats').create();
     return;
   }

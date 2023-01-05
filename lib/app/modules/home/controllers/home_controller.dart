@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
 
-  final count = 0.obs;
 
-  void increment() => count.value++;
+
+  void onMorePressed() {
+    Get.toNamed(Routes.SETTINGS_SCREEN);
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:whatsapp_clone/app/models/chat_interface.dart';
@@ -18,11 +20,12 @@ class ChatsProvider {
 
     /// if there is not any chats => dont retrive Chat objects!!
     if (chatIds.isEmpty) {
-      return [] ;
+      return [];
     }
 
     List<QueryDocumentSnapshot> privateChats = [];
     List<Chat> myChats = [];
+
     ///my chats Documents (private chats & Groups)
     final result = await chatsCollection.where(FieldPath.documentId, whereIn: chatIds).get();
     final chats = result.docs;
@@ -98,16 +101,20 @@ class ChatsProvider {
     List<String> chatsIds = [];
 
     final myDoc = await usersCollection.doc(myUid).get();
+    log(myDoc.exists.toString());
+    // log(.toString());
+    log(myDoc.reference.toString());
+    log(myDoc.data().toString());
 
     final List? privateChats = myDoc.safeGet('chats') as List?;
     final List? myGroups = myDoc.safeGet('groups') as List?;
 
     if (privateChats != null) {
-      chatsIds.addAll(List.castFrom<dynamic,String>(privateChats));
+      chatsIds.addAll(List.castFrom<dynamic, String>(privateChats));
     }
 
     if (myGroups != null) {
-      chatsIds.addAll(List.castFrom<dynamic,String>(myGroups));
+      chatsIds.addAll(List.castFrom<dynamic, String>(myGroups));
     }
 
     return chatsIds;

@@ -3,6 +3,13 @@ import 'package:whatsapp_clone/app/modules/auth/screens/otp_screen.dart';
 import 'package:whatsapp_clone/app/modules/auth/screens/signin_screen.dart';
 import 'package:whatsapp_clone/app/modules/auth/screens/signup_screen.dart';
 import 'package:whatsapp_clone/app/modules/chat/screens/chat_screen.dart';
+import 'package:whatsapp_clone/app/modules/settings/screens/account_screen.dart';
+import 'package:whatsapp_clone/app/modules/settings/screens/app_info_screen.dart';
+import 'package:whatsapp_clone/app/modules/settings/screens/help_screen.dart';
+import 'package:whatsapp_clone/app/modules/settings/screens/privacy_policy_screen.dart';
+import 'package:whatsapp_clone/app/modules/settings/screens/profile_screen.dart';
+import 'package:whatsapp_clone/app/modules/settings/screens/settings_screen.dart';
+import 'package:whatsapp_clone/app/modules/settings/screens/terms_screen.dart';
 import 'package:whatsapp_clone/app/modules/video/screens/video_viewer_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
 
@@ -16,7 +23,7 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () => const HomeScreen(),
+      page: () => HomeScreen(),
     ),
     GetPage(
       name: _Paths.SIGN_IN,
@@ -37,6 +44,34 @@ class AppPages {
     GetPage(
       name: _Paths.VIDEO_VIEWER_SCREEN,
       page: () => VideoViewerScreen(),
+    ),
+    GetPage(
+      name: _Paths.SETTINGS_SCREEN,
+      page: () => SettingsScreen(),
+    ),
+    GetPage(
+      name: _Paths.PROFILE_SCREEN,
+      page: () => ProfileScreen(),
+    ),
+    GetPage(
+      name: _Paths.ACCOUNT_SCREEN,
+      page: () => AccountScreen(),
+    ),
+    GetPage(
+      name: _Paths.HELP_SCREEN,
+      page: () => HelpScreen(),
+    ),
+    GetPage(
+      name: _Paths.TERMS_AND_CONDITIONS_SCREEN,
+      page: () => const TermsAndCondiotnsScreen(),
+    ),
+    GetPage(
+      name: _Paths.PRIVACY_POLICY_SCREEN,
+      page: () => const PrivacyPolicyScreen(),
+    ),
+    GetPage(
+      name: _Paths.APP_INFO_SCREEN,
+      page: () => const AppInfoScreen(),
     ),
   ];
 }

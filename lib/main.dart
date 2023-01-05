@@ -1,6 +1,8 @@
 // ignore_for_file: unused_import
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/app/modules/auth/controllers/auth_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/otp_form_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/signin_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/signup_controller.dart';
@@ -28,6 +31,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await MySharedPref.init();
+
+  Get.put(AuthController());
 
   // resetApp();
 
@@ -77,12 +82,18 @@ class Main extends StatelessWidget {
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, AsyncSnapshot<User?> snapshot) {
+            log('-----Auth state changed');
+
             /// if user == null => the user is not Authenticated
+            ///
             if (snapshot.data == null) {
+              // if (FirebaseAuth.instance.currentUser == null) {
+              log('--------Not Authorized!');
               return SignUpScreen();
             }
 
-            return const HomeScreen();
+            log('-----Authorized');
+            return HomeScreen();
           },
         ),
       ),

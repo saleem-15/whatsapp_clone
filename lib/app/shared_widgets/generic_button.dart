@@ -34,7 +34,7 @@ class GradientGenericButton extends StatelessWidget {
             ),
         child: Ink(
           decoration: const BoxDecoration(
-            gradient: MyColors.myGradient,
+            gradient: MyColors.greenGradient,
           ),
           child: Container(
             alignment: Alignment.center,

@@ -41,12 +41,15 @@ class MySharedPref {
   //***************     User Data   ******************/
   static String? get getUserId => _storage.read(_userId);
   static void setUserId(String userId) => _storage.write(_userId, userId);
+  static void deleteUserId() => _storage.remove(_userId);
 
   static String? get getUserName => _storage.read(_name);
   static void setUserName(String userName) => _storage.write(_name, userName);
+  static void deleteUserName() => _storage.remove(_name);
 
   static String? get getUserPhoneNumber => _storage.read(_phone);
   static void setUserPhoneNumber(String phoneNumber) => _storage.write(_phone, phoneNumber);
+  static void deleteUserPhoneNumber() => _storage.remove(_phone);
 
   static String? get getUserImage => _storage.read(_image);
   static void setUserImage(String? image) {
@@ -54,6 +57,8 @@ class MySharedPref {
       _storage.write(_image, image);
     }
   }
+
+  static void deleteUserImage() => _storage.remove(_image);
 
   static User? get getUserData {
     final String? userId = MySharedPref.getUserId;
@@ -83,11 +88,19 @@ class MySharedPref {
     MySharedPref.setUserImage(image);
     MySharedPref.setUserPhoneNumber(phone);
   }
+
+  static void deleteUser() {
+    deleteUserId();
+    deleteUserName();
+    deleteUserImage();
+    deleteUserPhoneNumber();
+  }
+
   static void saveUser(User user) {
-    MySharedPref.setUserId(user.uid);
-    MySharedPref.setUserName(user.name);
-    MySharedPref.setUserImage(user.imageUrl);
-    MySharedPref.setUserPhoneNumber(user.phoneNumber);
+    setUserId(user.uid);
+    setUserName(user.name);
+    setUserImage(user.imageUrl);
+    setUserPhoneNumber(user.phoneNumber);
   }
 
   static void clearAllData() {

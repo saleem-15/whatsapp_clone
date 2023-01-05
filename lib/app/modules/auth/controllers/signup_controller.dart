@@ -6,7 +6,7 @@ import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import '../services/auth_provider.dart';
 
 class SignupController extends GetxController {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>(debugLabel: 'sign up global key');
 
   final phoneNumberFieledController = TextEditingController();
   final userNameController = TextEditingController();

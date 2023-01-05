@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 extension MyExtension on DocumentSnapshot {
   ///
@@ -8,7 +9,8 @@ extension MyExtension on DocumentSnapshot {
     try {
       return get(fieldName);
     } on StateError catch (e) {
-      log("$e |field name: $fieldName");
+      debugPrint("$e |field name: $fieldName");
+      log(e.stackTrace.toString());
       return null;
     }
   }

@@ -90,7 +90,7 @@ class FileMessageBubble extends GetView<ChatScreenController> {
                           ),
                           child: GradientIcon(
                             icon: FontAwesomeIcons.solidFileLines,
-                            size: 25.sp,
+                            backgroundSize: 25.sp,
                           ),
                         ),
                       ),

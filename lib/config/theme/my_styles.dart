@@ -13,6 +13,8 @@ import 'my_fonts.dart';
 class MyStyles {
   MyStyles._();
 
+  static EdgeInsets getHorizintalScreenPadding() => EdgeInsets.symmetric(horizontal: 15.w);
+
   ///app bar theme
   static AppBarTheme getAppBarTheme() => AppBarTheme(
         /// this is status bar theme (kinda)
@@ -114,7 +116,7 @@ class MyStyles {
           // maximumSize: MaterialStateProperty.all(Size(360.w, 70.sp)),
           fixedSize: MaterialStateProperty.all(Size(340.w, 45.sp)),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
           ),
           elevation: MaterialStateProperty.all(0),
           textStyle: getElevatedButtonTextStyle(),
@@ -131,6 +133,25 @@ class MyStyles {
           ),
         ),
       );
+
+  static OutlinedButtonThemeData getOutlinedButtonTheme() {
+    return OutlinedButtonThemeData(
+      style: ButtonStyle(
+        fixedSize: MaterialStateProperty.all(Size(330.w, 45.sp)),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.r),
+          ),
+        ),
+        side: MaterialStateProperty.all(
+          BorderSide(
+            width: 2.sp,
+            color: LightThemeColors.primaryColor,
+          ),
+        ),
+      ),
+    );
+  }
 
   static TextButtonThemeData getTextButtonTheme() => TextButtonThemeData(
         style: ButtonStyle(
@@ -235,31 +256,11 @@ class MyStyles {
 
   //*************************** My Custom Styles For a Specific Use Cases  ***********************************
 
-  static OutlinedButtonThemeData getOutlinedButtonTheme() {
-    return OutlinedButtonThemeData(
-      style: ButtonStyle(
-        fixedSize: MaterialStateProperty.all(Size(330.w, 40.sp)),
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(7.sp),
-          ),
-        ),
-        side: MaterialStateProperty.all(
-          const BorderSide(
-            width: 1,
-            color: LightThemeColors.primaryColor,
-          ),
-        ),
-      ),
-    );
-  }
-
   static InputDecoration getMessageInputDecoration() => MyStyles.getInputDecoration().copyWith(
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20.r),
           borderSide: BorderSide.none,
         ),
-        
       );
 
   ///-------------------- OTP FIELD THEME ------------------------------

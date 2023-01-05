@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:get/get.dart';
+
 import 'package:underline_indicator/underline_indicator.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/screens/user_chats_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/status_view.dart';
 import 'package:whatsapp_clone/app/shared_widgets/gradient_icon_button.dart';
+import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/config/theme/light_theme_colors.dart';
 
 import '../controllers/home_controller.dart';
 import 'calls_veiw.dart';
 
-class HomeScreen extends GetView<HomeController> {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatelessWidget {
+  HomeScreen({Key? key})
+      : controller = Get.put(HomeController()),
+        super(key: key);
+
+  final HomeController controller;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -24,14 +30,22 @@ class HomeScreen extends GetView<HomeController> {
             'WhatsUp',
           ),
           actions: [
-            GradientIconButton(
-              icon: Icons.search,
-              onPressed: () {},
+            Center(
+              child: GradientIconButton(
+                icon: Icons.search,
+                backgroundColor: MyColors.LightGreen,
+                backgroundSize: 35.sp,
+                onPressed: () {},
+              ),
             ),
             SizedBox(width: 15.sp),
-            GradientIconButton(
-              icon: Icons.more_vert,
-              onPressed: () {},
+            Center(
+              child: GradientIconButton(
+                icon: Icons.more_vert,
+                backgroundColor: MyColors.LightGreen,
+                backgroundSize: 35.sp,
+                onPressed: controller.onMorePressed,
+              ),
             ),
             SizedBox(width: 15.sp),
           ],

@@ -14,7 +14,8 @@ dependencies:
   get_storage: ^2.0.3                 #used for storage
 
   ### My Back-end ##
-  firebase_auth: ^4.2.1
+  firebase_auth: 4.2.5
+  # firebase_auth: ^1.1.1
   firebase_storage: ^11.0.8
   cloud_firestore: ^4.2.0
   ### My Back-end ##
@@ -34,18 +35,20 @@ dependencies:
   voice_message_package: ^0.0.74
   flutter_sound: ^9.2.13
   permission_handler: ^10.2.0
-  extended_image: ^6.2.1
+  extended_image: ^6.2.1   #used in image preview screen (to interact with the image)
 
   qr_flutter: ^4.0.0
   qr_code_scanner: ^1.0.0
   file_picker: ^5.2.4
   google_fonts: ^3.0.1 # fonts
-  pinput: ^2.2.16   # otp field 
+  pinput: ^2.2.16      # otp field 
   flutter_contacts: ^1.1.5+1
-  chewie: ^1.1.0
+  chewie: ^1.1.0      #video
   flutter_chat_ui: ^1.6.6
   url_launcher: ^6.1.7
   dio: ^4.0.6
+
+
 
 dev_dependencies: 
   flutter_lints: 2.0.1

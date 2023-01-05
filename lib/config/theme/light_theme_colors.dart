@@ -19,7 +19,7 @@ class LightThemeColors {
 
   //ICONS
   static const Color appBarIconsColor = primaryColor;
-  static const Color iconColor = Colors.black;
+  static const Color iconColor = primaryColor;
   static const Color unselectedIconColor = Colors.grey;
 
   //BUTTON

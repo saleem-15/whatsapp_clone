@@ -4,6 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MyFonts {
+  MyFonts._();
+
+  /// font type for The Whole App
   static TextStyle get getAppFontType => GoogleFonts.openSans();
 
   // headlines text font
@@ -36,11 +39,11 @@ class MyFonts {
   ///-----------------headlines font size--------------------------------
   static double get headline1TextSize => 26.sp;
   static double get headline2TextSize => 22.sp;
-  static double get headline3TextSize => 18.sp;
+  static double get headline3TextSize => 16.sp;
 
   static FontWeight get headline1TextWeight => FontWeight.bold;
-  static FontWeight get headline2TextWeight => FontWeight.w600;
-  static FontWeight get headline3TextWeight => FontWeight.w500;
+  static FontWeight get headline2TextWeight => FontWeight.w700;
+  static FontWeight get headline3TextWeight => FontWeight.w700;
 
   ///----------------------------------------------------------------------------
 

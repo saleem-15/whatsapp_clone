@@ -2,6 +2,24 @@
 
 import 'package:flutter/material.dart';
 
+enum GradientType {
+  greenGradient,
+  RedGradient,
+}
+
+Gradient getGradient(GradientType gradientType) {
+  switch (gradientType) {
+    case GradientType.greenGradient:
+      return MyColors.greenGradient;
+
+    case GradientType.RedGradient:
+      return MyColors.redGradient;
+
+    default:
+      return MyColors.greenGradient;
+  }
+}
+
 class MyColors {
   MyColors._();
   static const Color MyBlack = Color(0xff09101D);
@@ -22,10 +40,18 @@ class MyColors {
   //msg card color
   static const Color cc = Color(0xfff4f6f9);
 
-  static const Gradient myGradient = LinearGradient(
+  static const Gradient greenGradient = LinearGradient(
     colors: [
       Color(0xff01ef93),
       Color(0xff0fc57f),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+  static const Gradient redGradient = LinearGradient(
+    colors: [
+      Color.fromARGB(255, 252, 58, 94),
+      red,
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

@@ -34,6 +34,7 @@ class MyTheme {
 
       // divider color
       dividerColor: LightThemeColors.dividerColor,
+
       // app background color
       backgroundColor: LightThemeColors.backgroundColor,
 
@@ -49,6 +50,8 @@ class MyTheme {
       // elevated button theme
       elevatedButtonTheme: MyStyles.getElevatedButtonTheme(),
 
+      outlinedButtonTheme: MyStyles.getOutlinedButtonTheme(),
+
       // Outlined button theme
       // outlinedButtonTheme: MyStyles.getOutlinedButtonTheme(),
 
@@ -59,7 +62,7 @@ class MyTheme {
       textTheme: MyStyles.getTextTheme(),
 
       // icon theme
-      // iconTheme: MyStyles.getIconTheme(),
+      iconTheme: MyStyles.getIconTheme(),
 
       //TabBar
       tabBarTheme: MyStyles.getTabBarTheme(),
