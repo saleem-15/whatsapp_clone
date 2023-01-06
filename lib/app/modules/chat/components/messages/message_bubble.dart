@@ -1,8 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_link_previewer/flutter_link_previewer.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import 'package:whatsapp_clone/app/models/messages/text_message.dart';
+import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
@@ -22,7 +26,6 @@ class MessageBubble extends StatelessWidget {
     final Rx<bool> isNeedNewLine = c[1].obs;
     final hasEmoji = Utils.hasEmoji(message.text);
 
-  
     return Row(
       mainAxisAlignment: message.isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
@@ -66,20 +69,25 @@ class MessageBubble extends StatelessWidget {
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                  Obx(
-                    () => Padding(
-                      padding: EdgeInsets.only(
-                        bottom: isNeedNewLine.value ? 20 : 0,
-                        right: isNeedPAdding.value || hasEmoji ? 55 : 0,
-                      ),
+                  Utils.containsUrl(message.text)
+                      ? LinkPreviewer(text: message.text).paddingOnly(bottom: 12.sp)
+                      :
 
-                      /// text
-                      child: Text(
-                        message.text,
-                        style: MessageBubbleSettings.messageTextStyle,
-                      ),
-                    ),
-                  ),
+                      /// message Text
+                      Obx(
+                          () => Padding(
+                            padding: EdgeInsets.only(
+                              bottom: isNeedNewLine.value ? 20 : 0,
+                              right: isNeedPAdding.value || hasEmoji ? 55 : 0,
+                            ),
+
+                            /// text
+                            child: Text(
+                              message.text,
+                              style: MessageBubbleSettings.messageTextStyle,
+                            ),
+                          ),
+                        ),
                 ],
               ),
 
@@ -116,5 +124,61 @@ class MessageBubble extends StatelessWidget {
     if (boxes.length < 2 && boxes.last.right > 630) needNextline = true;
     if (boxes.length > 1 && boxes.last.right > 630) needNextline = true;
     return [needPadding, needNextline];
+  }
+}
+
+///used when the text contains a url
+class LinkPreviewer extends StatelessWidget {
+  LinkPreviewer({
+    Key? key,
+    required this.text,
+  })  : _url = Utils.extractUrl(text)!,
+        super(key: key);
+
+  final String text;
+  late final String _url;
+  final Rxn<dynamic> previewData = Rxn();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Linkify(
+          text: text,
+
+          /// when the link is pressed
+          onOpen: (link) => Utils.launchLink(link.url),
+        ),
+        SizedBox(
+          height: 5.sp,
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5.sp),
+          decoration: BoxDecoration(
+            color: MyColors.LightGrey.withOpacity(.1),
+            borderRadius: MessageBubbleSettings.allCornersRoundedBorder,
+          ),
+          child: Obx(
+            () => LinkPreview(
+              enableAnimation: true,
+              onPreviewDataFetched: (data) => previewData(data),
+              previewData: previewData.value,
+              textWidget: const SizedBox.shrink(),
+              text: _url,
+              width: MediaQuery.of(context).size.width,
+              imageBuilder: (imageUrl) => ClipRRect(
+                borderRadius: MessageBubbleSettings.allCornersRoundedBorder,
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              padding: EdgeInsets.zero,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

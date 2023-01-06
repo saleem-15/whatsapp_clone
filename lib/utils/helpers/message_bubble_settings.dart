@@ -15,7 +15,14 @@ class MessageBubbleSettings {
   static final _backgroundType = ChatBacground.color.obs;
   static final Rx<Color> _chatBackgroundColor = const Color(0xff112233).obs;
 
-  static BorderRadius borderRadius = BorderRadius.circular(15.r);
+  static BorderRadius allCornersRoundedBorder = BorderRadius.circular(15.r);
+
+  static BorderRadius getBorderRadius(bool isMyMessage) => BorderRadius.only(
+        topRight: isMyMessage ? Radius.zero : Radius.circular(15.r),
+        topLeft: isMyMessage ? Radius.circular(15.r) : Radius.zero,
+        bottomRight: Radius.circular(15.r),
+        bottomLeft: Radius.circular(15.r),
+      );
 
   static EdgeInsets messageMargin({required bool isMyMessage}) => EdgeInsets.only(
         right: isMyMessage ? 8 : 0,
@@ -25,7 +32,7 @@ class MessageBubbleSettings {
       );
   static BoxDecoration messageDecoration({required bool isMyMessage}) => BoxDecoration(
         color: isMyMessage ? myMessageColor : othersMessageColor,
-        borderRadius: borderRadius,
+        borderRadius: allCornersRoundedBorder,
       );
 
   static TextStyle messageTextStyle = TextStyle(
