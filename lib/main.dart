@@ -11,6 +11,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:get/get.dart';
+import 'package:isar/isar.dart';
+import 'package:whatsapp_clone/app/models/messages/image_message.dart';
+import 'package:whatsapp_clone/app/models/messages/text_message.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/auth_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/otp_form_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/signin_controller.dart';
@@ -18,8 +21,12 @@ import 'package:whatsapp_clone/app/modules/auth/controllers/signup_controller.da
 import 'package:whatsapp_clone/app/modules/auth/screens/signup_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/service/chats_provider.dart';
+import 'package:whatsapp_clone/utils/contacts.dart';
 import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
 
+import 'app/models/messages/file_message.dart';
+import 'app/models/messages/video_message.dart';
+import 'app/models/messages/voice_message.dart';
 import 'app/modules/auth/screens/otp_screen.dart';
 import 'app/modules/auth/services/auth_provider.dart';
 import 'app/modules/user_chats/controllers/chats_view_controller.dart';
@@ -33,6 +40,18 @@ Future<void> main() async {
   await MySharedPref.init();
 
   Get.put(AuthController());
+  MyContacts.listenToContacts();
+
+  final isar = await Isar.open([
+
+  ]);
+
+   
+  await isar.writeTxn(() async {
+    // insert & update
+    // await isar.imageMessages.watchLazy(fireImmediately: true);
+    
+  });
 
   // resetApp();
 
@@ -82,17 +101,17 @@ class Main extends StatelessWidget {
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, AsyncSnapshot<User?> snapshot) {
-            log('-----Auth state changed');
+            // log('-----Auth state changed');
 
             /// if user == null => the user is not Authenticated
             ///
             if (snapshot.data == null) {
               // if (FirebaseAuth.instance.currentUser == null) {
-              log('--------Not Authorized!');
+              // log('--------Not Authorized!');
               return SignUpScreen();
             }
 
-            log('-----Authorized');
+            // log('-----Authorized');
             return HomeScreen();
           },
         ),

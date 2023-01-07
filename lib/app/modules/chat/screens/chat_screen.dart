@@ -96,7 +96,7 @@ class ChatScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: Messages(
-                  chatId: controller.chat.id,
+                  chatId: controller.chat.chatId,
                 ),
               ),
 

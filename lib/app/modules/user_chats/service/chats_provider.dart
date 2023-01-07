@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:whatsapp_clone/app/models/chat_interface.dart';
@@ -50,7 +48,7 @@ class ChatsProvider {
   }
 
   /// retrives the info of all the private chats from Firestore
-  /// and creates privateChat objects
+  /// and returns them as privateChat objects
   static Future<List<PrivateChat>> _getAllPrivateChats(List<QueryDocumentSnapshot> chatDocs) async {
     List<PrivateChat> privateChatsList = [];
 
@@ -66,7 +64,7 @@ class ChatsProvider {
       final user = User.fromDoc(usersDocs[i]);
 
       final privateChat = PrivateChat(
-        id: otherUsers[user.uid]!.id,
+        chatId: otherUsers[user.uid]!.id,
         user: user,
         usersIds: List.castFrom<dynamic, String>(otherUsers[user.uid]!['members']),
       );
@@ -101,10 +99,8 @@ class ChatsProvider {
     List<String> chatsIds = [];
 
     final myDoc = await usersCollection.doc(myUid).get();
-    log(myDoc.exists.toString());
-    // log(.toString());
-    log(myDoc.reference.toString());
-    log(myDoc.data().toString());
+
+    assert(myDoc.exists);
 
     final List? privateChats = myDoc.safeGet('chats') as List?;
     final List? myGroups = myDoc.safeGet('groups') as List?;

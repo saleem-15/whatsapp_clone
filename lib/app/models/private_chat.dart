@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:isar/isar.dart';
 import 'package:whatsapp_clone/app/models/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
@@ -6,11 +7,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
+@Collection()
 class PrivateChat implements Chat {
+  ///this id does not realy represents the user,
+  ///its only exist due to [Isar] database requirements
+  Id id = Isar.autoIncrement;
   final User user;
 
   @override
-  String id;
+  String chatId;
 
   @override
   late String name;
@@ -25,7 +30,7 @@ class PrivateChat implements Chat {
   List<String> usersIds;
 
   PrivateChat({
-    required this.id,
+    required this.chatId,
     required this.user,
     required this.usersIds,
   }) {

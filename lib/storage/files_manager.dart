@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
@@ -125,7 +126,10 @@ class FileManager {
     final isSaved = await isFileSaved(fileURl, chatId);
 
     if (isSaved) {
-      throw Exception('saveFileFromNetwork = >the file is saved before => fileName: $fileName');
+      ///throw exception only if its (Debug mode)
+      if (kDebugMode) {
+        throw Exception('saveFileFromNetwork = >the file is saved before => fileName: $fileName');
+      }
 
       final file = await getFile(fileURl, chatId);
       return file;

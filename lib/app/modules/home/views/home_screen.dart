@@ -21,6 +21,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return DefaultTabController(
       initialIndex: 0,
       length: 3,
@@ -35,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                 icon: Icons.search,
                 backgroundColor: MyColors.LightGreen,
                 backgroundSize: 35.sp,
-                onPressed: () {},
+                onPressed: controller.onSearchPressed,
               ),
             ),
             SizedBox(width: 15.sp),

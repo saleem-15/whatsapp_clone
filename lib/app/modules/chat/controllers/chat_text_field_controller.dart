@@ -107,7 +107,7 @@ class ChatTextFieldController extends GetxController {
 
   void sendMessage() {
     final msg = TextMessage.toSend(
-      chatId: chat.id,
+      chatId: chat.chatId,
       text: text.trim(),
     );
 

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:uuid/uuid.dart';
 
 class Utils {
   static String formatDate(DateTime time) {
@@ -71,5 +72,10 @@ class Utils {
     if (!await launchUrl(uri)) {
       throw 'Could not launch $uri';
     }
+  }
+
+  static const Uuid _uuid = Uuid();
+  static String randomId() {
+    return _uuid.v4();
   }
 }

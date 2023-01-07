@@ -1,7 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:whatsapp_clone/app/models/message_type.dart';
+import 'package:isar/isar.dart';
+import 'package:whatsapp_clone/app/models/message_type_enum.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 
 import 'file_message.dart';
@@ -9,6 +10,7 @@ import 'text_message.dart';
 import 'video_message.dart';
 
 abstract class MessageInterface {
+
   bool isSent = false;
   bool isSeen = false;
 
@@ -47,7 +49,7 @@ abstract class MessageInterface {
   factory MessageInterface.toSend(String chatId, Map<String, dynamic> parameters) {
     throw UnimplementedError();
   }
-  
+
   factory MessageInterface.fromDoc(DocumentSnapshot map) {
     switch (msgTypeEnumfromString(map['type'])) {
       case MessageType.text:

@@ -77,7 +77,7 @@ class _VideoMessageBubbleState extends State<VideoMessageBubble> {
                           },
                         ),
                         ClipRRect(
-                          borderRadius: MessageBubbleSettings.borderRadius,
+                          borderRadius: MessageBubbleSettings.allCornersRoundedBorder,
                           child: Hero(
                             tag: widget.message.videoUrl,
                             child: NetworkOrLocalVideo(

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:whatsapp_clone/app/models/message_type.dart';
+import 'package:whatsapp_clone/app/models/message_type_enum.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';

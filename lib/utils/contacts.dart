@@ -4,20 +4,33 @@ import 'dart:developer';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
 class MyContacts {
-  Future<List<Contact>> getMyContacts() async {
+  MyContacts._();
+
+  /// returnes all the phone numbers stored in the device,
+  /// if a person has multiple phone numbers `it takes all his phone numbers`
+  ///
+  /// if the permission to contacts is not granted it throws an exception
+  static Future<List<String>> getMyContacts() async {
+    List<String> phoneNumbers = [];
+
     /// Request contact permission
     if (await FlutterContacts.requestPermission()) {
       // Get all contacts (lightly fetched)
-      List<Contact> contacts = await FlutterContacts.getContacts();
+      List<Contact> contacts = await FlutterContacts.getContacts(withProperties: true);
+      log('*** Num of contacts:${contacts.length}  ***');
 
-      // Get all contacts (fully fetched)
-      // contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: true);
-      return contacts;
+      ///take only the phone numbers for each contact
+      for (Contact contact in contacts) {
+        final contactPhoneNumbers = contact.phones.map((e) => e.number);
+        phoneNumbers.addAll(contactPhoneNumbers);
+      }
+      log('*** Num of phone Numbers:${phoneNumbers.length}  ***');
+      return phoneNumbers;
     }
     throw 'Permission to contacts is not granted';
   }
 
-  Future<void> addNewContact(String phoneNumber, String firstName, [String lastName = '']) async {
+  static Future<void> addNewContact(String phoneNumber, String firstName, [String lastName = '']) async {
     // Insert new contact
     final newContact = Contact()
       ..name.first = firstName
@@ -26,7 +39,7 @@ class MyContacts {
     await newContact.insert();
   }
 
-  listenToContacts() {
+  static void listenToContacts() {
     // Listen to contact database changes
     FlutterContacts.addListener(() => log('Contact DB changed'));
   }

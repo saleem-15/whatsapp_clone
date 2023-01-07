@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:whatsapp_clone/app/models/message_type.dart';
+import 'package:isar/isar.dart';
+import 'package:whatsapp_clone/app/models/message_type_enum.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
+
+// @collection
 class VideoMessage extends MessageInterface {
   /// json fields names (to ensure that i always (send) and (recieve) the right field name)
   static const video_name_key = 'videoName';
@@ -22,6 +25,12 @@ class VideoMessage extends MessageInterface {
     required this.videoName,
   }) : super(type: MessageType.video);
 
+  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
+ 
+  @override
+  @enumerated
+  MessageType get type => super.type;
+
   String videoUrl;
   String videoName;
   String? text;
@@ -31,7 +40,7 @@ class VideoMessage extends MessageInterface {
     return super.toMap()
       ..addAll({
         'text': text,
-        video_name_key:videoName,
+        video_name_key: videoName,
         video_url_key: videoUrl,
       });
   }

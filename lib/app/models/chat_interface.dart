@@ -4,7 +4,7 @@ import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 abstract class Chat {
-  String id;
+  String chatId;
 
   String name;
 
@@ -23,7 +23,7 @@ abstract class Chat {
     required this.usersIds,
     required this.name,
     required this.image,
-    required this.id,
+    required this.chatId,
     required this.messages,
   });
 }

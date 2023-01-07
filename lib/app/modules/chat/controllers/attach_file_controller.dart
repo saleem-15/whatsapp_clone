@@ -118,6 +118,6 @@ class AttachFileController extends GetxController {
 
     // );
 
-    ChattingProvider.sendFileMessage(chat.id, files[0]);
+    ChattingProvider.sendFileMessage(chat.chatId, files[0]);
   }
 }

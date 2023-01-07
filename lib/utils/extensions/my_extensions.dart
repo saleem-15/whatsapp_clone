@@ -15,3 +15,17 @@ extension MyExtension on DocumentSnapshot {
     }
   }
 }
+
+extension MyListExtensions<T> on List<T> {
+  void safeAdd(T? value) {
+    if (value != null) {
+      add(value);
+    }
+  }
+
+  void safeAddAll(List<T>? values) {
+    if (values != null) {
+      addAll(values);
+    }
+  }
+}

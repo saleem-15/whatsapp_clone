@@ -5,14 +5,14 @@ import 'package:whatsapp_clone/app/shared_widgets/gradient_icon.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 
 class ChangeUserAvatarBottomSheet extends StatelessWidget {
-  ChangeUserAvatarBottomSheet({
+  const ChangeUserAvatarBottomSheet({
     Key? key,
     required this.chooseUserImageFromGallery,
     required this.chooseUserImageFromCamera,
   }) : super(key: key);
 
-  Function() chooseUserImageFromGallery;
-  Function() chooseUserImageFromCamera;
+  final Function() chooseUserImageFromGallery;
+  final Function() chooseUserImageFromCamera;
 
   @override
   Widget build(BuildContext context) {

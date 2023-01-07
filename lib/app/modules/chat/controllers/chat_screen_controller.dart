@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:video_viewer/video_viewer.dart';
 import 'package:whatsapp_clone/app/models/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
@@ -33,7 +32,7 @@ class ChatScreenController extends GetxController {
   }
 
   Stream<List<MessageInterface>> getMessagesStream() {
-    return ChattingProvider.getMessagesStream(chat.id).map((event) {
+    return ChattingProvider.getMessagesStream(chat.chatId).map((event) {
       final messageDocs = event.docs;
 
       final List<MessageInterface> messages = [];
@@ -122,7 +121,7 @@ class ChatScreenController extends GetxController {
   void sendImage(File image, String? message) {
     final imageMessage = ImageMessage.toSend(
       text: message,
-      chatId: chat.id,
+      chatId: chat.chatId,
       imageUrl: image.path,
       imageName: '',
     );
@@ -132,7 +131,7 @@ class ChatScreenController extends GetxController {
 
   void sendAudio(File audioFile) {
     final audioMessage = AudioMessage.toSend(
-      chatId: chat.id,
+      chatId: chat.chatId,
       audio: audioFile.path,
     );
 
@@ -141,7 +140,7 @@ class ChatScreenController extends GetxController {
 
   void sendVideo(File video, String? message) {
     final videoMessage = VideoMessage.toSend(
-      chatId: chat.id,
+      chatId: chat.chatId,
       text: message,
       videoUrl: video.path,
       videoName: '',
@@ -153,13 +152,5 @@ class ChatScreenController extends GetxController {
   onFilePressed(FileMessage message) {
     // _launchUrl(message.file);
     log('file ${message.file} is pressed ');
-  }
-
-  Future<void> _launchUrl(String url) async {
-    final Uri uri = Uri.parse('file:/$url');
-
-    if (!await launchUrl(uri)) {
-      throw 'Could not launch $uri';
-    }
   }
 }

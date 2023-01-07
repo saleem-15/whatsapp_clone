@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/models/message_type.dart';
+import 'package:whatsapp_clone/app/models/message_type_enum.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';

@@ -14,6 +14,7 @@ class ChatTextField extends GetView<ChatTextFieldController> {
 
   @override
   Widget build(BuildContext context) {
+
     return Row(
       children: [
         Expanded(

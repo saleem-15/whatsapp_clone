@@ -1,8 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:isar/isar.dart';
 
+part 'user.g.dart';
+
+@Collection()
 class User {
+  ///this id does not realy represents the user 
+  ///its only exist due to [Isar] database requirements
+  Id id = Isar.autoIncrement;
+
   String uid;
   String name;
   String phoneNumber;
