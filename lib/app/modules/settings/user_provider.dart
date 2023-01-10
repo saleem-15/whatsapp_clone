@@ -3,7 +3,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
+import 'package:whatsapp_clone/storage/files_manager.dart';
+import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 class UserProvider {
@@ -11,6 +15,19 @@ class UserProvider {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
   static final String myUid = FirebaseAuth.instance.currentUser!.uid;
   static final CollectionReference _usersCollection = _db.collection('users');
+
+  static late Rx<ImageProvider> userImage;
+
+  static Future<void> init() async {
+    File? imageFile = await FileManager.getUserImage();
+
+    if (imageFile == null) {
+      userImage = Rx(const AssetImage(Assets.default_user_image));
+      return;
+    }
+
+    userImage = Rx(FileImage(imageFile));
+  }
 
   ///
   static Future<void> updateUserProfile(User user) async {

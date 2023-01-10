@@ -23,19 +23,19 @@ Future<User?> checkMyContactsAreExists(List<String> phoneNumbers) async {
 }
 
 /// it creates a chat between me and the provided user
-Future<void> createChat(User user) async {
+Future<void> createChat(String userId) async {
   ///create the chat documents that we will communicate through
   final chatDoc = await chatsCollection.add({
     'chatType': 'privateChat',
     'createdAt': FieldValue.serverTimestamp(),
     'members': [
       myUid,
-      user.uid,
+      userId,
     ],
   });
 
   ///add the our chat document id to his chats
-  usersCollection.doc(user.uid).update({
+  usersCollection.doc(userId).update({
     'chats': FieldValue.arrayUnion([chatDoc.id]),
   });
 

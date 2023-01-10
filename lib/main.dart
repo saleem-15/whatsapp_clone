@@ -30,6 +30,7 @@ import 'app/models/messages/video_message.dart';
 import 'app/models/messages/audio_message.dart';
 import 'app/modules/auth/screens/otp_screen.dart';
 import 'app/modules/auth/services/auth_provider.dart';
+import 'app/modules/settings/user_provider.dart';
 import 'app/modules/user_chats/controllers/chats_view_controller.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'storage/my_shared_pref.dart';
@@ -39,10 +40,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await MySharedPref.init();
-  MySharedPref.setLastUpdated(DateTime.now());
+  await UserProvider.init();
 
   Get.put(AuthController());
-  MyContacts.listenToContacts();
+  // MyContacts.listenToContacts();
 
   // final isar = await Isar.open([
   //   // UserSchema,

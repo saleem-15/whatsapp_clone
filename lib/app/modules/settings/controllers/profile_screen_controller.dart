@@ -1,19 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
-import 'package:whatsapp_clone/storage/files_manager.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 import '../user_provider.dart';
 
 class ProfileScreenController extends GetxController {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-
 
   /// text fields controllers & text getters -----------------
   final nameController = TextEditingController();
@@ -38,7 +31,6 @@ class ProfileScreenController extends GetxController {
     _autoDisableLoginButton();
   }
 
-
   void _autoDisableLoginButton() {
     phoneNumberFieledController.addListener(() {
       if (phoneNumber.isEmpty || name.isEmpty) {
@@ -55,8 +47,6 @@ class ProfileScreenController extends GetxController {
       isButtonDisable(false);
     });
   }
-
-
 
   Future<void> onUpdateButtonPressed() async {
     User myUpdatedInfo = MySharedPref.getUserData!
@@ -101,5 +91,4 @@ class ProfileScreenController extends GetxController {
 
   /// ------------------------------------------------------
 
-  
 }

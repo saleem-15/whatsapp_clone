@@ -41,7 +41,7 @@ class User {
       name: doc[user_name_key] as String,
       phoneNumber: doc[user_phone_number_key] as String,
       imageUrl: doc[user_image_url_key],
-      lastUpdated: doc[user_last_Updated_key],
+      lastUpdated: (doc[user_last_Updated_key] as Timestamp).toDate(),
       about: doc[user_about_key],
     );
   }

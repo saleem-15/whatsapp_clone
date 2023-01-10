@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:whatsapp_clone/app/shared_widgets/gradient_icon_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/storage/files_manager.dart';
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 import '../controllers/settings_screen_controller.dart';
 import '../user_provider.dart';
@@ -78,16 +77,7 @@ class UserAvatar extends StatelessWidget {
   UserAvatar({
     super.key,
     required this.avatarSize,
-  }) {
-    ///put the defualt user image at first
-    userImageProvider = Rx(const AssetImage(Assets.default_user_image));
-
-    FileManager.getUserImage().then((imageFile) {
-      if (imageFile != null) {
-        userImageProvider.value = FileImage(imageFile);
-      }
-    });
-  }
+  }) : userImageProvider = UserProvider.userImage;
 
   late final Rx<ImageProvider> userImageProvider;
   final double avatarSize;

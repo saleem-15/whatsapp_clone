@@ -55,6 +55,8 @@ dependencies:
   flutter_link_previewer: ^3.2.0  # used in text message bubble (to show preview for links)
   flutter_linkify: ^5.0.2         # used to highlight a url in a text
   uuid: ^3.0.7                    # Random Id generator
+  pretty_qr_code: ^2.0.3          # generates a QR code       
+  mobile_scanner: ^2.1.0          # reads Qr code
   
     
   #infinite_scroll_pagination: ^3.2.0  # used EVERY WHERE

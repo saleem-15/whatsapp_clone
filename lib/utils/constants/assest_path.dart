@@ -7,4 +7,5 @@ class Assets {
   static const chat_background_dark = 'assets/chat_background_black.jpg';
   static const chat_background_dark_blue = 'assets/chat_background_dark_blue.png';
   static const chat_background_light = 'assets/chat_background_light.png';
+  static const QR_SCANNER_BORDER = 'assets/qr_scanner_border.png';
 }
