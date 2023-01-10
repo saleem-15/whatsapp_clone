@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, implementation_imports
 
+import 'dart:developer';
 import 'dart:io';
 import 'package:logger/src/logger.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:whatsapp_clone/app/models/chat_interface.dart';
+import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/text_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/components/send_attachement_bottom_sheet.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
@@ -107,7 +108,7 @@ class ChatTextFieldController extends GetxController {
 
   void sendMessage() {
     final msg = TextMessage.toSend(
-      chatId: chat.chatId,
+      chatId: chat.id,
       text: text.trim(),
     );
 
@@ -135,7 +136,9 @@ class ChatTextFieldController extends GetxController {
   }
 
   void onMicIconPressed() async {
+    log('mic pressed');
     if (recorder.isRecording) {
+      log('it was recording');
       File audioFile = await stop();
 
       showDoYouWantToSendAudioRecordingDialog(audioFile);

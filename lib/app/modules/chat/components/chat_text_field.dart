@@ -17,6 +17,7 @@ class ChatTextField extends GetView<ChatTextFieldController> {
 
     return Row(
       children: [
+        ///Text field
         Expanded(
           child: TextField(
             minLines: 1,
@@ -25,7 +26,7 @@ class ChatTextField extends GetView<ChatTextFieldController> {
             decoration: MyStyles.getChatTextFieldStyle().copyWith(
               hintText: 'Message',
 
-              ///(Attach file,camera) Icons (hidden When recording audio)
+              ///(Attach file & Camera) Icons (hidden When recording audio)
               suffixIcon: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

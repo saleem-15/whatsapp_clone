@@ -33,6 +33,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
       allowedScreenSleep: false,
       allowPlaybackSpeedChanging: false,
       allowFullScreen: false,
+      autoPlay: true,
     );
     super.initState();
   }

@@ -26,84 +26,71 @@ class MessageBubble extends StatelessWidget {
     final Rx<bool> isNeedNewLine = c[1].obs;
     final hasEmoji = Utils.hasEmoji(message.text);
 
-    return Row(
-      mainAxisAlignment: message.isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        Container(
-          margin: MessageBubbleSettings.messageMargin(
-            isMyMessage: message.isMyMessage,
-          ),
-          constraints: BoxConstraints(maxWidth: messageMaxWidth),
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-          decoration: BoxDecoration(
-            // boxShadow: [
-            //   BoxShadow(
-            //     color: const Color.fromARGB(255, 199, 197, 197).withOpacity(0.8),
-            //     spreadRadius: 1,
-            //     blurRadius: 2,
-            //     offset: const Offset(0, 1), // changes position of shadow
-            //   ),
-            // ],
-            borderRadius: BorderRadius.only(
-              topRight: message.isMyMessage ? Radius.zero : const Radius.circular(20),
-              topLeft: message.isMyMessage ? const Radius.circular(20) : Radius.zero,
-              bottomRight: const Radius.circular(20),
-              bottomLeft: const Radius.circular(20),
-            ),
-            color: message.isMyMessage
-                ? MessageBubbleSettings.myMessageColor
-                : MessageBubbleSettings.othersMessageColor,
-          ),
-          child: Stack(
+    return Container(
+      margin: MessageBubbleSettings.messageMargin(
+        isMyMessage: message.isMyMessage,
+      ),
+      constraints: BoxConstraints(maxWidth: messageMaxWidth),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topRight: message.isMyMessage ? Radius.zero : const Radius.circular(20),
+          topLeft: message.isMyMessage ? const Radius.circular(20) : Radius.zero,
+          bottomRight: const Radius.circular(20),
+          bottomLeft: const Radius.circular(20),
+        ),
+        color: message.isMyMessage
+            ? MessageBubbleSettings.myMessageColor
+            : MessageBubbleSettings.othersMessageColor,
+      ),
+      child: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (!message.isMyMessage)
+              if (!message.isMyMessage)
 
-                    /// sender Name
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: Text(
-                        message.senderName,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                /// sender Name
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: Text(
+                    message.senderName,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              Utils.containsUrl(message.text)
+                  ? LinkPreviewer(text: message.text).paddingOnly(bottom: 12.sp)
+                  :
+
+                  /// message Text
+                  Obx(
+                      () => Padding(
+                        padding: EdgeInsets.only(
+                          bottom: isNeedNewLine.value ? 20 : 0,
+                          right: isNeedPAdding.value || hasEmoji ? 55 : 0,
+                        ),
+
+                        /// text
+                        child: Text(
+                          message.text,
+                          style: MessageBubbleSettings.messageTextStyle,
+                        ),
                       ),
                     ),
-                  Utils.containsUrl(message.text)
-                      ? LinkPreviewer(text: message.text).paddingOnly(bottom: 12.sp)
-                      :
-
-                      /// message Text
-                      Obx(
-                          () => Padding(
-                            padding: EdgeInsets.only(
-                              bottom: isNeedNewLine.value ? 20 : 0,
-                              right: isNeedPAdding.value || hasEmoji ? 55 : 0,
-                            ),
-
-                            /// text
-                            child: Text(
-                              message.text,
-                              style: MessageBubbleSettings.messageTextStyle,
-                            ),
-                          ),
-                        ),
-                ],
-              ),
-
-              /// time sent
-              Positioned(
-                bottom: -3,
-                right: 0,
-                child: Text(
-                  Utils.formatDate(message.timeSent),
-                  style: MessageBubbleSettings.timeSentTextStyle,
-                ),
-              ),
             ],
           ),
-        ),
-      ],
+
+          /// time sent
+          Positioned(
+            bottom: -3,
+            right: 0,
+            child: Text(
+              Utils.formatDate(message.timeSent),
+              style: MessageBubbleSettings.timeSentTextStyle,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -182,3 +169,12 @@ class LinkPreviewer extends StatelessWidget {
     );
   }
 }
+
+     // boxShadow: [
+        //   BoxShadow(
+        //     color: const Color.fromARGB(255, 199, 197, 197).withOpacity(0.8),
+        //     spreadRadius: 1,
+        //     blurRadius: 2,
+        //     offset: const Offset(0, 1), // changes position of shadow
+        //   ),
+        // ],

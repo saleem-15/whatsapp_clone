@@ -18,6 +18,8 @@ class MySharedPref {
   static const String _name = 'user_name';
   static const String _phone = 'user_phone';
   static const String _image = 'user_image';
+  static const String _userLastUpdated = 'user_last_updated';
+  static const String _about = 'user_about';
 
   /// init get storage services
   static init() async {
@@ -51,7 +53,21 @@ class MySharedPref {
   static void setUserPhoneNumber(String phoneNumber) => _storage.write(_phone, phoneNumber);
   static void deleteUserPhoneNumber() => _storage.remove(_phone);
 
+  static String? get getUserAbout => _storage.read(_about);
+  static void setUserAbout(String about) => _storage.write(_about, about);
+  static void deleteUserAbout() => _storage.remove(_about);
+
+  static DateTime? get getLastUpdated => DateTime.parse(_storage.read(_userLastUpdated));
+  static void setLastUpdated(DateTime lastUpdated) =>
+      _storage.write(_userLastUpdated, lastUpdated.toIso8601String());
+  static void deleteLastUpdated() => _storage.remove(_userLastUpdated);
+
+  ///returnes the path that the user image was stored in.
+  ///
+  ///returnes null if the user dont have an image 
   static String? get getUserImage => _storage.read(_image);
+
+  ///Takes the image path as a paramater
   static void setUserImage(String? image) {
     if (image != null) {
       _storage.write(_image, image);
@@ -70,9 +86,11 @@ class MySharedPref {
 
     return User(
       uid: userId,
-      name: MySharedPref.getUserName!,
-      imageUrl: MySharedPref.getUserImage,
-      phoneNumber: MySharedPref.getUserPhoneNumber!,
+      name: getUserName!,
+      imageUrl: getUserImage,
+      phoneNumber: getUserPhoneNumber!,
+      lastUpdated: getLastUpdated!,
+      about: getUserAbout,
     );
   }
 

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/models/chat_interface.dart';
+import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/service/chats_provider.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 

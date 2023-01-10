@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_video_info/flutter_video_info.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
@@ -77,5 +78,9 @@ class Utils {
   static const Uuid _uuid = Uuid();
   static String randomId() {
     return _uuid.v4();
+  }
+
+  static Future<VideoData?> getVideoInfo(String videoFilePath) async {
+    return await FlutterVideoInfo().getVideoInfo(videoFilePath);
   }
 }

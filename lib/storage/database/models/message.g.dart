@@ -3,17 +3,13 @@
 part of 'message.dart';
 
 // **************************************************************************
-// IsarCollectionGenerator
+// IsarEmbeddedGenerator
 // **************************************************************************
 
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
-extension GetMessageCollection on Isar {
-  IsarCollection<Message> get messages => this.collection();
-}
-
-const MessageSchema = CollectionSchema(
+const MessageSchema = Schema(
   name: r'Message',
   id: 2463283977299753079,
   properties: {
@@ -37,64 +33,59 @@ const MessageSchema = CollectionSchema(
       name: r'fileName',
       type: IsarType.string,
     ),
-    r'hashCode': PropertySchema(
-      id: 4,
-      name: r'hashCode',
-      type: IsarType.long,
-    ),
     r'image': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'image',
       type: IsarType.string,
     ),
     r'isMyMessage': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'isMyMessage',
       type: IsarType.bool,
     ),
     r'isSeen': PropertySchema(
-      id: 7,
+      id: 6,
       name: r'isSeen',
       type: IsarType.bool,
     ),
     r'isSent': PropertySchema(
-      id: 8,
+      id: 7,
       name: r'isSent',
       type: IsarType.bool,
     ),
     r'senderId': PropertySchema(
-      id: 9,
+      id: 8,
       name: r'senderId',
       type: IsarType.string,
     ),
     r'senderImage': PropertySchema(
-      id: 10,
+      id: 9,
       name: r'senderImage',
       type: IsarType.string,
     ),
     r'senderName': PropertySchema(
-      id: 11,
+      id: 10,
       name: r'senderName',
       type: IsarType.string,
     ),
     r'text': PropertySchema(
-      id: 12,
+      id: 11,
       name: r'text',
       type: IsarType.string,
     ),
     r'timeSent': PropertySchema(
-      id: 13,
+      id: 12,
       name: r'timeSent',
       type: IsarType.dateTime,
     ),
     r'type': PropertySchema(
-      id: 14,
+      id: 13,
       name: r'type',
       type: IsarType.byte,
       enumMap: _MessagetypeEnumValueMap,
     ),
     r'video': PropertySchema(
-      id: 15,
+      id: 14,
       name: r'video',
       type: IsarType.string,
     )
@@ -103,14 +94,6 @@ const MessageSchema = CollectionSchema(
   serialize: _messageSerialize,
   deserialize: _messageDeserialize,
   deserializeProp: _messageDeserializeProp,
-  idName: r'id',
-  indexes: {},
-  links: {},
-  embeddedSchemas: {},
-  getId: _messageGetId,
-  getLinks: _messageGetLinks,
-  attach: _messageAttach,
-  version: '3.0.5',
 );
 
 int _messageEstimateSize(
@@ -177,18 +160,17 @@ void _messageSerialize(
   writer.writeString(offsets[1], object.chatId);
   writer.writeString(offsets[2], object.file);
   writer.writeString(offsets[3], object.fileName);
-  writer.writeLong(offsets[4], object.hashCode);
-  writer.writeString(offsets[5], object.image);
-  writer.writeBool(offsets[6], object.isMyMessage);
-  writer.writeBool(offsets[7], object.isSeen);
-  writer.writeBool(offsets[8], object.isSent);
-  writer.writeString(offsets[9], object.senderId);
-  writer.writeString(offsets[10], object.senderImage);
-  writer.writeString(offsets[11], object.senderName);
-  writer.writeString(offsets[12], object.text);
-  writer.writeDateTime(offsets[13], object.timeSent);
-  writer.writeByte(offsets[14], object.type.index);
-  writer.writeString(offsets[15], object.video);
+  writer.writeString(offsets[4], object.image);
+  writer.writeBool(offsets[5], object.isMyMessage);
+  writer.writeBool(offsets[6], object.isSeen);
+  writer.writeBool(offsets[7], object.isSent);
+  writer.writeString(offsets[8], object.senderId);
+  writer.writeString(offsets[9], object.senderImage);
+  writer.writeString(offsets[10], object.senderName);
+  writer.writeString(offsets[11], object.text);
+  writer.writeDateTime(offsets[12], object.timeSent);
+  writer.writeByte(offsets[13], object.type.index);
+  writer.writeString(offsets[14], object.video);
 }
 
 Message _messageDeserialize(
@@ -197,24 +179,22 @@ Message _messageDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Message(
-    chatId: reader.readString(offsets[1]),
-    senderId: reader.readString(offsets[9]),
-    senderImage: reader.readStringOrNull(offsets[10]),
-    senderName: reader.readString(offsets[11]),
-    text: reader.readStringOrNull(offsets[12]),
-    timeSent: reader.readDateTime(offsets[13]),
-    type: _MessagetypeValueEnumMap[reader.readByteOrNull(offsets[14])] ??
-        MessageType.text,
-  );
+  final object = Message();
   object.audio = reader.readStringOrNull(offsets[0]);
+  object.chatId = reader.readString(offsets[1]);
   object.file = reader.readStringOrNull(offsets[2]);
   object.fileName = reader.readStringOrNull(offsets[3]);
-  object.id = id;
-  object.image = reader.readStringOrNull(offsets[5]);
-  object.isSeen = reader.readBool(offsets[7]);
-  object.isSent = reader.readBool(offsets[8]);
-  object.video = reader.readStringOrNull(offsets[15]);
+  object.image = reader.readStringOrNull(offsets[4]);
+  object.isSeen = reader.readBool(offsets[6]);
+  object.isSent = reader.readBool(offsets[7]);
+  object.senderId = reader.readString(offsets[8]);
+  object.senderImage = reader.readStringOrNull(offsets[9]);
+  object.senderName = reader.readString(offsets[10]);
+  object.text = reader.readStringOrNull(offsets[11]);
+  object.timeSent = reader.readDateTime(offsets[12]);
+  object.type = _MessagetypeValueEnumMap[reader.readByteOrNull(offsets[13])] ??
+      MessageType.text;
+  object.video = reader.readStringOrNull(offsets[14]);
   return object;
 }
 
@@ -234,29 +214,27 @@ P _messageDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readLong(offset)) as P;
-    case 5:
       return (reader.readStringOrNull(offset)) as P;
+    case 5:
+      return (reader.readBool(offset)) as P;
     case 6:
       return (reader.readBool(offset)) as P;
     case 7:
       return (reader.readBool(offset)) as P;
     case 8:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 9:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readStringOrNull(offset)) as P;
-    case 11:
       return (reader.readString(offset)) as P;
-    case 12:
+    case 11:
       return (reader.readStringOrNull(offset)) as P;
-    case 13:
+    case 12:
       return (reader.readDateTime(offset)) as P;
-    case 14:
+    case 13:
       return (_MessagetypeValueEnumMap[reader.readByteOrNull(offset)] ??
           MessageType.text) as P;
-    case 15:
+    case 14:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -277,93 +255,6 @@ const _MessagetypeValueEnumMap = {
   3: MessageType.audio,
   4: MessageType.file,
 };
-
-Id _messageGetId(Message object) {
-  return object.id;
-}
-
-List<IsarLinkBase<dynamic>> _messageGetLinks(Message object) {
-  return [];
-}
-
-void _messageAttach(IsarCollection<dynamic> col, Id id, Message object) {
-  object.id = id;
-}
-
-extension MessageQueryWhereSort on QueryBuilder<Message, Message, QWhere> {
-  QueryBuilder<Message, Message, QAfterWhere> anyId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(const IdWhereClause.any());
-    });
-  }
-}
-
-extension MessageQueryWhere on QueryBuilder<Message, Message, QWhereClause> {
-  QueryBuilder<Message, Message, QAfterWhereClause> idEqualTo(Id id) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(
-        lower: id,
-        upper: id,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterWhereClause> idNotEqualTo(Id id) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
-            )
-            .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
-            );
-      } else {
-        return query
-            .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
-            )
-            .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
-            );
-      }
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterWhereClause> idGreaterThan(Id id,
-      {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.greaterThan(lower: id, includeLower: include),
-      );
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterWhereClause> idLessThan(Id id,
-      {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.lessThan(upper: id, includeUpper: include),
-      );
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterWhereClause> idBetween(
-    Id lowerId,
-    Id upperId, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(
-        lower: lowerId,
-        includeLower: includeLower,
-        upper: upperId,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-}
 
 extension MessageQueryFilter
     on QueryBuilder<Message, Message, QFilterCondition> {
@@ -931,111 +822,6 @@ extension MessageQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'fileName',
         value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> hashCodeEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'hashCode',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> hashCodeGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'hashCode',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> hashCodeLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'hashCode',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> hashCodeBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'hashCode',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> idEqualTo(Id value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'id',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> idGreaterThan(
-    Id value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> idLessThan(
-    Id value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> idBetween(
-    Id lower,
-    Id upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'id',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
       ));
     });
   }
@@ -2024,621 +1810,3 @@ extension MessageQueryFilter
 
 extension MessageQueryObject
     on QueryBuilder<Message, Message, QFilterCondition> {}
-
-extension MessageQueryLinks
-    on QueryBuilder<Message, Message, QFilterCondition> {}
-
-extension MessageQuerySortBy on QueryBuilder<Message, Message, QSortBy> {
-  QueryBuilder<Message, Message, QAfterSortBy> sortByAudio() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'audio', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByAudioDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'audio', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByChatId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'chatId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByChatIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'chatId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByFile() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'file', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByFileDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'file', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByFileName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fileName', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByFileNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fileName', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByHashCode() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hashCode', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByHashCodeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hashCode', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByImage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'image', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByImageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'image', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByIsMyMessage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isMyMessage', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByIsMyMessageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isMyMessage', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByIsSeen() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isSeen', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByIsSeenDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isSeen', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByIsSent() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isSent', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByIsSentDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isSent', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortBySenderId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortBySenderIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortBySenderImage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderImage', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortBySenderImageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderImage', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortBySenderName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderName', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortBySenderNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderName', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByText() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'text', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByTextDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'text', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByTimeSent() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timeSent', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByTimeSentDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timeSent', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByVideo() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'video', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByVideoDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'video', Sort.desc);
-    });
-  }
-}
-
-extension MessageQuerySortThenBy
-    on QueryBuilder<Message, Message, QSortThenBy> {
-  QueryBuilder<Message, Message, QAfterSortBy> thenByAudio() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'audio', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByAudioDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'audio', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByChatId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'chatId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByChatIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'chatId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByFile() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'file', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByFileDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'file', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByFileName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fileName', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByFileNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fileName', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByHashCode() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hashCode', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByHashCodeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'hashCode', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenById() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByImage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'image', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByImageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'image', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByIsMyMessage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isMyMessage', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByIsMyMessageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isMyMessage', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByIsSeen() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isSeen', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByIsSeenDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isSeen', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByIsSent() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isSent', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByIsSentDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isSent', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenBySenderId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenBySenderIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenBySenderImage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderImage', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenBySenderImageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderImage', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenBySenderName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderName', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenBySenderNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'senderName', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByText() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'text', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByTextDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'text', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByTimeSent() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timeSent', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByTimeSentDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timeSent', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByVideo() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'video', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByVideoDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'video', Sort.desc);
-    });
-  }
-}
-
-extension MessageQueryWhereDistinct
-    on QueryBuilder<Message, Message, QDistinct> {
-  QueryBuilder<Message, Message, QDistinct> distinctByAudio(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'audio', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByChatId(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'chatId', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByFile(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'file', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByFileName(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'fileName', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByHashCode() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'hashCode');
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByImage(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'image', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByIsMyMessage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isMyMessage');
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByIsSeen() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isSeen');
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByIsSent() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isSent');
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctBySenderId(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'senderId', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctBySenderImage(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'senderImage', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctBySenderName(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'senderName', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByText(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'text', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByTimeSent() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'timeSent');
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'type');
-    });
-  }
-
-  QueryBuilder<Message, Message, QDistinct> distinctByVideo(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'video', caseSensitive: caseSensitive);
-    });
-  }
-}
-
-extension MessageQueryProperty
-    on QueryBuilder<Message, Message, QQueryProperty> {
-  QueryBuilder<Message, int, QQueryOperations> idProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'id');
-    });
-  }
-
-  QueryBuilder<Message, String?, QQueryOperations> audioProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'audio');
-    });
-  }
-
-  QueryBuilder<Message, String, QQueryOperations> chatIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'chatId');
-    });
-  }
-
-  QueryBuilder<Message, String?, QQueryOperations> fileProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'file');
-    });
-  }
-
-  QueryBuilder<Message, String?, QQueryOperations> fileNameProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'fileName');
-    });
-  }
-
-  QueryBuilder<Message, int, QQueryOperations> hashCodeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'hashCode');
-    });
-  }
-
-  QueryBuilder<Message, String?, QQueryOperations> imageProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'image');
-    });
-  }
-
-  QueryBuilder<Message, bool, QQueryOperations> isMyMessageProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isMyMessage');
-    });
-  }
-
-  QueryBuilder<Message, bool, QQueryOperations> isSeenProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isSeen');
-    });
-  }
-
-  QueryBuilder<Message, bool, QQueryOperations> isSentProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isSent');
-    });
-  }
-
-  QueryBuilder<Message, String, QQueryOperations> senderIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'senderId');
-    });
-  }
-
-  QueryBuilder<Message, String?, QQueryOperations> senderImageProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'senderImage');
-    });
-  }
-
-  QueryBuilder<Message, String, QQueryOperations> senderNameProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'senderName');
-    });
-  }
-
-  QueryBuilder<Message, String?, QQueryOperations> textProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'text');
-    });
-  }
-
-  QueryBuilder<Message, DateTime, QQueryOperations> timeSentProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'timeSent');
-    });
-  }
-
-  QueryBuilder<Message, MessageType, QQueryOperations> typeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'type');
-    });
-  }
-
-  QueryBuilder<Message, String?, QQueryOperations> videoProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'video');
-    });
-  }
-}

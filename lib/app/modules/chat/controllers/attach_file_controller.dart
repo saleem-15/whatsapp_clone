@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:whatsapp_clone/app/models/chat_interface.dart';
+import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/app/modules/image/screens/picked_photo_viewer.dart';
 import 'package:whatsapp_clone/app/modules/chat/services/chatting_provider.dart';
@@ -118,6 +118,6 @@ class AttachFileController extends GetxController {
 
     // );
 
-    ChattingProvider.sendFileMessage(chat.chatId, files[0]);
+    ChattingProvider.sendFileMessage(chat.id, files[0]);
   }
 }

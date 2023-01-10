@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:video_viewer/video_viewer.dart';
 
@@ -15,11 +14,13 @@ class NetworkOrLocalVideo extends StatefulWidget {
     required this.videoUrl,
     required this.fileName,
     required this.chatId,
+    this.borderRadius = BorderRadius.zero,
   }) : super(key: key);
 
   final String videoUrl;
   final String fileName;
   final String chatId;
+  final BorderRadius? borderRadius;
 
   @override
   State<NetworkOrLocalVideo> createState() => _NetworkOrLocalVideoState();
@@ -69,22 +70,20 @@ class _NetworkOrLocalVideoState extends State<NetworkOrLocalVideo> {
 
     ///it may be used by video viewer screen
     Get.put(videoPlayerController, tag: widget.videoUrl);
-    
+
     if (mounted) {
       setState(() {});
     }
   }
 
+  // aspectRatio: chewieController.videoPlayerController.value.aspectRatio,
   @override
   Widget build(BuildContext context) {
     if (video != null) {
-      return SizedBox(
-        width: 200.w,
-        child: AspectRatio(
-          aspectRatio: videoPlayerController.value.aspectRatio,
-          child: Chewie(
-            controller: chewieController,
-          ),
+      return ClipRRect(
+        borderRadius: widget.borderRadius,
+        child: Chewie(
+          controller: chewieController,
         ),
       );
     } else {

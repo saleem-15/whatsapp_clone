@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
-import 'package:whatsapp_clone/app/models/chat_interface.dart';
-import 'package:whatsapp_clone/app/models/group.dart';
-import 'package:whatsapp_clone/app/models/private_chat.dart';
+import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
+import 'package:whatsapp_clone/app/models/chats/group_chat.dart';
+import 'package:whatsapp_clone/app/models/chats/private_chat.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/utils/extensions/my_extensions.dart';
 
@@ -64,9 +64,9 @@ class ChatsProvider {
       final user = User.fromDoc(usersDocs[i]);
 
       final privateChat = PrivateChat(
-        chatId: otherUsers[user.uid]!.id,
+        id: otherUsers[user.uid]!.id,
         user: user,
-        usersIds: List.castFrom<dynamic, String>(otherUsers[user.uid]!['members']),
+        // usersIds: List.castFrom<dynamic, String>(otherUsers[user.uid]!['members']),
       );
 
       privateChatsList.add(privateChat);

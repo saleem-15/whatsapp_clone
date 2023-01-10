@@ -3,13 +3,14 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_video_info/flutter_video_info.dart';
 import 'package:whatsapp_clone/app/models/message_type_enum.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/text_message.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
-import 'package:whatsapp_clone/app/models/messages/voice_message.dart';
+import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
@@ -100,6 +101,8 @@ class ChattingProvider {
       file: videoFile,
       fileId: fileId,
     );
+
+    
     videoMessage
       ..videoUrl = videoUrl
       ..videoName = Utils.getFilName(videoFile.path);

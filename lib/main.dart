@@ -3,17 +3,17 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:developer';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// ignore: depend_on_referenced_packages
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/app/models/messages/text_message.dart';
+import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/auth_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/otp_form_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/signin_controller.dart';
@@ -21,12 +21,13 @@ import 'package:whatsapp_clone/app/modules/auth/controllers/signup_controller.da
 import 'package:whatsapp_clone/app/modules/auth/screens/signup_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/service/chats_provider.dart';
+import 'package:whatsapp_clone/storage/database/models/chat.dart';
 import 'package:whatsapp_clone/utils/contacts.dart';
 import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
 
 import 'app/models/messages/file_message.dart';
 import 'app/models/messages/video_message.dart';
-import 'app/models/messages/voice_message.dart';
+import 'app/models/messages/audio_message.dart';
 import 'app/modules/auth/screens/otp_screen.dart';
 import 'app/modules/auth/services/auth_provider.dart';
 import 'app/modules/user_chats/controllers/chats_view_controller.dart';
@@ -38,20 +39,21 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await MySharedPref.init();
+  MySharedPref.setLastUpdated(DateTime.now());
 
   Get.put(AuthController());
   MyContacts.listenToContacts();
 
-  final isar = await Isar.open([
+  // final isar = await Isar.open([
+  //   // UserSchema,
+  //   ChatSchema,
+  // ]);
 
-  ]);
+  // await isar.writeTxn(() async {
+  //   // insert & update
+  //   // await isar.imageMessages.watchLazy(fireImmediately: true);
 
-   
-  await isar.writeTxn(() async {
-    // insert & update
-    // await isar.imageMessages.watchLazy(fireImmediately: true);
-    
-  });
+  // });
 
   // resetApp();
 
@@ -99,8 +101,8 @@ class Main extends StatelessWidget {
           );
         },
         home: StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, AsyncSnapshot<User?> snapshot) {
+          stream: firebase_auth.FirebaseAuth.instance.authStateChanges(),
+          builder: (context, AsyncSnapshot<firebase_auth.User?> snapshot) {
             // log('-----Auth state changed');
 
             /// if user == null => the user is not Authenticated
@@ -122,6 +124,6 @@ class Main extends StatelessWidget {
 
 /// clears all the stored data & signs out (used when developing the app)
 void resetApp() {
-  FirebaseAuth.instance.signOut();
+  firebase_auth.FirebaseAuth.instance.signOut();
   MySharedPref.clearAllData();
 }

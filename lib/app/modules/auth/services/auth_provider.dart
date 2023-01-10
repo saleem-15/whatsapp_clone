@@ -139,6 +139,8 @@ class AuthProvider {
       phoneNumber: phoneNumber,
       imageUrl: null,
       uid: FirebaseAuth.instance.currentUser!.uid,
+      about: '',
+      lastUpdated: DateTime.now(),
     );
 
     await usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).set(

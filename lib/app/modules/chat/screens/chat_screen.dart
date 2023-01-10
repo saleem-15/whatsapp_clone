@@ -96,16 +96,17 @@ class ChatScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: Messages(
-                  chatId: controller.chat.chatId,
+                  chatId: controller.chat.id,
                 ),
               ),
 
               /// Chat Text Field
               Container(
                 margin: EdgeInsets.only(
+                  top: 5.sp,
+                  bottom: 20.sp,
                   left: 15.w,
                   right: 15.w,
-                  bottom: 20.sp,
                 ),
                 child: const ChatTextField(),
               ),

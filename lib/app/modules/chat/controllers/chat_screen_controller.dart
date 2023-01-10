@@ -5,16 +5,17 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:video_viewer/video_viewer.dart';
-import 'package:whatsapp_clone/app/models/chat_interface.dart';
+import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
-import 'package:whatsapp_clone/app/models/messages/voice_message.dart';
+import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/services/chatting_provider.dart';
 import 'package:whatsapp_clone/app/modules/image/screens/image_viewer_screen.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'package:whatsapp_clone/storage/files_manager.dart';
+import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 import 'chat_text_field_controller.dart';
 
@@ -32,7 +33,7 @@ class ChatScreenController extends GetxController {
   }
 
   Stream<List<MessageInterface>> getMessagesStream() {
-    return ChattingProvider.getMessagesStream(chat.chatId).map((event) {
+    return ChattingProvider.getMessagesStream(chat.id).map((event) {
       final messageDocs = event.docs;
 
       final List<MessageInterface> messages = [];
@@ -121,7 +122,7 @@ class ChatScreenController extends GetxController {
   void sendImage(File image, String? message) {
     final imageMessage = ImageMessage.toSend(
       text: message,
-      chatId: chat.chatId,
+      chatId: chat.id,
       imageUrl: image.path,
       imageName: '',
     );
@@ -131,19 +132,23 @@ class ChatScreenController extends GetxController {
 
   void sendAudio(File audioFile) {
     final audioMessage = AudioMessage.toSend(
-      chatId: chat.chatId,
+      chatId: chat.id,
       audio: audioFile.path,
     );
 
     ChattingProvider.sendAudioMessage(audioMessage, audioFile);
   }
 
-  void sendVideo(File video, String? message) {
+  Future<void> sendVideo(File video, String? message) async {
+    var videoInfo = await Utils.getVideoInfo(video.path);
+
     final videoMessage = VideoMessage.toSend(
-      chatId: chat.chatId,
+      chatId: chat.id,
       text: message,
       videoUrl: video.path,
       videoName: '',
+      height: videoInfo!.height!,
+      width: videoInfo.width!,
     );
 
     ChattingProvider.sendVideoMessage(videoMessage, video);

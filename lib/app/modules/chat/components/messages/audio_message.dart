@@ -19,50 +19,45 @@ class AudioMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(
-            right: isMyMessage ? 8 : 0,
-            left: isMyMessage ? 0 : 8,
-            bottom: 5,
-            top: 3,
+    return Padding(
+      padding: EdgeInsets.only(
+        right: isMyMessage ? 8 : 0,
+        left: isMyMessage ? 0 : 8,
+        bottom: 5,
+        top: 3,
+      ),
+      child: Stack(
+        children: [
+          VoiceMessage(
+            meBgColor: MyColors.Green,
+            // meFgColor: MyColors.LightBlack,
+
+            // mePlayIconColor: MyColors.LightBlack,
+            // contactFgColor: MyColors.red,
+            // contactPlayIconColor: MyColors.red,
+
+            audioSrc: audioPath,
+            contactBgColor: isMyMessage
+                ? MessageBubbleSettings.myMessageColor
+                : MessageBubbleSettings.othersMessageColor,
+
+            //  played: true, // To show played badge or not.
+            me: isMyMessage, // Set message side.
+            onPlay: () {}, // Do something when voice played.
           ),
-          child: Stack(
-            children: [
-              VoiceMessage(
-                meBgColor: MyColors.Green,
-                // meFgColor: MyColors.LightBlack,
-
-                // mePlayIconColor: MyColors.LightBlack,
-                // contactFgColor: MyColors.red,
-                // contactPlayIconColor: MyColors.red,
-
-                audioSrc: audioPath,
-                contactBgColor: isMyMessage
-                    ? MessageBubbleSettings.myMessageColor
-                    : MessageBubbleSettings.othersMessageColor,
-
-                //  played: true, // To show played badge or not.
-                me: isMyMessage, // Set message side.
-                onPlay: () {}, // Do something when voice played.
+          Positioned(
+            bottom: 2,
+            right: 5,
+            child: Text(
+              timeSent,
+              style: MessageBubbleSettings.messageTextStyle.copyWith(
+                fontSize: 11.sp,
+                color: Colors.white,
               ),
-              Positioned(
-                bottom: 2,
-                right: 5,
-                child: Text(
-                  timeSent,
-                  style: MessageBubbleSettings.messageTextStyle.copyWith(
-                    fontSize: 11.sp,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

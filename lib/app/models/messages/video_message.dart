@@ -1,16 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:isar/isar.dart';
-import 'package:whatsapp_clone/app/models/message_type_enum.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
+import '../message_type_enum.dart';
 
-// @collection
+enum MediaType {
+  landscape,
+  portrait,
+}
+
 class VideoMessage extends MessageInterface {
   /// json fields names (to ensure that i always (send) and (recieve) the right field name)
-  static const video_name_key = 'videoName';
-  static const video_url_key = 'videoUrl';
+  static const VIDEO_NAME_KEY = 'videoName';
+  static const VIDEO_URL_KEY = 'videoUrl';
+  static const VIDEO_WIDTH_KEY = 'width';
+  static const VIDEO_HEIGHT_KEY = 'height';
 
   VideoMessage({
     required super.isSent,
@@ -23,25 +28,39 @@ class VideoMessage extends MessageInterface {
     this.text,
     required this.videoUrl,
     required this.videoName,
+    required this.width,
+    required this.height,
   }) : super(type: MessageType.video);
 
-  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
- 
-  @override
-  @enumerated
-  MessageType get type => super.type;
+  ///used to display the video message with correct dimensions
+  int width;
+  int height;
 
   String videoUrl;
   String videoName;
   String? text;
 
+  double get aspectRatio => height / width;
+  MediaType get mediaType {
+    if (width > height) {
+      return MediaType.landscape;
+    }
+    
+    return MediaType.portrait;
+  }
+
   @override
+
+  /// its called before sending to the backend,
+  /// it's responiple for formatting the video message json body
   Map<String, dynamic> toMap() {
     return super.toMap()
       ..addAll({
         'text': text,
-        video_name_key: videoName,
-        video_url_key: videoUrl,
+        VIDEO_NAME_KEY: videoName,
+        VIDEO_URL_KEY: videoUrl,
+        VIDEO_HEIGHT_KEY: height,
+        VIDEO_WIDTH_KEY: width,
       });
   }
 
@@ -56,16 +75,24 @@ class VideoMessage extends MessageInterface {
       senderId: map['senderId'],
       senderName: map['senderName'],
       senderImage: map['senderImage'],
-      videoUrl: map[video_url_key],
-      videoName: map[video_name_key],
+      videoUrl: map[VIDEO_URL_KEY],
+      videoName: map[VIDEO_NAME_KEY],
       text: map['text'],
       timeSent: (map['createdAt'] as Timestamp).toDate(),
+      width: map['width'],
+      height: map['height'],
     );
   }
 
   @override
-  factory VideoMessage.toSend(
-      {required String chatId, required String? text, required String videoName, required String videoUrl}) {
+  factory VideoMessage.toSend({
+    required String chatId,
+    required String? text,
+    required String videoName,
+    required String videoUrl,
+    required int width,
+    required int height,
+  }) {
     return VideoMessage(
       isSent: false,
       isSeen: false,
@@ -77,6 +104,8 @@ class VideoMessage extends MessageInterface {
       text: text,
       videoUrl: videoUrl,
       videoName: videoName,
+      height: height,
+      width: width,
     );
   }
 }

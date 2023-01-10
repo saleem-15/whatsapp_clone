@@ -26,7 +26,6 @@ class _NetworkOrLocalImageState extends State<NetworkOrLocalImage> {
   @override
   void initState() {
     super.initState();
-
     getImage();
   }
 

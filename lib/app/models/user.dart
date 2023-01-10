@@ -1,19 +1,19 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:isar/isar.dart';
 
-part 'user.g.dart';
+// part 'user.g.dart';
 
 @Collection()
 class User {
-  ///this id does not realy represents the user 
+  ///this id does not realy represents the user
   ///its only exist due to [Isar] database requirements
   Id id = Isar.autoIncrement;
 
   String uid;
   String name;
   String phoneNumber;
+  String? about;
+  DateTime lastUpdated;
   String? imageUrl;
 
   /// -------field names (used when getting, sending request to back end)------
@@ -22,6 +22,8 @@ class User {
   static const user_phone_number_key = 'phoneNumber';
   static const user_private_chats_key = 'chats';
   static const user_group_chats_key = 'groups';
+  static const user_last_Updated_key = 'lastUpdated';
+  static const user_about_key = 'about';
 
   ///--------------------------------------------------------------------
   User({
@@ -29,6 +31,8 @@ class User {
     required this.name,
     required this.phoneNumber,
     required this.imageUrl,
+    required this.lastUpdated,
+    this.about,
   });
 
   factory User.fromDoc(QueryDocumentSnapshot doc) {
@@ -37,6 +41,8 @@ class User {
       name: doc[user_name_key] as String,
       phoneNumber: doc[user_phone_number_key] as String,
       imageUrl: doc[user_image_url_key],
+      lastUpdated: doc[user_last_Updated_key],
+      about: doc[user_about_key],
     );
   }
 
@@ -50,6 +56,10 @@ class User {
 
       ///user image
       user_image_url_key: imageUrl,
+
+      user_last_Updated_key: Timestamp.fromDate(lastUpdated),
+
+      user_about_key: about,
     };
   }
 }

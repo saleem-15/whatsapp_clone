@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:isar/isar.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
 import '../message_type_enum.dart';
 
-
-// @collection
 class AudioMessage extends MessageInterface {
   AudioMessage({
     required super.isSent,
@@ -20,13 +17,6 @@ class AudioMessage extends MessageInterface {
     this.text,
     required this.audio,
   }) : super(type: MessageType.audio);
-
-  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
-  
-  
-  @override
-  @enumerated
-  MessageType get type => super.type;
 
   String audio;
   String? text;

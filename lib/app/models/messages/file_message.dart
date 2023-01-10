@@ -1,14 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:isar/isar.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
 import '../message_type_enum.dart';
 
-
-
-// @collection
 class FileMessage extends MessageInterface {
   FileMessage({
     required super.isSent,
@@ -22,12 +18,6 @@ class FileMessage extends MessageInterface {
     required this.fileName,
     required this.fileSize,
   }) : super(type: MessageType.file);
-
-  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
-
-  @override
-  @enumerated
-  MessageType get type => super.type;
 
   String file;
   String fileName;

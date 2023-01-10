@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import 'package:whatsapp_clone/app/models/chat_interface.dart';
+import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/controllers/chats_view_controller.dart';
 
 class ChatTile extends StatelessWidget {
