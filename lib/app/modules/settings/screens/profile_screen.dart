@@ -35,10 +35,11 @@ class ProfileScreen extends StatelessWidget {
                 ),
 
                 ///user image + edit button
-                UserAvatar(
-                  avatarSize: 60.sp,
-                  userImage: controller.userImage,
-                  onEditButtonPressed: controller.onEditProfileImagePressed,
+                Hero(
+                  tag: 'user_image',
+                  child: UserAvatar(
+                    avatarSize: 60.sp,
+                  ),
                 ),
 
                 Divider(

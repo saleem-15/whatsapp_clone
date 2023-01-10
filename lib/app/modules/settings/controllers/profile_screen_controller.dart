@@ -1,21 +1,26 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:whatsapp_clone/app/models/user.dart';
+import 'package:whatsapp_clone/storage/files_manager.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
-import '../components/change_avatar_bottom_sheet.dart';
+import '../user_provider.dart';
 
 class ProfileScreenController extends GetxController {
-  late ImageProvider userImage;
-
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+
+
   /// text fields controllers & text getters -----------------
-  final userNameController = TextEditingController();
+  final nameController = TextEditingController();
   final aboutController = TextEditingController();
   final phoneNumberFieledController = TextEditingController();
 
-  String get userName => userNameController.text.trim();
+  String get name => nameController.text.trim();
   String get about => aboutController.text.trim();
   String get phoneNumber => phoneNumberFieledController.text.trim();
   //---------------------------------------------------------
@@ -24,25 +29,26 @@ class ProfileScreenController extends GetxController {
   RxBool isWaitingResponse = false.obs;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
 
-    userNameController.text = MySharedPref.getUserName!;
+    nameController.text = MySharedPref.getUserName!;
     phoneNumberFieledController.text = MySharedPref.getUserPhoneNumber!;
-    userImage = const AssetImage(Assets.default_user_image);
+
     _autoDisableLoginButton();
   }
 
+
   void _autoDisableLoginButton() {
     phoneNumberFieledController.addListener(() {
-      if (phoneNumber.isEmpty || userName.isEmpty) {
+      if (phoneNumber.isEmpty || name.isEmpty) {
         isButtonDisable(true);
         return;
       }
       isButtonDisable(false);
     });
-    userNameController.addListener(() {
-      if (phoneNumber.isEmpty || userName.isEmpty) {
+    nameController.addListener(() {
+      if (phoneNumber.isEmpty || name.isEmpty) {
         isButtonDisable(true);
         return;
       }
@@ -50,16 +56,17 @@ class ProfileScreenController extends GetxController {
     });
   }
 
-  void onEditProfileImagePressed() {
-    Get.bottomSheet(
-      ChangeUserAvatarBottomSheet(
-        chooseUserImageFromCamera: chooseUserImageFromCamera,
-        chooseUserImageFromGallery: chooseUserImageFromGallery,
-      ),
-    );
-  }
 
-  void onUpdateButtonPressed() {}
+
+  Future<void> onUpdateButtonPressed() async {
+    User myUpdatedInfo = MySharedPref.getUserData!
+      ..name = name
+      ..about = about;
+
+    isWaitingResponse(true);
+    await UserProvider.updateUserProfile(myUpdatedInfo);
+    isWaitingResponse(false);
+  }
 
   /// ------------- Text Fields Validators -----------------
   String? phoneNumberFieldValidator(String? value) {
@@ -94,6 +101,5 @@ class ProfileScreenController extends GetxController {
 
   /// ------------------------------------------------------
 
-  void chooseUserImageFromCamera() {}
-  void chooseUserImageFromGallery() {}
+  
 }

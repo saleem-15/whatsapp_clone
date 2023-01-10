@@ -24,7 +24,7 @@ class ProfileForm extends StatelessWidget {
           _buildFieldName(context, 'Name'),
           SizedBox(height: 5.sp),
           TextFormField(
-            controller: controller.userNameController,
+            controller: controller.nameController,
             keyboardType: TextInputType.name,
             textInputAction: TextInputAction.next,
             inputFormatters: [

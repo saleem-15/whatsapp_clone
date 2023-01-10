@@ -1,11 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:whatsapp_clone/app/shared_widgets/gradient_icon_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
+import 'package:whatsapp_clone/storage/files_manager.dart';
+import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 import '../controllers/settings_screen_controller.dart';
+import '../user_provider.dart';
+import 'change_avatar_bottom_sheet.dart';
 
 class SettingsHeader extends StatelessWidget {
   const SettingsHeader({
@@ -20,10 +28,11 @@ class SettingsHeader extends StatelessWidget {
     return Row(
       children: [
         ///user image + edit button
-        UserAvatar(
-          avatarSize: 40.sp,
-          userImage: controller.userImage,
-          onEditButtonPressed: controller.onEditProfileImagePressed,
+        Hero(
+          tag: 'user_image',
+          child: UserAvatar(
+            avatarSize: 40.sp,
+          ),
         ),
 
         SizedBox(
@@ -63,26 +72,36 @@ class SettingsHeader extends StatelessWidget {
   }
 }
 
+/// this widget handles its own logic
+/// (loading image from file,opening bottom sheet,changing)
 class UserAvatar extends StatelessWidget {
-  const UserAvatar({
-    Key? key,
-    required this.userImage,
+  UserAvatar({
+    super.key,
     required this.avatarSize,
-    required this.onEditButtonPressed,
-  }) : super(key: key);
+  }) {
+    ///put the defualt user image at first
+    userImageProvider = Rx(const AssetImage(Assets.default_user_image));
 
-  final ImageProvider userImage;
+    FileManager.getUserImage().then((imageFile) {
+      if (imageFile != null) {
+        userImageProvider.value = FileImage(imageFile);
+      }
+    });
+  }
+
+  late final Rx<ImageProvider> userImageProvider;
   final double avatarSize;
-  final Function() onEditButtonPressed;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         ///user image
-        CircleAvatar(
-          radius: avatarSize,
-          backgroundImage: userImage,
+        Obx(
+          () => CircleAvatar(
+            radius: avatarSize,
+            backgroundImage: userImageProvider.value,
+          ),
         ),
 
         ///Edit Button
@@ -96,18 +115,52 @@ class UserAvatar extends StatelessWidget {
               color: MyColors.Green,
               shape: BoxShape.circle,
             ),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: onEditButtonPressed,
-              icon: Icon(
-                Icons.edit,
-                color: Colors.white,
-                size: 18.sp,
+            child: Material(
+              type: MaterialType.circle,
+              clipBehavior: Clip.antiAlias,
+              color: Colors.transparent,
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                onPressed: onEditProfileImagePressed,
+                icon: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                  size: 18.sp,
+                ),
               ),
             ),
           ),
         ),
       ],
     );
+  }
+
+  void onEditProfileImagePressed() {
+    Get.bottomSheet(
+      ChangeUserAvatarBottomSheet(
+        chooseUserImageFromCamera: () => chooseUserImage(ImageSource.camera),
+        chooseUserImageFromGallery: () => chooseUserImage(ImageSource.gallery),
+      ),
+    );
+  }
+
+  Future<void> chooseUserImage(ImageSource imageSource) async {
+    final image = await ImagePicker().pickImage(source: imageSource);
+
+    ///close the bottom sheet (choose image source bottom sheet)
+    Get.back();
+
+    ///if the user did not choose any image
+    if (image == null) {
+      return;
+    }
+
+    final userImageFile = File(image.path);
+
+    userImageProvider.value = FileImage(userImageFile);
+
+    FileManager.saveUserImage(userImageFile);
+
+    UserProvider.updateUserImage(userImageFile);
   }
 }

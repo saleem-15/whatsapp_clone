@@ -17,7 +17,6 @@ class ChangeUserAvatarBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: 200.h,
       padding: EdgeInsets.only(
         left: 15.w,
         right: 15.w,

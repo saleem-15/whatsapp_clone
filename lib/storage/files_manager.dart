@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
+import 'package:whatsapp_clone/storage/my_shared_pref.dart';
+import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 // ...
 
@@ -155,5 +157,32 @@ class FileManager {
     if (await file.exists()) {
       await file.delete();
     }
+  }
+
+  ///---------------------- Special functions----------------------
+
+  ///saves the user image
+  static Future<void> saveUserImage(File imageFile) async {
+    final appDir = await getExternalStorageDirectory();
+
+    final storagePath = '${appDir!.path}/userImage${Utils.getFileExtension(imageFile.path)}';
+
+    ///copy the file into the storage path
+    imageFile.copy(storagePath);
+
+    ///stores the image path
+    /// (I stored the user image path due to various image extensions (jpg,png,...) )
+    MySharedPref.setUserImage(storagePath);
+  }
+
+  ///returnes  user image
+  static Future<File?> getUserImage() async {
+    String? userImagePath = MySharedPref.getUserImage;
+
+    if (userImagePath == null) {
+      return null;
+    }
+
+    return File(userImagePath);
   }
 }
