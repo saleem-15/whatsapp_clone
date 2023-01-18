@@ -35,7 +35,7 @@ class User {
     this.about,
   });
 
-  factory User.fromDoc(QueryDocumentSnapshot doc) {
+  factory User.fromDoc(dynamic doc) {
     return User(
       uid: doc.id,
       name: doc[user_name_key] as String,

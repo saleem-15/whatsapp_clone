@@ -6,6 +6,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:whatsapp_clone/app/api/user_provider.dart';
 import 'package:whatsapp_clone/app/api/chats_creater_provider.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
+import 'package:whatsapp_clone/utils/my_exceptions.dart';
 import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
 
 class QRScreenController extends GetxController {
@@ -39,7 +40,7 @@ class QRScreenController extends GetxController {
   }
 
   Future<void> readBarCode(String code) async {
-    final isUserExists = await UserProvider.checkIsUserExists(code);
+    final isUserExists = await UserProvider.checkIsUserExists(userUID: code);
 
     if (!isUserExists) {
       CustomSnackBar.showCustomErrorSnackBar(
@@ -47,12 +48,21 @@ class QRScreenController extends GetxController {
       );
       return;
     }
-    
-    await createChat(code);
+
+    try {
+      await createPrivateChat(code);
+      /// if you already  chat already exists
+    } on ChatException catch (e) {
+      log(e.toString());
+      CustomSnackBar.showCustomErrorSnackBar(
+        message: 'The user is already in your contacts',
+      );
+
+      return;
+    }
 
     CustomSnackBar.showCustomSnackBar(
       message: 'The user has been Added Successfully',
     );
-
   }
 }

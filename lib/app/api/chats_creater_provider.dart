@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:whatsapp_clone/app/models/user.dart';
+import 'package:whatsapp_clone/utils/my_exceptions.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final FirebaseFirestore db = FirebaseFirestore.instance;
@@ -22,9 +23,24 @@ Future<User?> checkMyContactsAreExists(List<String> phoneNumbers) async {
   return null;
 }
 
+Future<bool> checkIsMeAndTheUserHavePrivateChat(String userUid) async {
+  final result = await usersCollection.doc(myUid).get();
+
+  List myContactsIds = result['myContacts'];
+
+  return myContactsIds.contains(userUid);
+}
+
 /// it creates a chat between me and the provided user
-Future<void> createChat(String userId) async {
-  
+/// 
+/// throws [ChatException] if the chat already exists
+Future<void> createPrivateChat(String userId) async {
+  final doWeHaveAnExistingChat = await checkIsMeAndTheUserHavePrivateChat(userId);
+
+  if (doWeHaveAnExistingChat) {
+    ChatException.chatAlreadyExists();
+    return;
+  }
   // used to perform multiple writes as a single atomic operation.
   final batch = db.batch();
 
@@ -43,23 +59,23 @@ Future<void> createChat(String userId) async {
     },
   );
 
-
   ///add our chat document id to his chats list
   DocumentReference otherUserDoc = usersCollection.doc(userId);
   batch.update(
     otherUserDoc,
     {
-      'chats': FieldValue.arrayUnion([chatDoc.id])
+      'chats': FieldValue.arrayUnion([chatDoc.id]),
+      'myContacts': FieldValue.arrayUnion([myUid])
     },
   );
-
 
   ///add the chat document id to my chats list
   DocumentReference myUserDoc = usersCollection.doc(myUid);
   batch.update(
     myUserDoc,
     {
-      'chats': FieldValue.arrayUnion([chatDoc.id])
+      'chats': FieldValue.arrayUnion([chatDoc.id]),
+      'myContacts': FieldValue.arrayUnion([userId])
     },
   );
 

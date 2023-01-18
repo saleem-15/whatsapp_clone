@@ -28,7 +28,7 @@ class AuthProvider {
   /// the phone number must begin with '+' (with internationl code)
   static Future<void> signUpService(String phoneNumber, String name) async {
     /// used to check if the user have an account
-    final User? user = await UserProvider.getUserInfo(phoneNumber);
+    final User? user = await UserProvider.getUserInfoByPhoneNumber(phoneNumber);
 
     /// if user alreay exists
     if (user != null) {
@@ -53,7 +53,7 @@ class AuthProvider {
 
   /// the phone number must begin with '+' (with internationl code)
   static Future<void> signInService(String phoneNumber) async {
-    final User? user = await UserProvider.getUserInfo(phoneNumber);
+    final User? user = await UserProvider.getUserInfoByPhoneNumber(phoneNumber);
 
     ///user does not exists (dont have an account)
     if (user == null) {
