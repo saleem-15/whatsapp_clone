@@ -16,6 +16,7 @@ class UserProvider {
   static final String myUid = FirebaseAuth.instance.currentUser!.uid;
   static final CollectionReference _usersCollection = _db.collection('users');
 
+
   static late Rx<ImageProvider> userImage;
 
   static Future<void> init() async {
@@ -27,6 +28,31 @@ class UserProvider {
     }
 
     userImage = Rx(FileImage(imageFile));
+  }
+
+
+    /// returns null if the user does not exist
+  static Future<User?> getUserInfo(String phoneNumber) async {
+    final queryResult = await _usersCollection
+        .where(
+          'phoneNumber',
+          isEqualTo: phoneNumber,
+        )
+        .limit(1)
+        .get();
+
+    if (queryResult.docs.isEmpty) {
+      return null;
+    }
+
+    return User.fromDoc(queryResult.docs.first);
+  }
+
+  ///it uses [getUserInfo] method to work
+  static Future<bool> checkIsUserExists(String phoneNumber) async {
+    final user = await getUserInfo(phoneNumber);
+
+    return user != null;
   }
 
   ///

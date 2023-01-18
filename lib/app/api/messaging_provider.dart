@@ -13,8 +13,8 @@ import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
-class ChattingProvider {
-  ChattingProvider._();
+class MessagingProvider {
+  MessagingProvider._();
   static final FirebaseFirestore db = FirebaseFirestore.instance;
   static final myId = FirebaseAuth.instance.currentUser!.uid;
   static final senderName = MySharedPref.getUserName!;

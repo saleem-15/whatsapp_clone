@@ -11,7 +11,7 @@ import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
-import 'package:whatsapp_clone/app/modules/chat/services/chatting_provider.dart';
+import 'package:whatsapp_clone/app/api/messaging_provider.dart';
 import 'package:whatsapp_clone/app/modules/image/screens/image_viewer_screen.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'package:whatsapp_clone/storage/files_manager.dart';
@@ -33,7 +33,7 @@ class ChatScreenController extends GetxController {
   }
 
   Stream<List<MessageInterface>> getMessagesStream() {
-    return ChattingProvider.getMessagesStream(chat.id).map((event) {
+    return MessagingProvider.getMessagesStream(chat.id).map((event) {
       final messageDocs = event.docs;
 
       final List<MessageInterface> messages = [];
@@ -127,7 +127,7 @@ class ChatScreenController extends GetxController {
       imageName: '',
     );
 
-    ChattingProvider.sendImageMessage(imageMessage, image);
+    MessagingProvider.sendImageMessage(imageMessage, image);
   }
 
   void sendAudio(File audioFile) {
@@ -136,7 +136,7 @@ class ChatScreenController extends GetxController {
       audio: audioFile.path,
     );
 
-    ChattingProvider.sendAudioMessage(audioMessage, audioFile);
+    MessagingProvider.sendAudioMessage(audioMessage, audioFile);
   }
 
   Future<void> sendVideo(File video, String? message) async {
@@ -151,7 +151,7 @@ class ChatScreenController extends GetxController {
       width: videoInfo.width!,
     );
 
-    ChattingProvider.sendVideoMessage(videoMessage, video);
+    MessagingProvider.sendVideoMessage(videoMessage, video);
   }
 
   onFilePressed(FileMessage message) {

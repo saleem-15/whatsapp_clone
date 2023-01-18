@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/app/modules/image/screens/picked_photo_viewer.dart';
-import 'package:whatsapp_clone/app/modules/chat/services/chatting_provider.dart';
+import 'package:whatsapp_clone/app/api/messaging_provider.dart';
 
 import '../../video/screens/picked_video_viewer.dart';
 
@@ -118,6 +118,6 @@ class AttachFileController extends GetxController {
 
     // );
 
-    ChattingProvider.sendFileMessage(chat.id, files[0]);
+    MessagingProvider.sendFileMessage(chat.id, files[0]);
   }
 }

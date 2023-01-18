@@ -11,6 +11,8 @@ import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
 
+import 'user_provider.dart';
+
 /// it returnes true if signup process is successful
 
 class AuthProvider {
@@ -26,7 +28,7 @@ class AuthProvider {
   /// the phone number must begin with '+' (with internationl code)
   static Future<void> signUpService(String phoneNumber, String name) async {
     /// used to check if the user have an account
-    final User? user = await getUserInfo(phoneNumber);
+    final User? user = await UserProvider.getUserInfo(phoneNumber);
 
     /// if user alreay exists
     if (user != null) {
@@ -51,7 +53,7 @@ class AuthProvider {
 
   /// the phone number must begin with '+' (with internationl code)
   static Future<void> signInService(String phoneNumber) async {
-    final User? user = await getUserInfo(phoneNumber);
+    final User? user = await UserProvider.getUserInfo(phoneNumber);
 
     ///user does not exists (dont have an account)
     if (user == null) {
@@ -170,29 +172,5 @@ class AuthProvider {
       log(e.code);
       return false;
     }
-  }
-
-  /// returns null if the user does not exist
-  static Future<User?> getUserInfo(String phoneNumber) async {
-    final queryResult = await usersCollection
-        .where(
-          'phoneNumber',
-          isEqualTo: phoneNumber,
-        )
-        .limit(1)
-        .get();
-
-    if (queryResult.docs.isEmpty) {
-      return null;
-    }
-
-    return User.fromDoc(queryResult.docs.first);
-  }
-
-  ///it uses [getUserInfo] method to work
-  static Future<bool> checkIsUserExists(String phoneNumber) async {
-    final user = await getUserInfo(phoneNumber);
-
-    return user != null;
   }
 }

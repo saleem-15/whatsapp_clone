@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/chats_creater_provider.dart';
+import 'package:whatsapp_clone/app/api/chats_creater_provider.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'package:whatsapp_clone/utils/contacts.dart';
 

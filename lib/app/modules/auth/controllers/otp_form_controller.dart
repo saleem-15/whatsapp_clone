@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/modules/auth/services/auth_provider.dart';
+import 'package:whatsapp_clone/app/api/auth_provider.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
 class OTPScreenController extends GetxController {

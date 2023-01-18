@@ -11,7 +11,7 @@ import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/storage/files_manager.dart';
 
 import '../controllers/settings_screen_controller.dart';
-import '../user_provider.dart';
+import '../../../api/user_provider.dart';
 import 'change_avatar_bottom_sheet.dart';
 
 class SettingsHeader extends StatelessWidget {

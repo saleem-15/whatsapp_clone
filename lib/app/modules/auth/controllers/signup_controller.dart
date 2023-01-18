@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
-import '../services/auth_provider.dart';
+import '../../../api/auth_provider.dart';
 
 class SignupController extends GetxController {
   GlobalKey<FormState> formKey = GlobalKey<FormState>(debugLabel: 'sign up global key');

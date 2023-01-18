@@ -24,25 +24,46 @@ Future<User?> checkMyContactsAreExists(List<String> phoneNumbers) async {
 
 /// it creates a chat between me and the provided user
 Future<void> createChat(String userId) async {
-  ///create the chat documents that we will communicate through
-  final chatDoc = await chatsCollection.add({
-    'chatType': 'privateChat',
-    'createdAt': FieldValue.serverTimestamp(),
-    'members': [
-      myUid,
-      userId,
-    ],
-  });
+  
+  // used to perform multiple writes as a single atomic operation.
+  final batch = db.batch();
 
-  ///add the our chat document id to his chats
-  usersCollection.doc(userId).update({
-    'chats': FieldValue.arrayUnion([chatDoc.id]),
-  });
+  /// Create the chat document that we will communicate through
+  DocumentReference chatDoc = chatsCollection.doc();
 
-  ///add the our chat document id to my chats
-  usersCollection.doc(myUid).update({
-    'chats': FieldValue.arrayUnion([chatDoc.id]),
-  });
+  batch.set(
+    chatDoc,
+    {
+      'chatType': 'privateChat',
+      'createdAt': FieldValue.serverTimestamp(),
+      'members': [
+        myUid,
+        userId,
+      ],
+    },
+  );
+
+
+  ///add our chat document id to his chats list
+  DocumentReference otherUserDoc = usersCollection.doc(userId);
+  batch.update(
+    otherUserDoc,
+    {
+      'chats': FieldValue.arrayUnion([chatDoc.id])
+    },
+  );
+
+
+  ///add the chat document id to my chats list
+  DocumentReference myUserDoc = usersCollection.doc(myUid);
+  batch.update(
+    myUserDoc,
+    {
+      'chats': FieldValue.arrayUnion([chatDoc.id])
+    },
+  );
+
+  await batch.commit();
 }
 
 ///fetches user documents from firebase,and returns List of users docs.

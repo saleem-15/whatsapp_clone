@@ -7,9 +7,7 @@ import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 class ChatsTapView extends StatelessWidget {
-  ChatsTapView({Key? key})
-      : controller = Get.put(ChatsViewController()),
-        super(key: key);
+  ChatsTapView({super.key}) : controller = Get.put(ChatsViewController());
 
   final ChatsViewController controller;
 

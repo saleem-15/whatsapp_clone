@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
-import '../user_provider.dart';
+import '../../../api/user_provider.dart';
 
 class ProfileScreenController extends GetxController {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
