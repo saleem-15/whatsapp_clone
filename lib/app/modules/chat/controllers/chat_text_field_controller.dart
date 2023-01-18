@@ -32,6 +32,7 @@ class ChatTextFieldController extends GetxController {
     super.onInit();
     chat = Get.arguments;
 
+    
     textController.addListener(() {
       text(textController.text);
     });

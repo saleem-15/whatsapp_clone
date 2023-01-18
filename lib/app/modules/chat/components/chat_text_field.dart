@@ -14,7 +14,6 @@ class ChatTextField extends GetView<ChatTextFieldController> {
 
   @override
   Widget build(BuildContext context) {
-
     return Row(
       children: [
         ///Text field
@@ -69,7 +68,7 @@ class ChatTextField extends GetView<ChatTextFieldController> {
 
         ///(Send --OR-- record audio) Icon
         Obx(
-          () => controller.text.isEmpty
+          () => controller.text.value.isBlank!
               ?
 
               /// Microphone Icon (shown When the textfield is empty)

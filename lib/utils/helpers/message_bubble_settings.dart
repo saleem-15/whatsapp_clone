@@ -18,7 +18,7 @@ class MessageBubbleSettings {
   static BorderRadius allCornersRoundedBorder = BorderRadius.circular(15.r);
 
   static double maxMessageWidth = 260.w;
-  static double maxMessageHeight = 380.h;
+  static double maxMessageHeight = 300.h;
 
   static BorderRadius getBorderRadius(bool isMyMessage) => BorderRadius.only(
         topRight: isMyMessage ? Radius.zero : Radius.circular(15.r),
