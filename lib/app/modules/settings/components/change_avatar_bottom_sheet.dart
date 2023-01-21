@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:whatsapp_clone/app/shared_widgets/gradient_icon.dart';
+import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 
 class ChangeUserAvatarBottomSheet extends StatelessWidget {

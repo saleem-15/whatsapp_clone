@@ -66,7 +66,8 @@ class ChatsProvider {
       final privateChat = PrivateChat(
         id: otherUsers[user.uid]!.id,
         user: user,
-        // usersIds: List.castFrom<dynamic, String>(otherUsers[user.uid]!['members']),
+        createdAt: DateTime.now(),
+        // createdAt: (otherUsers[user.id]!['createdAt'] as Timestamp).toDate()
       );
 
       privateChatsList.add(privateChat);

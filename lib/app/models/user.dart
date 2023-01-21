@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
+import 'package:whatsapp_clone/utils/constants/assest_path.dart';
+
+import 'package:get/get_utils/get_utils.dart';
 
 // part 'user.g.dart';
 
@@ -12,7 +16,7 @@ class User {
   String uid;
   String name;
   String phoneNumber;
-  String? about;
+  String about;
   DateTime lastUpdated;
   String? imageUrl;
 
@@ -32,8 +36,12 @@ class User {
     required this.phoneNumber,
     required this.imageUrl,
     required this.lastUpdated,
-    this.about,
+    required this.about,
   });
+
+  ImageProvider get imageProvider => (imageUrl == null || imageUrl!.isBlank!
+      ? const AssetImage(Assets.default_user_image)
+      : NetworkImage(imageUrl!)) as ImageProvider;
 
   factory User.fromDoc(dynamic doc) {
     return User(

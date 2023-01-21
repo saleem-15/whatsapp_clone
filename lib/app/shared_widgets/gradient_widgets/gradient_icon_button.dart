@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
-import 'package:whatsapp_clone/app/shared_widgets/gradient_icon.dart';
+import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 
 class GradientIconButton extends StatelessWidget {

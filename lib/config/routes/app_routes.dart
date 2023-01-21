@@ -23,6 +23,9 @@ abstract class Routes {
 
   ///YOU HAVE TO PASS [Chat] ARGUMENT Ass (argument)
   static const CHAT_SCREEN = _Paths.CHAT_SCREEN;
+
+  /// Requires: chat object as arguments
+  static const CHAT_DETAILS_SCREEN = _Paths.CHAT_DETAILS_SCREEN;
 }
 
 abstract class _Paths {
@@ -40,4 +43,5 @@ abstract class _Paths {
   static const TERMS_AND_CONDITIONS_SCREEN = '/Terms-And-Conditions-screen';
   static const PRIVACY_POLICY_SCREEN = '/Privacy-policy-screen';
   static const APP_INFO_SCREEN = '/App-Info-screen';
+  static const CHAT_DETAILS_SCREEN = '/user-details';
 }

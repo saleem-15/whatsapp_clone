@@ -19,6 +19,7 @@ Future<void> main() async {
   await Firebase.initializeApp();
   await MySharedPref.init();
   await UserProvider.init();
+  MySharedPref.setLastUpdated(DateTime.now());
 
   Get.put(AuthController());
   // MyContacts.listenToContacts();

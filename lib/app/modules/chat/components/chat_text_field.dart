@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/shared_widgets/generic_button.dart';
+import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/generic_button.dart';
 import 'package:whatsapp_clone/config/theme/my_styles.dart';
 
 import '../controllers/chat_text_field_controller.dart';

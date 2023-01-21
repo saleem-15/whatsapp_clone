@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
-import 'package:whatsapp_clone/app/shared_widgets/gradient_icon.dart';
+import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 

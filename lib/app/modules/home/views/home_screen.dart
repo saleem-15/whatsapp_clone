@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:underline_indicator/underline_indicator.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/screens/user_chats_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/status_view.dart';
-import 'package:whatsapp_clone/app/shared_widgets/gradient_icon_button.dart';
+import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/config/theme/light_theme_colors.dart';
 

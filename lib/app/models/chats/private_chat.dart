@@ -12,8 +12,10 @@ class PrivateChat extends Chat {
   PrivateChat({
     required this.user,
     required super.id,
+    required super.createdAt,
   }) : super(
           name: user.name,
+          bio: user.about,
           image: user.imageUrl,
           usersIds: [user.uid, FirebaseAuth.instance.currentUser!.uid],
           isGroupChat: false,

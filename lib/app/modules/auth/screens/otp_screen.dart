@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
-import 'package:whatsapp_clone/app/shared_widgets/gradient_button.dart';
+import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/config/theme/my_styles.dart';
 import '../controllers/otp_form_controller.dart';

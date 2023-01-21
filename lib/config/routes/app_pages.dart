@@ -1,17 +1,19 @@
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/modules/auth/screens/otp_screen.dart';
-import 'package:whatsapp_clone/app/modules/auth/screens/signin_screen.dart';
-import 'package:whatsapp_clone/app/modules/auth/screens/signup_screen.dart';
-import 'package:whatsapp_clone/app/modules/chat/screens/chat_screen.dart';
-import 'package:whatsapp_clone/app/modules/settings/screens/account_screen.dart';
-import 'package:whatsapp_clone/app/modules/settings/screens/app_info_screen.dart';
-import 'package:whatsapp_clone/app/modules/settings/screens/help_screen.dart';
-import 'package:whatsapp_clone/app/modules/settings/screens/privacy_policy_screen.dart';
-import 'package:whatsapp_clone/app/modules/settings/screens/profile_screen.dart';
-import 'package:whatsapp_clone/app/modules/settings/screens/settings_screen.dart';
-import 'package:whatsapp_clone/app/modules/settings/screens/terms_screen.dart';
-import 'package:whatsapp_clone/app/modules/video/screens/video_viewer_screen.dart';
-import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
+import 'package:whatsapp_clone/app/modules/user_details/views/user_details_screen.dart';
+
+import '../../app/modules/auth/screens/otp_screen.dart';
+import '../../app/modules/auth/screens/signin_screen.dart';
+import '../../app/modules/auth/screens/signup_screen.dart';
+import '../../app/modules/chat/screens/chat_screen.dart';
+import '../../app/modules/home/views/home_screen.dart';
+import '../../app/modules/settings/screens/account_screen.dart';
+import '../../app/modules/settings/screens/app_info_screen.dart';
+import '../../app/modules/settings/screens/help_screen.dart';
+import '../../app/modules/settings/screens/privacy_policy_screen.dart';
+import '../../app/modules/settings/screens/profile_screen.dart';
+import '../../app/modules/settings/screens/settings_screen.dart';
+import '../../app/modules/settings/screens/terms_screen.dart';
+import '../../app/modules/video/screens/video_viewer_screen.dart';
 
 part 'app_routes.dart';
 
@@ -72,6 +74,10 @@ class AppPages {
     GetPage(
       name: _Paths.APP_INFO_SCREEN,
       page: () => const AppInfoScreen(),
+    ),
+    GetPage(
+      name: _Paths.CHAT_DETAILS_SCREEN,
+      page: () => ChatDetailsScreen(),
     ),
   ];
 }

@@ -21,6 +21,6 @@ class ChatException implements Exception {
 
   @override
   String toString() {
-    return 'Message: $msg\nException type: $exceptionType';
+    return '-------------------Exception------------------\nMessage: $msg\nException type: $exceptionType';
   }
 }

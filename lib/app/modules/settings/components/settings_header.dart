@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:whatsapp_clone/app/shared_widgets/gradient_icon_button.dart';
+import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/storage/files_manager.dart';
 

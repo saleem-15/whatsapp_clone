@@ -51,12 +51,14 @@ dependencies:
   permission_handler: ^10.2.0     
   flutter_contacts: ^1.1.5+1      # Api to your phone contacts
   pinput: ^2.2.16                 # OTP field UI 
-  url_launcher: ^6.1.7            # lanches links,files
+  url_launcher: ^6.1.7            # lanches links/opens files
   flutter_link_previewer: ^3.2.0  # used in text message bubble (to show preview for links)
   flutter_linkify: ^5.0.2         # used to highlight a url in a text
   uuid: ^3.0.7                    # Random Id generator
   pretty_qr_code: ^2.0.3          # generates a QR code       
   mobile_scanner: ^2.1.0          # reads Qr code
+  date_format: ^2.0.7
+  intl: ^0.17.0
   
     
   #infinite_scroll_pagination: ^3.2.0  # used EVERY WHERE

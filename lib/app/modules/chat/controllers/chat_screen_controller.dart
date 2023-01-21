@@ -48,6 +48,10 @@ class ChatScreenController extends GetxController {
   }
 
   void onAppBarPressed() {
+    Get.toNamed(
+      Routes.CHAT_DETAILS_SCREEN,
+      arguments: chat,
+    );
     // Get.to(
     //   () => UserDetailsScreen(
     //     name: widget.name,

@@ -64,7 +64,7 @@ class MySharedPref {
 
   ///returnes the path that the user image was stored in.
   ///
-  ///returnes null if the user dont have an image 
+  ///returnes null if the user dont have an image
   static String? get getUserImage => _storage.read(_image);
 
   ///Takes the image path as a paramater
@@ -89,8 +89,8 @@ class MySharedPref {
       name: getUserName!,
       imageUrl: getUserImage,
       phoneNumber: getUserPhoneNumber!,
-      lastUpdated: getLastUpdated!,
-      about: getUserAbout,
+      lastUpdated: getLastUpdated ?? DateTime.now(),
+      about: getUserAbout ?? 'this text comes from storage',
     );
   }
 

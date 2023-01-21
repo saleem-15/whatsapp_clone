@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whatsapp_clone/config/theme/my_styles.dart';
 
-import '../../config/theme/colors.dart';
+import '../../../config/theme/colors.dart';
 
 class GradientGenericButton extends StatelessWidget {
   const GradientGenericButton({

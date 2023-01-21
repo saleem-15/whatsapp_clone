@@ -7,7 +7,8 @@ import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/modules/chat/components/messages.dart';
 
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
-import 'package:whatsapp_clone/app/shared_widgets/gradient_icon_button.dart';
+import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon_button.dart';
+import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 
 import '../../../../utils/ui/custom_snackbar.dart';
@@ -59,30 +60,42 @@ class ChatScreen extends StatelessWidget {
           ),
         ),
         actions: [
-          GradientIconButton(
-            icon: FontAwesomeIcons.video,
-            iconSize: 18.sp,
-            onPressed: () {
-              // CustomSnackBar.showCustomSnackBar(message: 'message');
-              CustomSnackBar.showCustomToast(message: 'message');
-              // CustomSnackBar.showCustomToast(message: 'message');
-              // CustomSnackBar.showCustomErrorToast(message: 'message');
-            },
+          Center(
+            child: GradientIconButton(
+              icon: FontAwesomeIcons.video,
+              backgroundSize: 35.sp,
+              iconSize: 18.sp,
+              backgroundColor: MyColors.LightGreen,
+              onPressed: () {
+                // CustomSnackBar.showCustomSnackBar(message: 'message');
+                CustomSnackBar.showCustomToast(message: 'message');
+                // CustomSnackBar.showCustomToast(message: 'message');
+                // CustomSnackBar.showCustomErrorToast(message: 'message');
+              },
+            ),
           ),
           SizedBox(
             width: 5.sp,
           ),
-          GradientIconButton(
-            icon: FontAwesomeIcons.phone,
-            iconSize: 18.sp,
-            onPressed: () {},
+          Center(
+            child: GradientIconButton(
+              icon: FontAwesomeIcons.phone,
+              backgroundSize: 35.sp,
+              iconSize: 18.sp,
+              backgroundColor: MyColors.LightGreen,
+              onPressed: () {},
+            ),
           ),
           SizedBox(
             width: 5.sp,
           ),
-          GradientIconButton(
-            icon: Icons.more_vert,
-            onPressed: () {},
+          Center(
+            child: GradientIconButton(
+              icon: Icons.more_vert,
+              backgroundSize: 35.sp,
+              backgroundColor: MyColors.LightGreen,
+              onPressed: () {},
+            ),
           ),
           SizedBox(
             width: 5.sp,
