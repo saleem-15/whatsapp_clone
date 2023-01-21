@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
-import 'package:whatsapp_clone/app/models/chats/group_chat.dart';
 import 'package:whatsapp_clone/app/models/chats/private_chat.dart';
-import 'package:whatsapp_clone/app/models/user.dart';
 
 class ChatDetailsController extends GetxController {
   late Chat chat;
@@ -13,7 +11,7 @@ class ChatDetailsController extends GetxController {
 
   ImageProvider get chatImage => chat.imageProvider;
 
-  // List<User> get groupUsers => (chat as GroupChat). 
+  // List<User> get groupUsers => (chat as GroupChat).
 
   /// used only if chat is [PrivateChat]
   String get phoneNumber => (chat as PrivateChat).user.phoneNumber;

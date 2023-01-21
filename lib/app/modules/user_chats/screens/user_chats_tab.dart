@@ -15,7 +15,7 @@ class ChatsTapView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () {
-        final myChats = controller.myChatsList;
+        final myChats = controller.chatsList;
 
         if (myChats.isEmpty) {
           return Align(

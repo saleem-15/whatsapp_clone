@@ -7,12 +7,13 @@ import '../../../config/theme/colors.dart';
 
 class GradientButton extends StatelessWidget {
   const GradientButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     required this.isWaitingForResponse,
     required this.isButtonDisable,
-  }) : super(key: key);
+  });
+
 
   final String text;
   final Function() onPressed;
