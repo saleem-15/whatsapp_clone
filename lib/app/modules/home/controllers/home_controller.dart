@@ -12,10 +12,6 @@ class HomeController extends GetxController {
   RxList<Rx<Chat>> get chatsList => Get.find<ChatsViewController>().chatsList;
   List<Rx<Chat>> get allChatsList => Get.find<ChatsViewController>().allChatsList;
 
-  void onMorePressed() {
-    Get.toNamed(Routes.SETTINGS_SCREEN);
-  }
-
   void onSearchIconButtonPressed() {
     isSearchMode(true);
     searchFocus.requestFocus();
@@ -31,5 +27,22 @@ class HomeController extends GetxController {
     final results = allChatsList.where((chat) => chat.value.name.startsWith(text));
 
     chatsList.replaceRange(0, chatsList.length, results);
+  }
+
+  Future<void> onSettingsOptionSelected() async {
+    /// this line makes sure that the page will open
+    /// if its deleted the page will not open
+    /// I searched on the internet about it and this is what i found:
+    /// "I think this happens because flutter is closing the PopupMenuButton
+    /// automatically and because navigation happens to fast, it closes the new route instead of the menuButton."
+    await Future.delayed(const Duration(milliseconds: 1));
+
+    Get.toNamed(Routes.SETTINGS_SCREEN, preventDuplicates: false);
+  }
+
+  Future<void> onNewGroupOptionSelected() async {
+    /// go to [onSettingsOptionSelected] method to understand why this line exists
+    await Future.delayed(const Duration(milliseconds: 1));
+    Get.toNamed(Routes.SELECT_NEW_GROUP_MEMBERS);
   }
 }

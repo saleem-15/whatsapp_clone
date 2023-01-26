@@ -1,22 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/chats/group_chat.dart';
 import 'package:whatsapp_clone/app/models/chats/private_chat.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/utils/extensions/my_extensions.dart';
 
+import 'api.dart';
+
 class ChatsProvider {
-  static final FirebaseFirestore db = FirebaseFirestore.instance;
-  static final CollectionReference chatsCollection = db.collection('cahts');
-  static final CollectionReference usersCollection = db.collection('users');
-
-  static String myUid = FirebaseAuth.instance.currentUser!.uid;
-
   static Future<List<Chat>> getAllMyChats() async {
     List<String> chatIds = await _getMyChatsId();
 
-    /// if there is not any chats => dont retrive Chat objects!!
+    /// if there is not any chats => return empty list
     if (chatIds.isEmpty) {
       return [];
     }
@@ -99,10 +94,13 @@ class ChatsProvider {
   static Future<List<String>> _getMyChatsId() async {
     List<String> chatsIds = [];
 
+    ///this is my user document
     final myDoc = await usersCollection.doc(myUid).get();
 
+    /// make sure that my document exists
     assert(myDoc.exists);
-
+    
+    
     final List? privateChats = myDoc.safeGet('chats') as List?;
     final List? myGroups = myDoc.safeGet('groups') as List?;
 

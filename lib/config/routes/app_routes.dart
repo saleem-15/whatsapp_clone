@@ -24,8 +24,16 @@ abstract class Routes {
   ///YOU HAVE TO PASS [Chat] ARGUMENT Ass (argument)
   static const CHAT_SCREEN = _Paths.CHAT_SCREEN;
 
-  /// Requires: chat object as arguments
+  /// Arguments: chat object as arguments
   static const CHAT_DETAILS_SCREEN = _Paths.CHAT_DETAILS_SCREEN;
+
+  static const SELECT_NEW_GROUP_MEMBERS = _Paths.SELECT_NEW_GROUP_MEMBERS;
+
+  /// Arguments:
+  /// ```dart
+  ///  List<User> selectedUsers
+  /// ```
+  static const NEW_GROUP_DETAILS = _Paths.NEW_GROUP_DETAILS;
 }
 
 abstract class _Paths {
@@ -44,4 +52,6 @@ abstract class _Paths {
   static const PRIVACY_POLICY_SCREEN = '/Privacy-policy-screen';
   static const APP_INFO_SCREEN = '/App-Info-screen';
   static const CHAT_DETAILS_SCREEN = '/user-details';
+  static const SELECT_NEW_GROUP_MEMBERS = '/add-new-group';
+  static const NEW_GROUP_DETAILS = '/new-group-details';
 }

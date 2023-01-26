@@ -1,20 +1,19 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide User;
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/storage/files_manager.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
+import 'package:whatsapp_clone/utils/extensions/my_extensions.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
+
+import 'api.dart';
 
 class UserProvider {
   UserProvider._();
-  static final FirebaseFirestore _db = FirebaseFirestore.instance;
-  static final String myUid = FirebaseAuth.instance.currentUser!.uid;
-  static final CollectionReference _usersCollection = _db.collection('users');
 
   static late Rx<ImageProvider> userImage;
 
@@ -31,7 +30,7 @@ class UserProvider {
 
   /// returns null if the user does not exist
   static Future<User?> getUserInfoByPhoneNumber(String phoneNumber) async {
-    final queryResult = await _usersCollection
+    final queryResult = await usersCollection
         .where(
           'phoneNumber',
           isEqualTo: phoneNumber,
@@ -48,7 +47,7 @@ class UserProvider {
 
   /// returns null if the user does not exist
   static Future<User?> getUserInfoByUID(String userUID) async {
-    final result = await _usersCollection.doc(userUID).get();
+    final result = await usersCollection.doc(userUID).get();
 
     if (!result.exists) {
       return null;
@@ -79,14 +78,14 @@ class UserProvider {
     ///change last update time
     userMap[User.user_last_Updated_key] = FieldValue.serverTimestamp();
 
-    await _usersCollection.doc(user.uid).update(userMap);
+    await usersCollection.doc(user.uid).update(userMap);
   }
 
   ///,returnes the file Url in the firestorage
   static Future<String> updateUserImage(File imageFile) async {
     final fileExtension = Utils.getFileExtension(imageFile.path);
 
-    final fileRef = FirebaseStorage.instance.ref().child('usersImages/$myUid$fileExtension');
+    final fileRef = rootStorage.child('usersImages/$myUid$fileExtension');
 
     /// upload image to fireStorage
     await fileRef.putFile(File(imageFile.path)).whenComplete(() => null);
@@ -95,5 +94,23 @@ class UserProvider {
     final fileUrl = await fileRef.getDownloadURL();
 
     return fileUrl;
+  }
+
+  /// returnes all my contacts
+  static Future<List<User>> getAllMyContacts() async {
+    List<User> myContacts = [];
+
+    final myDoc = await usersCollection.doc(myUid).get();
+
+    final List<String> contactsIds = myDoc.getStringList('myContacts');
+
+    final contactsDocs = await usersCollection.getMultipleDocuments(contactsIds);
+
+    for (DocumentSnapshot userDoc in contactsDocs) {
+      myContacts.add(User.fromDoc(userDoc));
+    }
+
+    log('number of my contacts: ${myContacts.length}');
+    return myContacts;
   }
 }

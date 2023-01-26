@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/modules/user_details/views/user_details_screen.dart';
+import 'package:whatsapp_clone/app/modules/addNewGroup/views/group_details_screen.dart';
 
+import '../../app/modules/addNewGroup/views/select_group_members_screen.dart';
 import '../../app/modules/auth/screens/otp_screen.dart';
 import '../../app/modules/auth/screens/signin_screen.dart';
 import '../../app/modules/auth/screens/signup_screen.dart';
@@ -13,6 +14,7 @@ import '../../app/modules/settings/screens/privacy_policy_screen.dart';
 import '../../app/modules/settings/screens/profile_screen.dart';
 import '../../app/modules/settings/screens/settings_screen.dart';
 import '../../app/modules/settings/screens/terms_screen.dart';
+import '../../app/modules/user_details/views/user_details_screen.dart';
 import '../../app/modules/video/screens/video_viewer_screen.dart';
 
 part 'app_routes.dart';
@@ -78,6 +80,14 @@ class AppPages {
     GetPage(
       name: _Paths.CHAT_DETAILS_SCREEN,
       page: () => ChatDetailsScreen(),
+    ),
+    GetPage(
+      name: _Paths.SELECT_NEW_GROUP_MEMBERS,
+      page: () => SelectNewGroupMembersScreen(),
+    ),
+    GetPage(
+      name: _Paths.NEW_GROUP_DETAILS,
+      page: () => GroupDetailsScreen(),
     ),
   ];
 }
