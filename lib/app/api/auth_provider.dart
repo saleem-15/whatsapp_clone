@@ -1,9 +1,8 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers
+// ignore_for_file: no_leading_underscores_for_local_identifiers, unused_local_variable
 
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
@@ -11,16 +10,13 @@ import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
 
+import 'api.dart';
 import 'user_provider.dart';
 
 /// it returnes true if signup process is successful
 
 class AuthProvider {
   AuthProvider._();
-
-  static FirebaseAuth auth = FirebaseAuth.instance;
-  static FirebaseFirestore db = FirebaseFirestore.instance;
-  static CollectionReference usersCollection = db.collection('users');
 
   ///used when verifiying the verification code (SMS Message)
   static String? verificationId;

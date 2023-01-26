@@ -8,17 +8,24 @@ import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/auth_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/screens/signup_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
+import 'package:whatsapp_clone/app/providers/users_provider.dart';
 
 import 'app/api/user_provider.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
+import 'app/providers/chats_provider.dart';
 import 'storage/my_shared_pref.dart';
 import 'config/theme/my_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
   await MySharedPref.init();
   await UserProvider.init();
+
+  Get.put(UserController());
+  Get.put(ChatsController());
+
   MySharedPref.setLastUpdated(DateTime.now());
 
   Get.put(AuthController());
@@ -84,6 +91,8 @@ class Main extends StatelessWidget {
           stream: firebase_auth.FirebaseAuth.instance.authStateChanges(),
           builder: (context, AsyncSnapshot<firebase_auth.User?> snapshot) {
             // log('-----Auth state changed');
+
+            // return MyHomePageState();
 
             /// if user == null => the user is not Authenticated
             ///

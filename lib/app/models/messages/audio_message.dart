@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
@@ -62,4 +63,13 @@ class AudioMessage extends MessageInterface {
       audio: audio,
     );
   }
+
+    factory AudioMessage.fromFileMessage(FileMessage fileMessage) {
+    return AudioMessage.toSend(
+      chatId: fileMessage.chatId,
+      text: null,
+      audio: fileMessage.fileName,
+    );
+  }
+
 }

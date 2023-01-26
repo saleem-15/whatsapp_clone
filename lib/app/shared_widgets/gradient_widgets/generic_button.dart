@@ -33,6 +33,7 @@ class GradientGenericButton extends StatelessWidget {
               padding: MaterialStateProperty.all(EdgeInsets.zero),
             ),
         child: Ink(
+          
           decoration: const BoxDecoration(
             gradient: MyColors.greenGradient,
           ),
@@ -44,4 +45,8 @@ class GradientGenericButton extends StatelessWidget {
       ),
     );
   }
+
+  
 }
+
+

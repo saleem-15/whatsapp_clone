@@ -13,7 +13,9 @@ import 'my_fonts.dart';
 class MyStyles {
   MyStyles._();
 
-  static EdgeInsets getHorizintalScreenPadding() => EdgeInsets.symmetric(horizontal: 15.w);
+  static double rightScreenPadding = 15.w;
+  static double leftScreenPadding = 15.w;
+  static EdgeInsets getHorizintalScreenPadding() => EdgeInsets.symmetric(horizontal: leftScreenPadding);
 
   ///app bar theme
   static AppBarTheme getAppBarTheme() => AppBarTheme(

@@ -4,6 +4,7 @@ import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
 import '../message_type_enum.dart';
+import 'file_message.dart';
 
 class ImageMessage extends MessageInterface {
   /// json fields names (to ensure that i always (send) and (recieve) the right field name)
@@ -74,6 +75,15 @@ class ImageMessage extends MessageInterface {
       text: text,
       imageUrl: imageUrl,
       imageName: imageName,
+    );
+  }
+
+    factory ImageMessage.fromFileMessage(FileMessage fileMessage) {
+    return ImageMessage.toSend(
+      chatId: fileMessage.chatId,
+      text: null,
+      imageName: fileMessage.file,
+      imageUrl: fileMessage.fileName,
     );
   }
 }

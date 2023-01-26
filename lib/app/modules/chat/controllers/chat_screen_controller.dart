@@ -15,7 +15,6 @@ import 'package:whatsapp_clone/app/api/messaging_provider.dart';
 import 'package:whatsapp_clone/app/modules/image/screens/image_viewer_screen.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'package:whatsapp_clone/storage/files_manager.dart';
-import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 import 'chat_text_field_controller.dart';
 
@@ -144,15 +143,11 @@ class ChatScreenController extends GetxController {
   }
 
   Future<void> sendVideo(File video, String? message) async {
-    var videoInfo = await Utils.getVideoInfo(video.path);
-
     final videoMessage = VideoMessage.toSend(
       chatId: chat.id,
       text: message,
       videoUrl: video.path,
       videoName: '',
-      height: videoInfo!.height!,
-      width: videoInfo.width!,
     );
 
     MessagingProvider.sendVideoMessage(videoMessage, video);

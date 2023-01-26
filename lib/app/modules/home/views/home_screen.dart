@@ -75,9 +75,11 @@ class HomeScreen extends StatelessWidget {
 }
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const HomeAppBar(this.controller, {super.key});
+  HomeAppBar(this.controller, {super.key});
 
   final HomeController controller;
+
+  final GlobalKey popUpkey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -85,35 +87,35 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       () {
         bool isSearchMode = controller.isSearchMode.value;
 
-        return OverflowBox(
-          child: AppBar(
-            title: isSearchMode
-                ? null
-                : const Text(
-                    'WhatsUp',
-                  ),
-            actions: [
-              /// search (icon button/field)
+        return AppBar(
+          title: isSearchMode
+              ? null
+              : const Text(
+                  'WhatsUp',
+                ),
+          actions: [
+            /// search (icon button/field)
+            Center(
+              child: searchField(),
+            ),
+
+            if (!isSearchMode) SizedBox(width: 15.sp),
+
+            /// more icon button
+            if (!isSearchMode)
               Center(
-                child: searchField(),
+                child: GradientIconButton(
+                  key: popUpkey,
+                  icon: Icons.more_vert,
+                  backgroundColor: MyColors.LightGreen,
+                  backgroundSize: 35.sp,
+                  onPressed: () => showMoreButtonPopupMenu(context),
+                  // onPressed: controller.onSettingsOptionSelected,
+                ),
               ),
 
-              if (!isSearchMode) SizedBox(width: 15.sp),
-
-              /// more icon button
-              if (!isSearchMode)
-                Center(
-                  child: GradientIconButton(
-                    icon: Icons.more_vert,
-                    backgroundColor: MyColors.LightGreen,
-                    backgroundSize: 35.sp,
-                    onPressed: controller.onMorePressed,
-                  ),
-                ),
-
-              SizedBox(width: 15.sp),
-            ],
-          ),
+            SizedBox(width: 15.sp),
+          ],
         );
       },
     );
@@ -186,4 +188,35 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => AppBar().preferredSize;
+
+  void showMoreButtonPopupMenu(BuildContext context) {
+    final RenderBox button = popUpkey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox overlay = Get.overlayContext!.findRenderObject()! as RenderBox;
+
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero, ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+    showMenu(
+      context: context,
+      position: position,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5.sp),
+      ),
+      useRootNavigator: false,
+      items: [
+        PopupMenuItem(
+          onTap: controller.onNewGroupOptionSelected,
+          child: const Text('New Group'),
+        ),
+        PopupMenuItem(
+          onTap: controller.onSettingsOptionSelected,
+          child: const Text('Settings'),
+        ),
+      ],
+    );
+  }
 }

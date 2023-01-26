@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
@@ -28,13 +29,16 @@ class VideoMessage extends MessageInterface {
     this.text,
     required this.videoUrl,
     required this.videoName,
-    required this.width,
-    required this.height,
-  }) : super(type: MessageType.video);
+    int? height,
+    int? width,
+  })  : height = height!,
+        width = width!,
+        super(type: MessageType.video);
 
   ///used to display the video message with correct dimensions
-  int width;
-  int height;
+  ///even before the video is downloaded
+  late final int width;
+  late final int height;
 
   String videoUrl;
   String videoName;
@@ -45,7 +49,7 @@ class VideoMessage extends MessageInterface {
     if (width > height) {
       return MediaType.landscape;
     }
-    
+
     return MediaType.portrait;
   }
 
@@ -83,6 +87,14 @@ class VideoMessage extends MessageInterface {
       height: map['height'],
     );
   }
+  factory VideoMessage.fromFileMessage(FileMessage fileMessage) {
+    return VideoMessage.toSend(
+      chatId: fileMessage.chatId,
+      text: null,
+      videoName: fileMessage.file,
+      videoUrl: fileMessage.fileName,
+    );
+  }
 
   @override
   factory VideoMessage.toSend({
@@ -90,8 +102,6 @@ class VideoMessage extends MessageInterface {
     required String? text,
     required String videoName,
     required String videoUrl,
-    required int width,
-    required int height,
   }) {
     return VideoMessage(
       isSent: false,
@@ -104,8 +114,6 @@ class VideoMessage extends MessageInterface {
       text: text,
       videoUrl: videoUrl,
       videoName: videoName,
-      height: height,
-      width: width,
     );
   }
 }

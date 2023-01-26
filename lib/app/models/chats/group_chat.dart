@@ -25,9 +25,8 @@ class GroupChat extends Chat {
       createdAt: (chatDoc['createdAt'] as Timestamp).toDate(),
       image: chatDoc['imageUrl'],
       name: chatDoc['groupName'],
-      bio: chatDoc['bio'],
+      bio: chatDoc['bio'] ?? 'some randon bio',
       usersIds: List.castFrom<dynamic, String>(chatDoc['members'] as List),
     );
   }
 }
-
