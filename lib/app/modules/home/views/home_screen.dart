@@ -176,7 +176,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       ),
                     ),
-                    onChanged: (value) => controller.search(),
                   ),
                 ),
             ],

@@ -1,16 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
-import 'package:whatsapp_clone/app/modules/user_chats/controllers/chats_view_controller.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
 class HomeController extends GetxController {
   final searchController = TextEditingController();
   FocusNode searchFocus = FocusNode();
   RxBool isSearchMode = false.obs;
-
-  RxList<Rx<Chat>> get chatsList => Get.find<ChatsViewController>().chatsList;
-  List<Rx<Chat>> get allChatsList => Get.find<ChatsViewController>().allChatsList;
 
   void onSearchIconButtonPressed() {
     isSearchMode(true);
@@ -19,16 +14,11 @@ class HomeController extends GetxController {
 
   void onCloseSearchIconPressed() {
     isSearchMode(false);
-    chatsList.replaceRange(0, chatsList.length, allChatsList);
+    searchController.clear();
   }
 
-  void search() {
-    final text = searchController.text.trim().toLowerCase();
-    final results = allChatsList.where((chat) => chat.value.name.startsWith(text));
-
-    chatsList.replaceRange(0, chatsList.length, results);
-  }
-
+  /// this method is called when the user selects `settings` option
+  ///  from the pop up menu that appears when clicking `more icon button`
   Future<void> onSettingsOptionSelected() async {
     /// this line makes sure that the page will open
     /// if its deleted the page will not open
