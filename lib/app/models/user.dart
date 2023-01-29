@@ -1,24 +1,25 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/get_utils.dart';
 import 'package:isar/isar.dart';
+
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
-import 'package:get/get_utils/get_utils.dart';
+part 'user.g.dart';
 
-// part 'user.g.dart';
-
-@Collection()
+@collection
 class User {
   ///this id does not realy represents the user
   ///its only exist due to [Isar] database requirements
-  Id id = Isar.autoIncrement;
+  late Id databaseId;
 
-  String uid;
-  String name;
-  String phoneNumber;
-  String about;
-  DateTime lastUpdated;
-  String? imageUrl;
+  late String uid;
+  late String name;
+  late String phoneNumber;
+  late String bio;
+  late DateTime lastUpdated;
+  late String? imageUrl;
 
   /// -------field names (used when getting, sending request to back end)------
   static const user_image_url_key = 'imageUrl';
@@ -30,27 +31,31 @@ class User {
   static const user_about_key = 'about';
 
   ///--------------------------------------------------------------------
-  User({
+  ///this is for isar database
+  User();
+
+  User.normal({
     required this.uid,
     required this.name,
     required this.phoneNumber,
     required this.imageUrl,
     required this.lastUpdated,
-    required this.about,
-  });
+    required this.bio,
+  }) : databaseId = int.parse(phoneNumber.substring(1));
 
+  @ignore
   ImageProvider get imageProvider => (imageUrl == null || imageUrl!.isBlank!
       ? const AssetImage(Assets.default_user_image)
       : NetworkImage(imageUrl!)) as ImageProvider;
 
   factory User.fromDoc(dynamic doc) {
-    return User(
+    return User.normal(
       uid: doc.id,
       name: doc[user_name_key] as String,
       phoneNumber: doc[user_phone_number_key] as String,
       imageUrl: doc[user_image_url_key],
       lastUpdated: (doc[user_last_Updated_key] as Timestamp).toDate(),
-      about: doc[user_about_key],
+      bio: doc[user_about_key],
     );
   }
 
@@ -67,7 +72,12 @@ class User {
 
       user_last_Updated_key: Timestamp.fromDate(lastUpdated),
 
-      user_about_key: about,
+      user_about_key: bio,
     };
+  }
+
+  @override
+  String toString() {
+    return 'User(databaseId: $databaseId, uid: $uid, name: $name, phoneNumber: $phoneNumber, about: $bio, lastUpdated: $lastUpdated, imageUrl: $imageUrl)';
   }
 }
