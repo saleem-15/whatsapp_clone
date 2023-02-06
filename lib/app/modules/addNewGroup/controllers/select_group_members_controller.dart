@@ -8,7 +8,7 @@ class SelectNewGroupMembersController extends GetxController {
   // for example if (selectedPeople = [2,3]) ==> then ==> contacts[2] ,contacts[3] are selected
 
   final selectedPeopleIndices = <int>[].obs;
-  RxList<Rx<User>> get myContacts => Get.find<UserController>().users;
+  RxList<Rx<User>> get myContacts => Get.find<UsersProvider>().users;
 
   List<User> get selectedUsers {
     List<User> users = [];

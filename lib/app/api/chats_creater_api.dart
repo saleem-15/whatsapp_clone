@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:whatsapp_clone/app/api/messaging_provider.dart';
+import 'package:whatsapp_clone/app/api/messaging_api.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
-import 'package:whatsapp_clone/utils/my_exceptions.dart';
+import 'package:whatsapp_clone/utils/exceptions/chat_exceptions.dart';
 
 import 'api.dart';
 
@@ -120,11 +120,11 @@ Future<void> createGroupChat(String groupName, List<String> selectedPeopleIds, F
   String? groupImageUrl;
 
   if (groupImage != null) {
-    final imageId = MessagingProvider.genereteFileId(myUid, groupImage.path);
-    groupImageUrl = await MessagingProvider.uploadFileToFirestorage(
+    final imageId = MessagingApi.genereteFileId(myUid, groupImage.path);
+    groupImageUrl = await MessagingApi.uploadFileToFirestorage(
       chatId: groupDoc.id,
       file: groupImage,
-      fileId: imageId,
+      fileName: imageId,
     );
   }
 

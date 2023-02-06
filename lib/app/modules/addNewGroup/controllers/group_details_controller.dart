@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:whatsapp_clone/app/api/chats_creater_provider.dart';
+
+import 'package:whatsapp_clone/app/api/chats_creater_api.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
-import 'package:whatsapp_clone/app/providers/chats_provider.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
 
@@ -70,10 +70,13 @@ class GroupDetailsController extends GetxController {
 
     await createGroupChat(groupName, selectedUsersIds, groupImageFile);
 
-    await Get.find<ChatsController>().reFetchChats();
+    // await Get.find<GroupChatsProvider>().reFetchChats();
 
     Get.offAllNamed(Routes.HOME);
   }
 
   void onUserTilePressed(User user) {}
+  @override
+  String toString() =>
+      'GroupDetailsController(groupImageFile: $groupImageFile, selectedUsers: $selectedUsers)';
 }

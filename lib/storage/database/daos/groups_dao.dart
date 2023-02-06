@@ -1,20 +1,19 @@
-import 'dart:developer';
-
 import 'package:isar/isar.dart';
 import 'package:whatsapp_clone/app/models/chats/group_chat.dart';
 import 'package:whatsapp_clone/storage/database/database.dart';
 
 class GroupChatsDao {
+  GroupChatsDao._();
   //------------------------adding-------------------------------
   static Future<void> addGroupChat(GroupChat groupChat) async {
     await isar.writeTxn(() async {
-      await isar.groupChats.put(groupChat);
+      await isar.groups.put(groupChat);
     });
   }
 
   static Future<void> addMultipleGroupChats(List<GroupChat> groupChats) async {
     await isar.writeTxn(() async {
-      await isar.groupChats.putAll(groupChats);
+      await isar.groups.putAll(groupChats);
     });
   }
 
@@ -24,16 +23,15 @@ class GroupChatsDao {
   }
 
   //--------------------------Delete-------------------------------
-  static Future<void> deleteGroupChat(GroupChat groupChat) async {
-    await isar.writeTxn(() async {
-      final success = await isar.groupChats.delete(groupChat.databaseId);
-      log('Chat deleted: $success');
+  static Future<bool> deleteGroupChat(GroupChat groupChat) async {
+    return await isar.writeTxn(() async {
+      return await isar.groups.delete(groupChat.databaseId);
     });
   }
 
   static Future<void> deleteGroupChatById(String groupChatId) async {
     await isar.writeTxn(() async {
-      await isar.groupChats.filter().idEqualTo(groupChatId).deleteFirst();
+      await isar.groups.filter().idEqualTo(groupChatId).deleteFirst();
     });
   }
 
@@ -44,12 +42,16 @@ class GroupChatsDao {
   }
 
   //--------------------------Get-------------------------------
-  static Future<GroupChat?> getGroupChat(int id) async {
-    return isar.groupChats.get(id);
+  static Future<GroupChat?> getGroupChat(int databaseId) async {
+    return isar.groups.get(databaseId);
+  }
+
+  static Future<GroupChat?> getGroupChatByMyID(String id) async {
+    return isar.groups.filter().idEqualTo(id).findFirst();
   }
 
   static Future<List<GroupChat>> getAllGroupChats() async {
-    return isar.groupChats.where().findAll();
+    return isar.groups.where().findAll();
   }
 
   static Future<List<String>> getAllGroupChatsIDs() async {
@@ -60,6 +62,9 @@ class GroupChatsDao {
   }
 
   static Stream<List<GroupChat>> groupChatsStream() {
-    return isar.groupChats.where().watch();
+    /// fireImmediately means that the results will be sent from the start
+    /// if (fireImmediately = false) => the results will be sent when a change
+    /// occurs to the (groups collection)
+    return isar.groups.where().watch(fireImmediately: true);
   }
 }

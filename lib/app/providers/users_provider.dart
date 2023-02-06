@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/api/user_api.dart';
-import 'package:whatsapp_clone/app/providers/chats_provider.dart';
 import 'package:whatsapp_clone/storage/database/daos/users_dao.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/extensions/my_extensions.dart';
@@ -45,10 +44,10 @@ class UsersProvider extends GetxController {
   /// it refetches users & chats.
   ///
   /// Becuase if you have a `new User` => you have a `new Chat`
-  Future<void> reFetchUsersFromBackend() async {
-    await fetchUsersFromBackend();
-    await Get.find<GroupChatsProvider>().reFetchChats();
-  }
+  // Future<void> reFetchUsersFromBackend() async {
+  //   await fetchUsersFromBackend();
+  //   await Get.find<GroupChatsProvider>().reFetchChats();
+  // }
 
   void addUser(User user) {
     UsersDao.addUser(user);

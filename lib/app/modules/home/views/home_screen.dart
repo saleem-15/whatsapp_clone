@@ -9,6 +9,7 @@ import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/config/theme/light_theme_colors.dart';
 import 'package:whatsapp_clone/config/theme/my_styles.dart';
+import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 import '../../user_chats/screens/user_chats_tab.dart';
 import '../controllers/home_controller.dart';
@@ -146,7 +147,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   width: 10.sp,
                 ),
               const GradientIcon(
-                icon: Icons.search,
+                assetIconPath: Assets.SEARCH_ICON,
               ),
 
               /// TextField

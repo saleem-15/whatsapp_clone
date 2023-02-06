@@ -7,14 +7,17 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 import 'package:whatsapp_clone/app/models/user.dart';
-import 'package:whatsapp_clone/app/providers/chats_provider.dart';
+import 'package:whatsapp_clone/app/providers/groups_provider.dart';
+import 'package:whatsapp_clone/app/providers/private_chats_provider.dart';
 import 'package:whatsapp_clone/storage/database/daos/groups_dao.dart';
+import 'package:whatsapp_clone/storage/database/daos/private_chats_dao.dart';
+import 'package:whatsapp_clone/storage/database/daos/users_dao.dart';
 import 'package:whatsapp_clone/storage/files_manager.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
-import 'package:whatsapp_clone/utils/extensions/my_extensions.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 import 'api.dart';
@@ -26,6 +29,7 @@ class UserApi {
   static late final Stream<DocumentSnapshot<Object?>> myDocumentStream;
 
   static late Rx<ImageProvider> userImage;
+  static late bool isMyDocExists;
 
   static Future<void> init() async {
     File? imageFile = await FileManager.getUserImage();
@@ -53,6 +57,14 @@ class UserApi {
     }
 
     return User.fromDoc(queryResult.docs.first);
+  }
+
+  static Future<void> setUserFcmToken() async {
+    final fcmToken = MySharedPref.getFcmToken!;
+
+    await myUserDocument.update({
+      'fcmToken': fcmToken,
+    });
   }
 
   /// returns null if the user does not exist
@@ -125,8 +137,12 @@ class UserApi {
   }
 
   /// this method watches the changes that happens to my document
-  static void wathcMyDocChanges() {
-    myDocumentStream = usersCollection.doc(myUid).snapshots();
+  static Future<void> wathcMyDocChanges() async {
+    while (!MySharedPref.getIsMyDocExists) {
+      Logger().i('My Document doesnt yet exists');
+      await Future.delayed(const Duration(seconds: 10));
+    }
+    myDocumentStream = myUserDocument.snapshots();
 
     myDocumentListener = myDocumentStream.listen((document) async {
       log('****************my document has changed****************');
@@ -138,11 +154,18 @@ class UserApi {
       final nameInDoc = document['name'];
       final phoneInDoc = document['phoneNumber'];
       final aboutInDoc = document['about'];
+      final imageInDoc = document[User.user_image_url_key];
 
       if (nameInDoc != MySharedPref.getUserName ||
           phoneInDoc != MySharedPref.getUserPhoneNumber ||
-          aboutInDoc != MySharedPref.getUserAbout) {
-        MySharedPref.updateUserData(name: nameInDoc, phone: phoneInDoc, about: aboutInDoc);
+          aboutInDoc != MySharedPref.getUserAbout ||
+          imageInDoc != MySharedPref.getUserImage) {
+        UsersDao.updateMyData(
+          name: nameInDoc,
+          phone: phoneInDoc,
+          bio: aboutInDoc,
+          imageUrl: imageInDoc,
+        );
       }
     });
   }
@@ -155,13 +178,15 @@ class UserApi {
     /// changes in groups
     List<String> fetchedGroupChatIDsList = doc.getStringList('groups');
     final storedGroupsList = await GroupChatsDao.getAllGroupChatsIDs();
+    Logger().i('Stored Groups ID\'s: $storedGroupsList');
 
     final newGroups = fetchedGroupChatIDsList.where((item) => !storedGroupsList.contains(item)).toList();
     final removedGroups = storedGroupsList.where((item) => !fetchedGroupChatIDsList.contains(item)).toList();
 
     /// changes in private chats
     List<String> fetchedPrivateChatsIDsList = doc.getStringList('chats');
-    final storedPrivateChatsList = MySharedPref.getUserChatIds;
+    final storedPrivateChatsList = await PrivateChatsDao.getAllPrivateChatsIDs();
+    Logger().i('Stored Private Chats ID\'s: $storedPrivateChatsList');
 
     final newPrivateChats =
         fetchedPrivateChatsIDsList.where((item) => !storedPrivateChatsList.contains(item)).toList();
@@ -178,34 +203,35 @@ class UserApi {
 }
 
 void applyChanges(Map<String, List<String>> changedChats) {
-  ///new private chats
+  /// new private chats
   final newPrivateChats = changedChats['newChats'];
 
   if (newPrivateChats!.isNotEmpty) {
-    //
+    Logger().i('new Private Chats ID\'s: $newPrivateChats');
+    Get.find<PrivateChatsProvider>().fetchMultipleNewPrivateChat(newPrivateChats);
   }
 
   ///deleted private chats
   final deletedPrivateChats = changedChats['removedChats'];
 
   if (deletedPrivateChats!.isNotEmpty) {
-    //
+    Logger().i('removed Private Chats ID\'s: $deletedPrivateChats');
+    Get.find<PrivateChatsProvider>().deleteMultiplePrivateChats(deletedPrivateChats);
   }
 
   ///new groups
   final newGroupChats = changedChats['newGroups'];
 
   if (newGroupChats!.isNotEmpty) {
-    newGroupChats.printInfo(info: 'New groups Ids');
+    Logger().i('new Groups ID\'s: $newGroupChats');
     Get.find<GroupChatsProvider>().fetchMultipleNewGroupChat(newGroupChats);
   }
 
   ///deleted groups
-  final deletedGroupChats = changedChats['removedGroups'];
+  final deletedGroupChatsIDs = changedChats['removedGroups'];
 
-  if (deletedGroupChats!.isNotEmpty) {
-    deletedGroupChats.printInfo(info: 'Removed groups Ids');
-    log('*${deletedGroupChats.first}*');
-    Get.find<GroupChatsProvider>().deleteMultipleGroupChat(deletedGroupChats);
+  if (deletedGroupChatsIDs!.isNotEmpty) {
+    Logger().i('Deleted Groups ID\'s: $deletedGroupChatsIDs');
+    Get.find<GroupChatsProvider>().deleteMultipleGroupChat(deletedGroupChatsIDs);
   }
 }

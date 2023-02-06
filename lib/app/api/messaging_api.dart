@@ -12,12 +12,12 @@ import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
-import 'package:get/get_utils/src/extensions/string_extensions.dart';
-
+import 'package:logger/logger.dart';
 import 'api.dart';
 
-class MessagingProvider {
-  MessagingProvider._();
+class MessagingApi {
+  MessagingApi._();
+
   static final senderName = MySharedPref.getUserName!;
   static final senderImage = MySharedPref.getUserImage;
 
@@ -29,14 +29,8 @@ class MessagingProvider {
 
 //-------------------------------------------------------------------------------------
 
-  static Stream<QuerySnapshot<MessageInterface>> getMessagesStream(String chatId) {
-    return messagesCollection(chatId)
-        .orderBy('createdAt', descending: true)
-        .withConverter<MessageInterface>(
-          fromFirestore: (snapshot, _) => fromFirestoreConverter(snapshot),
-          toFirestore: (message, _) => message.toMap(),
-        )
-        .snapshots();
+  static Stream<QuerySnapshot> getMessagesStream(String chatId) {
+    return messagesCollection(chatId).orderBy('createdAt', descending: true).snapshots();
   }
 
   static MessageInterface fromFirestoreConverter(DocumentSnapshot<Map<String, dynamic>> snapshot) {
@@ -45,7 +39,7 @@ class MessagingProvider {
       case MessageType.text:
         return TextMessage.fromDoc(snapshot);
 
-      case MessageType.photo:
+      case MessageType.image:
         return ImageMessage.fromDoc(snapshot);
 
       case MessageType.video:
@@ -60,18 +54,15 @@ class MessagingProvider {
   }
 
   static Future<void> sendTextMessage(TextMessage textMessage) async {
+    Logger().d(textMessage.toString());
     await messagesCollection(textMessage.chatId).add(textMessage);
   }
 
   static Future<void> sendImageMessage(ImageMessage imageMessage, File imageFile) async {
-    String fileName = genereteFileId(myUid, imageFile.path);
-
-    imageMessage.imageName = fileName;
-
     final imageUrl = await uploadFileToFirestorage(
       chatId: imageMessage.chatId,
       file: imageFile,
-      fileId: fileName,
+      fileName: imageMessage.imageName,
     );
 
     /// add the message to firestore
@@ -79,75 +70,50 @@ class MessagingProvider {
   }
 
   static Future<void> sendAudioMessage(AudioMessage audioMessage, File audioFile) async {
-    String fileId = genereteFileId(myUid, audioFile.path);
-
     final audioUrl = await uploadFileToFirestorage(
       chatId: audioMessage.chatId,
       file: audioFile,
-      fileId: fileId,
+      fileName: 'v',
     );
 
     /// add the message to firestore
-    await messagesCollection(audioMessage.chatId).add(audioMessage..audio = audioUrl);
+    await messagesCollection(audioMessage.chatId).add(audioMessage..audioUrl = audioUrl);
   }
 
   static Future<void> sendVideoMessage(VideoMessage videoMessage, File videoFile) async {
-    String fileId = genereteFileId(myUid, videoFile.path);
-
     final videoUrl = await uploadFileToFirestorage(
       chatId: videoMessage.chatId,
       file: videoFile,
-      fileId: fileId,
+      fileName: videoMessage.videoName,
     );
 
-    videoMessage
-      ..videoUrl = videoUrl
-      ..videoName = Utils.getFilName(videoFile.path);
+    videoMessage.videoUrl = videoUrl;
 
     /// add the message to firestore
     await messagesCollection(videoMessage.chatId).add(videoMessage);
   }
 
-  static Future<void> sendFileMessage(String chatId, File file) async {
-    String fileId = genereteFileId(myUid, file.path);
-    final fileName = Utils.getFilName(file.path);
-
-    final fileMessage = FileMessage.toSend(
-      chatId: chatId,
-      file: file.path,
-      fileName: fileName,
-      fileSize: Utils.getFileSize(file).toStringAsFixed(1),
-    );
-
-    /// if its a video,image or audio
-    /// then send it as video,image,audio message
-    /// not as a file message
-    if (file.path.isVideoFileName) {
-      return await sendVideoMessage(VideoMessage.fromFileMessage(fileMessage), file);
-    } else if (file.path.isImageFileName) {
-      return await sendImageMessage(ImageMessage.fromFileMessage(fileMessage), file);
-    } else if (file.path.isAudioFileName) {
-      return await sendAudioMessage(AudioMessage.fromFileMessage(fileMessage), file);
-    }
-
+  static Future<void> sendFileMessage(FileMessage fileMessage, File file) async {
     final fileUrl = await uploadFileToFirestorage(
-      chatId: chatId,
+      chatId: fileMessage.chatId,
       file: file,
-      fileId: fileId,
+      fileName: fileMessage.fileName,
     );
 
     await messagesCollection(fileMessage.chatId).add(fileMessage..file = fileUrl);
   }
 
-  ///returnes the file Url in the firestorage
-  ///It needs senderId to ensure that the file name is unique
-  ///to prevent any kind of proplems
+  ///returnes the file Url in the firestorage\
+  ///-`chatId` is used to determine where the file will be stored
+  /// (every chat has its own storage path)\
+  ///-the `fileName` has to be unique, if it was not unique then the
+  /// new file will overWrite the old one.
   static Future<String> uploadFileToFirestorage({
     required String chatId,
     required File file,
-    required String fileId,
+    required String fileName,
   }) async {
-    final fileRef = rootStorage.child('chats/$chatId/$fileId');
+    final fileRef = rootStorage.child('chats/$chatId/$fileName');
 
     /// upload image to fireStorage
     await fileRef.putFile(File(file.path)).whenComplete(() => null);

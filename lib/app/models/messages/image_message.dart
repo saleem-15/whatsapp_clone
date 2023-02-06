@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
@@ -8,8 +9,8 @@ import 'file_message.dart';
 
 class ImageMessage extends MessageInterface {
   /// json fields names (to ensure that i always (send) and (recieve) the right field name)
-  static const image_name = 'imageName';
-  static const image_url = 'imageUrl';
+  static const IMAGE_NAME_KEY = 'imageName';
+  static const IMAGE_URL_KEY = 'imageUrl';
 
   ImageMessage({
     required super.isSent,
@@ -22,7 +23,7 @@ class ImageMessage extends MessageInterface {
     this.text,
     required this.imageUrl,
     required this.imageName,
-  }) : super(type: MessageType.photo);
+  }) : super(type: MessageType.image);
 
   String imageUrl;
   String imageName;
@@ -33,8 +34,8 @@ class ImageMessage extends MessageInterface {
     return super.toMap()
       ..addAll({
         'text': text,
-        image_url: imageUrl,
-        image_name: imageName,
+        IMAGE_URL_KEY: imageUrl,
+        IMAGE_NAME_KEY: imageName,
       });
   }
 
@@ -49,10 +50,10 @@ class ImageMessage extends MessageInterface {
       senderId: map['senderId'],
       senderName: map['senderName'],
       senderImage: map['senderImage'],
-      imageUrl: map[image_url],
-      imageName: map[image_name],
+      imageUrl: map[IMAGE_URL_KEY],
+      imageName: map[IMAGE_NAME_KEY],
       text: map['text'],
-      timeSent: (map['createdAt'] as Timestamp).toDate(),
+      timeSent: map.getDateTime('createdAt')!,
     );
   }
 
@@ -78,12 +79,27 @@ class ImageMessage extends MessageInterface {
     );
   }
 
-    factory ImageMessage.fromFileMessage(FileMessage fileMessage) {
+  factory ImageMessage.fromFileMessage(FileMessage fileMessage) {
     return ImageMessage.toSend(
       chatId: fileMessage.chatId,
       text: null,
       imageName: fileMessage.file,
       imageUrl: fileMessage.fileName,
+    );
+  }
+
+  factory ImageMessage.fromNotificationPayload(Map<String, dynamic> map) {
+    return ImageMessage(
+      isSent: false,
+      isSeen: false,
+      chatId: map['chatId'],
+      timeSent: map[MessageInterface.CREATED_AT_KEY],
+      senderId: map[MessageInterface.SENDER_ID_KEY],
+      senderName: map[MessageInterface.SENDER_NAME_KEY],
+      senderImage: map[MessageInterface.SENDER_image_KEY],
+      imageUrl: map[IMAGE_URL_KEY],
+      imageName: map[IMAGE_NAME_KEY],
+      text: map[MessageInterface.TEXT_KEY],
     );
   }
 }

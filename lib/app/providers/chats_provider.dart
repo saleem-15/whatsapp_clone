@@ -2,69 +2,44 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
-import 'package:whatsapp_clone/storage/database/daos/groups_dao.dart';
+import 'package:whatsapp_clone/app/models/chats/group_chat.dart';
+import 'package:whatsapp_clone/app/models/chats/private_chat.dart';
+import 'package:whatsapp_clone/app/providers/groups_provider.dart';
+import 'package:whatsapp_clone/app/providers/private_chats_provider.dart';
 
-import '../api/chats_api.dart';
-import 'package:whatsapp_clone/utils/extensions/my_extensions.dart';
+import '../modules/user_chats/controllers/chats_view_controller.dart';
 
 /// its responsiple for user chats list.
 /// like `(fetching,adding,deleting,updating) its data`
-class GroupChatsProvider extends GetxController {
-  final groupsList = RxList<Rx<Chat>>();
+class ChatsProvider extends GetxController {
+  final Rx<List<Rx<Chat>>> allChatsList = Rx(<Rx<Chat>>[]);
 
-  /// returns a `copy` of the chats list
-  // RxList<Rx<Chat>> get chats => RxList.of(_chats);
+  RxList<Rx<GroupChat>> get groups => Get.find<GroupChatsProvider>().groupsList;
+  RxList<Rx<PrivateChat>> get privateChats => Get.find<PrivateChatsProvider>().privateChatsList;
 
   @override
   void onReady() async {
     super.onReady();
 
-    /// (the source of users data is the database)
-    /// listen to users changes in the database
-    GroupChatsDao.groupChatsStream().listen((newGroupsList) {
-      groupsList.value = newGroupsList.convertToRxElements;
+    ever(groups, (_) => _reConstructChatsList());
+    ever(privateChats, (_) => _reConstructChatsList());
+
+    ever(allChatsList, (callback) {
+      log('******************chats list has been updated***************');
+      Get.find<ChatsViewController>().updateList();
     });
   }
 
-  void addChat(Chat chat) {
-    groupsList.add(chat.obs);
-  }
+  void _reConstructChatsList() {
+    allChatsList.value = [...groups, ...privateChats];
+    log('********************* All Chats *********************');
+    log('All chats list length: ${allChatsList.value.length}');
+    log('Group chats list length: ${groups.length}');
+    log('Private chats list length: ${privateChats.length}');
 
-  void addListOfChats(List<Chat> chat) {
-    groupsList.addAll(chat.convertToRxElements);
-  }
-
-  // Future<void> _fetchChats() async {
-  //   List<Chat> chatsList = await ChatsApi.getAllMyChats();
-  //   log('number of chats: ${chatsList.length}------------------------------');
-  //   chats.addAll(chatsList.convertToRxElements);
-  // }
-
-  Future<void> reFetchChats() async {
-    List<Chat> chatsList = await ChatsApi.getAllMyChats();
-    groupsList.replaceRange(0, groupsList.length, chatsList.convertToRxElements);
-  }
-
-  /// fetches the group document then inserts it in the database
-  Future<void> fetchMultipleNewGroupChat(List<String> newGroupChatsIds) async {
-    log('*${newGroupChatsIds.first}*');
-    final groups = await ChatsApi.getGroupChatsByIds(groupChatIds: newGroupChatsIds);
-    await GroupChatsDao.addMultipleGroupChats(groups);
-  }
-
-  /// `fetches` multiple group documents `then inserts them in the database`
-  Future<void> fetchNewGroupChat(List<String> groupChatsIds) async {
-    final group = await ChatsApi.getGroupChatsByIds(groupChatIds: groupChatsIds);
-    await GroupChatsDao.addMultipleGroupChats(group);
-  }
-
-  /// deletes  group from the database
-  Future<void> deleteGroupChat(String groupChatId) async {
-    await GroupChatsDao.deleteGroupChatById(groupChatId);
-  }
-
-  /// deletes multiple groups from the database
-  Future<void> deleteMultipleGroupChat(List<String> groupChatsId) async {
-    await GroupChatsDao.deleteMultipleGroupChatsById(groupChatsId);
+    for (var chat in allChatsList.value) {
+      chat.printInfo();
+    }
+    log('********************* All Chats *********************');
   }
 }

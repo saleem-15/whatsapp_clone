@@ -11,7 +11,7 @@ import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/storage/files_manager.dart';
 
 import '../controllers/settings_screen_controller.dart';
-import '../../../api/user_provider.dart';
+import '../../../api/user_api.dart';
 import 'change_avatar_bottom_sheet.dart';
 
 class SettingsHeader extends StatelessWidget {
@@ -77,7 +77,7 @@ class UserAvatar extends StatelessWidget {
   UserAvatar({
     super.key,
     required this.avatarSize,
-  }) : userImageProvider = UserProvider.userImage;
+  }) : userImageProvider = UserApi.userImage;
 
   late final Rx<ImageProvider> userImageProvider;
   final double avatarSize;
@@ -151,6 +151,6 @@ class UserAvatar extends StatelessWidget {
 
     FileManager.saveUserImage(userImageFile);
 
-    UserProvider.updateUserImage(userImageFile);
+    UserApi.updateUserImage(userImageFile);
   }
 }

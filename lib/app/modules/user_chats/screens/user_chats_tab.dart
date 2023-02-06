@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/controllers/chats_view_controller.dart';
 import 'package:whatsapp_clone/app/modules/user_chats/components/chat_tile.dart';
+import 'package:whatsapp_clone/app/shared_widgets/searchable_list.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
@@ -16,8 +20,9 @@ class ChatsTapView extends StatelessWidget {
     return Obx(
       () {
         final myChats = controller.chatsList;
+        log('Chats Tap==> chats length: ${myChats.value.length}');
 
-        if (myChats.isEmpty) {
+        if (myChats.value.isEmpty) {
           return Align(
             alignment: const Alignment(0, -.4),
             child: Column(
@@ -41,16 +46,15 @@ class ChatsTapView extends StatelessWidget {
             ),
           );
         }
-        return ListView.builder(
-          itemCount: myChats.length,
-          itemBuilder: (context, index) {
-            //
-            final chat = myChats[index].value;
 
-            return ChatTile(
-              chat: chat,
-            );
-          },
+        log('search mode: ${controller.isSearchMode.value}');
+        return Obx(
+          () => SearchableListView<Rx<Chat>>(
+            list: myChats.value,
+            textController: controller.searchController,
+            filteringFunction: controller.filter,
+            itemBuilder: (chat) => ChatTile(chat: chat.value),
+          ),
         );
       },
     );

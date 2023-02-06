@@ -1,6 +1,9 @@
 import 'package:isar/isar.dart';
 import 'package:whatsapp_clone/app/models/chats/group_chat.dart';
+import 'package:whatsapp_clone/app/models/chats/private_chat.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
+
+import 'models/message.dart';
 
 late final Isar isar;
 
@@ -28,11 +31,22 @@ class MyDataBase {
   static Future<void> openDatabase() async {
     isar = await Isar.open([
       UserSchema,
+      PrivateChatSchema,
       GroupChatSchema,
+      MessageDBSchema,
     ]);
   }
 
-  getAllUsers() {
-    //  recipe = await isar.recipes.get(123);
+  /// Delets all data in the database
+  static Future<void> clearDatabase() async {
+    await isar.writeTxn(() async {
+      await isar.users.clear();
+      await isar.privateChats.clear();
+      await isar.groups.clear();
+      await isar.messages.clear();
+    });
+
+    
+
   }
 }

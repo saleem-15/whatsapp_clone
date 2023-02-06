@@ -1,195 +1,149 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
+
 import 'package:isar/isar.dart';
 import 'package:whatsapp_clone/app/models/message_type_enum.dart';
+import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
+import 'package:whatsapp_clone/app/models/messages/image_message.dart';
+import 'package:whatsapp_clone/app/models/messages/text_message.dart';
+import 'package:whatsapp_clone/app/models/messages/video_message.dart';
+import 'package:whatsapp_clone/app/models/user.dart';
+import 'package:whatsapp_clone/utils/exceptions/message_exceptions.dart';
+
+import '../../../app/models/messages/file_message.dart';
+import '../../../app/models/messages/message_interface.dart';
 
 part 'message.g.dart';
 
-@embedded
-class Message {
-  // Id id = Isar.autoIncrement; // you can also use id = null to auto increment
+@Collection(accessor: 'messages')
+class MessageDB {
+  MessageDB();
+  Id id = Isar.autoIncrement;
+
+  late final String chatId;
 
   ///* This field helps to identify the message type
   @enumerated
   late final MessageType type;
 
-  ///this field is shared between (text,image,video,audio messages) (file message not included)
   String? text;
 
-  ///------ Shared Attributes for all types Messages -----------
+  final sender = IsarLink<User>();
 
-  late final String chatId;
-
-  late String senderId;
-  String? senderImage;
-  late String senderName;
-
-  bool get isMyMessage => senderId == FirebaseAuth.instance.currentUser!.uid;
+  // bool get isMyMessage => senderId == FirebaseAuth.instance.currentUser!.uid;
   //these attributes matters when i am the sender of the message
+
   bool isSent = false;
   bool isSeen = false;
 
   late final DateTime timeSent;
 
-  ///------ Shared Attributes for all types Messages -----------
+  /// the file path stored in the device (image,video,audio,file)
+  String? contentFilePath;
 
-  ///******* Special Attributes for Image Messages*******
-  String? image; //the file path stored in the device
+  ///the download url for the file (image,video,audio,file)
+  String? fileURl;
 
-  ///----------------------------------------------------
+  ///file name (stored in the device ) ex: photo.png
+  String? fileName;
 
-  ///******* Special Attributes for Video Messages*******
-  String? video; //the file path stored in the device
+  ///Special Attributes for each  Message type is stored here\
+  /// stored as json, use [setSpecialMessageAttributes] & [getSpecialMessageAttributes]
+  /// to set and get this field.
+  String? specialMessageAttributes;
 
-  ///----------------------------------------------------
+  void setSpecialMessageAttributes(Map<String, dynamic> messageAttributes) {
+    specialMessageAttributes = json.encode(messageAttributes);
+  }
 
-  ///******* Special Attributes for Audio Messages******
-  String? audio; //the file path stored in the device
+  Map<String, dynamic>? getSpecialMessageAttributes() {
+    if (specialMessageAttributes == null) {
+      return null;
+    }
+    return jsonDecode(specialMessageAttributes!);
+  }
 
-  ///----------------------------------------------------
+  factory MessageDB.fromMessageInterface(MessageInterface message) {
+    switch (message.type) {
+      case MessageType.text:
+        message as TextMessage;
+        return MessageDB()
+          ..type = MessageType.text
+          ..chatId = message.chatId
+          ..text = message.text
+          ..timeSent = message.timeSent
+          //
+          ..isSeen = message.isSeen
+          ..isSent = message.isSent;
+      //
 
-  ///******* Special Attributes for File Messages*******
-  String? file; //the file path stored in the device
-  String? fileName; //the file name stored in the device
+      case MessageType.image:
+        message as ImageMessage;
+        return MessageDB()
+          ..type = MessageType.image
+          ..chatId = message.chatId
+          ..text = message.text
+          ..timeSent = message.timeSent
+          //
+          ..isSeen = message.isSeen
+          ..isSent = message.isSent
 
-  ///----------------------------------------------------
+          //
+          ..fileURl = message.imageUrl
+          ..fileName = message.imageName
+          ..contentFilePath = message.imageUrl;
 
-  // Message({
-  //   this.type = MessageType.text,
-  //   required this.senderId,
-  //   required this.chatId,
-  //   required this.text,
-  //   required this.senderImage,
-  //   required this.senderName,
-  //   required this.timeSent,
-  // });
-  // Message._generic({
-  //   this.type = MessageType.text,
-  //   required this.senderId,
-  //   required this.chatId,
-  //   required this.text,
-  //   required this.video,
-  //   required this.audio,
-  //   required this.image,
-  //   required this.file,
-  //   required this.senderImage,
-  //   required this.senderName,
-  //   required this.timeSent,
-  // });
+      case MessageType.video:
+        message as VideoMessage;
+        return MessageDB()
+          ..type = MessageType.video
+          ..chatId = message.chatId
+          ..text = message.text
+          ..timeSent = message.timeSent
+          //
+          ..isSeen = message.isSeen
+          ..isSent = message.isSent
 
-  // Message.image({
-  //   this.type = MessageType.photo,
-  //   required this.chatId,
-  //   required this.senderId,
-  //   this.text,
-  //   required this.image,
-  //   required this.senderImage,
-  //   required this.senderName,
-  //   required this.timeSent,
-  // });
+          //
+          ..fileURl = message.videoUrl
+          ..fileName = message.videoName
+          ..setSpecialMessageAttributes({
+            VideoMessage.VIDEO_WIDTH_KEY: message.width,
+            VideoMessage.VIDEO_HEIGHT_KEY: message.height,
+          });
+      case MessageType.file:
+        message as FileMessage;
+        return MessageDB()
+          ..type = MessageType.file
+          ..chatId = message.chatId
+          ..timeSent = message.timeSent
+          //
+          ..isSeen = message.isSeen
+          ..isSent = message.isSent
 
-  // Message.video({
-  //   this.type = MessageType.video,
-  //   required this.chatId,
-  //   this.text,
-  //   required this.video,
-  //   required this.senderId,
-  //   required this.senderImage,
-  //   required this.senderName,
-  //   required this.timeSent,
-  // });
-  // Message.file({
-  //   this.type = MessageType.file,
-  //   required this.chatId,
-  //   this.text,
-  //   required this.file,
-  //   required this.senderId,
-  //   required this.senderImage,
-  //   required this.senderName,
-  //   required this.timeSent,
-  // });
+          //
+          ..contentFilePath = message.file
+          ..fileName = message.fileName
+          ..setSpecialMessageAttributes({
+            ///file size
+            FileMessage.FILE_SIZE_KEY: message.fileSize,
+          });
+      case MessageType.audio:
+        message as AudioMessage;
+        return MessageDB()
+          ..type = MessageType.audio
+          ..chatId = message.chatId
+          ..timeSent = message.timeSent
+          //
+          ..isSeen = message.isSeen
+          ..isSent = message.isSent
+          //
+          ..contentFilePath = message.audioUrl;
+      // ..fileName = message.;
 
-  // Message.audio({
-  //   this.type = MessageType.audio,
-  //   required this.chatId,
-  //   this.text,
-  //   required this.audio,
-  //   required this.senderId,
-  //   required this.senderImage,
-  //   required this.senderName,
-  //   required this.timeSent,
-  // });
-
-  // factory Message.fromDoc(DocumentSnapshot map) {
-  //   final messageType = msgTypeEnumfromString(map['type']);
-
-  //   return Message._generic(
-  //     // isSent: map['isSent'],
-  //     // isSeen: map['isSeen'],
-  //     chatId: map.id,
-  //     senderId: map['senderId'],
-  //     senderName: map['senderName'],
-  //     senderImage: map['senderImage'],
-  //     text: map['text'],
-  //     type: messageType,
-  //     image: messageType == MessageType.photo ? map['image'] : null,
-  //     video: messageType == MessageType.video ? map['video'] : null,
-  //     audio: messageType == MessageType.audio ? map['audio'] : null,
-  //     file: messageType == MessageType.file ? map['file'] : null,
-  //     timeSent: (map['createdAt'] as Timestamp).toDate(),
-  //   );
-  // }
-
-  // Map<String, dynamic> toMap() {
-  //   return <String, dynamic>{
-  //     'text': text,
-  //     'createdAt': Timestamp.now(),
-  //     'senderId': senderId,
-  //     'senderName': senderName,
-  //     'senderImage': senderImage,
-  //     'type': type.name,
-  //     if (image != null) 'image': image,
-  //     if (video != null) 'video': video,
-  //     if (audio != null) 'audio': audio,
-  //     if (file != null) 'file': file,
-  //   };
-  // }
-
-  // /// this factory is useful when sending a message
-  // /// Note: You have to change the appropriate field (according to message type)
-  // ///
-  // factory Message.toSend({
-  //   required MessageType msgType,
-  //   required String chatId,
-  //   String? text,
-  //   String? image,
-  //   String? video,
-  //   String? audio,
-  //   String? file,
-  // }) {
-  //   return Message._generic(
-  //     chatId: chatId,
-  //     type: msgType,
-  //     senderId: FirebaseAuth.instance.currentUser!.uid,
-  //     senderName: MySharedPref.getUserName!,
-  //     senderImage: MySharedPref.getUserImage,
-  //     timeSent: DateTime.now(),
-  //     text: text,
-  //     image: image,
-  //     video: video,
-  //     audio: audio,
-  //     file: file,
-  //   );
-  // }
-
+      default:
+        throw MessageException.invalidMessageType();
+    }
+  }
 }
-
-// {
-//     assert(isMyMessage && senderId == null || !isMyMessage && senderId != null,
-//         'You cant set \'isAmItheSender= true AND set the senderId to a value at the same time!!\'');
-
-//     if (isMyMessage) {
-//       senderId = FirebaseAuth.instance.currentUser!.uid;
-//     }
-//   }

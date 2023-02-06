@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/auth_controller.dart';
 import 'package:whatsapp_clone/app/modules/settings/screens/qr_screen.dart';
-import 'package:whatsapp_clone/app/api/user_provider.dart';
+import 'package:whatsapp_clone/app/api/user_api.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
@@ -18,7 +18,7 @@ class SettingsScreenController extends GetxController {
     super.onInit();
     userName = MySharedPref.getUserName!;
     userPhoneNumber = MySharedPref.getUserPhoneNumber!;
-    userImage = UserProvider.userImage;
+    userImage = UserApi.userImage;
   }
 
   void onQrIconPressed() {

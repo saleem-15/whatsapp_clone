@@ -14,8 +14,7 @@ import 'package:whatsapp_clone/app/models/messages/text_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/components/send_attachement_bottom_sheet.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/app/modules/image/screens/picked_photo_viewer.dart';
-
-import '../../../api/messaging_provider.dart';
+import 'package:whatsapp_clone/app/providers/messages_provider.dart';
 
 class ChatTextFieldController extends GetxController {
   late final Chat chat;
@@ -32,7 +31,6 @@ class ChatTextFieldController extends GetxController {
     super.onInit();
     chat = Get.arguments;
 
-    
     textController.addListener(() {
       text(textController.text);
     });
@@ -113,7 +111,7 @@ class ChatTextFieldController extends GetxController {
       text: text.trim(),
     );
 
-    MessagingProvider.sendTextMessage(msg);
+    Get.find<MessagesProvider>().sendTextMessage(chat,msg);
 
     textController.clear();
   }

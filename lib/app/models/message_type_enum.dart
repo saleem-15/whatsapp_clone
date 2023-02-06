@@ -1,7 +1,9 @@
+import 'package:whatsapp_clone/utils/exceptions/message_exceptions.dart';
+
 enum MessageType {
   text,
 
-  photo,
+  image,
 
   video,
 
@@ -15,8 +17,8 @@ MessageType msgTypeEnumfromString(String msgType) {
     case 'text':
       return MessageType.text;
 
-    case 'photo':
-      return MessageType.photo;
+    case 'image':
+      return MessageType.image;
 
     case 'video':
       return MessageType.video;
@@ -28,6 +30,6 @@ MessageType msgTypeEnumfromString(String msgType) {
       return MessageType.file;
 
     default:
-      throw '$msgType is not valid MessageType';
+      throw MessageException.invalidMessageType(msgType);
   }
 }

@@ -1,14 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
+import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
+import 'package:whatsapp_clone/storage/database/models/message.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get_utils/get_utils.dart';
 
+import '../user.dart';
+
 part 'group_chat.g.dart';
 
-@collection
+@Collection(accessor: 'groups')
 class GroupChat extends Chat {
   GroupChat({
     required super.id,
@@ -23,23 +27,26 @@ class GroupChat extends Chat {
     assert(chatDoc.exists);
     return GroupChat(
       id: chatDoc.id,
-      createdAt: (chatDoc['createdAt'] as Timestamp).toDate(),
+      createdAt: chatDoc.getDateTime('createdAt')!,
       image: chatDoc['imageUrl'],
       name: chatDoc['groupName'],
-      bio: chatDoc['bio'] ?? 'some randon bio',
-      usersIds: List.castFrom<dynamic, String>(chatDoc['members'] as List),
+      bio: chatDoc['bio'] ?? 'Some Bullshit Quote',
+      usersIds: chatDoc.getStringList('members'),
     );
   }
 
-  ///this id does not realy represents the user
-  ///its only exist due to [Isar] database requirements
-  Id databaseId = Isar.autoIncrement;
+  final users = IsarLinks<User>();
 
+  @ignore //dont store this field in the database
   @override
   ImageProvider get imageProvider =>
       (image.isBlank! ? const AssetImage(Assets.default_user_image) : NetworkImage(image!)) as ImageProvider;
 
-  @ignore
+  @ignore //dont store this field in the database
   @override
   bool get isGroupChat => true;
+
+  @override
+  String toString() =>
+      'GroupChat(\nid: $id name: $name, bio: $bio, image: $image,createdAt:$createdAt,usersIds: $usersIds)';
 }

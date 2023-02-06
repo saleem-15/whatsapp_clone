@@ -57,4 +57,20 @@ class TextMessage extends MessageInterface {
       text: text,
     );
   }
+
+  @override
+  String toString() =>
+      'Text Message(chatId: $chatId, timeSent: $timeSent, text: $text, senderName: $senderName)';
+
+  factory TextMessage.fromNotificationPayload(Map<String, dynamic> map) {
+    return TextMessage(
+      isSent: false,
+      isSeen: false,
+      chatId: map['chatId'],
+      senderName: map[MessageInterface.SENDER_NAME_KEY],
+      timeSent: map[MessageInterface.CREATED_AT_KEY],
+      senderId: map[MessageInterface.SENDER_ID_KEY],
+      text: map[MessageInterface.TEXT_KEY],
+    );
+  }
 }

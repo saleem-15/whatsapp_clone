@@ -3,114 +3,102 @@
 part of 'message.dart';
 
 // **************************************************************************
-// IsarEmbeddedGenerator
+// IsarCollectionGenerator
 // **************************************************************************
 
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
-const MessageSchema = Schema(
-  name: r'Message',
-  id: 2463283977299753079,
+extension GetMessageDBCollection on Isar {
+  IsarCollection<MessageDB> get messages => this.collection();
+}
+
+const MessageDBSchema = CollectionSchema(
+  name: r'MessageDB',
+  id: -151199360625990355,
   properties: {
-    r'audio': PropertySchema(
-      id: 0,
-      name: r'audio',
-      type: IsarType.string,
-    ),
     r'chatId': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'chatId',
       type: IsarType.string,
     ),
-    r'file': PropertySchema(
-      id: 2,
-      name: r'file',
+    r'contentFilePath': PropertySchema(
+      id: 1,
+      name: r'contentFilePath',
       type: IsarType.string,
     ),
     r'fileName': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'fileName',
       type: IsarType.string,
     ),
-    r'image': PropertySchema(
-      id: 4,
-      name: r'image',
+    r'fileURl': PropertySchema(
+      id: 3,
+      name: r'fileURl',
       type: IsarType.string,
     ),
-    r'isMyMessage': PropertySchema(
-      id: 5,
-      name: r'isMyMessage',
-      type: IsarType.bool,
-    ),
     r'isSeen': PropertySchema(
-      id: 6,
+      id: 4,
       name: r'isSeen',
       type: IsarType.bool,
     ),
     r'isSent': PropertySchema(
-      id: 7,
+      id: 5,
       name: r'isSent',
       type: IsarType.bool,
     ),
-    r'senderId': PropertySchema(
-      id: 8,
-      name: r'senderId',
-      type: IsarType.string,
-    ),
-    r'senderImage': PropertySchema(
-      id: 9,
-      name: r'senderImage',
-      type: IsarType.string,
-    ),
-    r'senderName': PropertySchema(
-      id: 10,
-      name: r'senderName',
+    r'specialMessageAttributes': PropertySchema(
+      id: 6,
+      name: r'specialMessageAttributes',
       type: IsarType.string,
     ),
     r'text': PropertySchema(
-      id: 11,
+      id: 7,
       name: r'text',
       type: IsarType.string,
     ),
     r'timeSent': PropertySchema(
-      id: 12,
+      id: 8,
       name: r'timeSent',
       type: IsarType.dateTime,
     ),
     r'type': PropertySchema(
-      id: 13,
+      id: 9,
       name: r'type',
       type: IsarType.byte,
-      enumMap: _MessagetypeEnumValueMap,
-    ),
-    r'video': PropertySchema(
-      id: 14,
-      name: r'video',
-      type: IsarType.string,
+      enumMap: _MessageDBtypeEnumValueMap,
     )
   },
-  estimateSize: _messageEstimateSize,
-  serialize: _messageSerialize,
-  deserialize: _messageDeserialize,
-  deserializeProp: _messageDeserializeProp,
+  estimateSize: _messageDBEstimateSize,
+  serialize: _messageDBSerialize,
+  deserialize: _messageDBDeserialize,
+  deserializeProp: _messageDBDeserializeProp,
+  idName: r'id',
+  indexes: {},
+  links: {
+    r'sender': LinkSchema(
+      id: 8257306667636939656,
+      name: r'sender',
+      target: r'User',
+      single: true,
+    )
+  },
+  embeddedSchemas: {},
+  getId: _messageDBGetId,
+  getLinks: _messageDBGetLinks,
+  attach: _messageDBAttach,
+  version: '3.0.5',
 );
 
-int _messageEstimateSize(
-  Message object,
+int _messageDBEstimateSize(
+  MessageDB object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.audio;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   bytesCount += 3 + object.chatId.length * 3;
   {
-    final value = object.file;
+    final value = object.contentFilePath;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -122,27 +110,19 @@ int _messageEstimateSize(
     }
   }
   {
-    final value = object.image;
+    final value = object.fileURl;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.senderId.length * 3;
   {
-    final value = object.senderImage;
+    final value = object.specialMessageAttributes;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.senderName.length * 3;
   {
     final value = object.text;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.video;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -150,55 +130,47 @@ int _messageEstimateSize(
   return bytesCount;
 }
 
-void _messageSerialize(
-  Message object,
+void _messageDBSerialize(
+  MessageDB object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.audio);
-  writer.writeString(offsets[1], object.chatId);
-  writer.writeString(offsets[2], object.file);
-  writer.writeString(offsets[3], object.fileName);
-  writer.writeString(offsets[4], object.image);
-  writer.writeBool(offsets[5], object.isMyMessage);
-  writer.writeBool(offsets[6], object.isSeen);
-  writer.writeBool(offsets[7], object.isSent);
-  writer.writeString(offsets[8], object.senderId);
-  writer.writeString(offsets[9], object.senderImage);
-  writer.writeString(offsets[10], object.senderName);
-  writer.writeString(offsets[11], object.text);
-  writer.writeDateTime(offsets[12], object.timeSent);
-  writer.writeByte(offsets[13], object.type.index);
-  writer.writeString(offsets[14], object.video);
+  writer.writeString(offsets[0], object.chatId);
+  writer.writeString(offsets[1], object.contentFilePath);
+  writer.writeString(offsets[2], object.fileName);
+  writer.writeString(offsets[3], object.fileURl);
+  writer.writeBool(offsets[4], object.isSeen);
+  writer.writeBool(offsets[5], object.isSent);
+  writer.writeString(offsets[6], object.specialMessageAttributes);
+  writer.writeString(offsets[7], object.text);
+  writer.writeDateTime(offsets[8], object.timeSent);
+  writer.writeByte(offsets[9], object.type.index);
 }
 
-Message _messageDeserialize(
+MessageDB _messageDBDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Message();
-  object.audio = reader.readStringOrNull(offsets[0]);
-  object.chatId = reader.readString(offsets[1]);
-  object.file = reader.readStringOrNull(offsets[2]);
-  object.fileName = reader.readStringOrNull(offsets[3]);
-  object.image = reader.readStringOrNull(offsets[4]);
-  object.isSeen = reader.readBool(offsets[6]);
-  object.isSent = reader.readBool(offsets[7]);
-  object.senderId = reader.readString(offsets[8]);
-  object.senderImage = reader.readStringOrNull(offsets[9]);
-  object.senderName = reader.readString(offsets[10]);
-  object.text = reader.readStringOrNull(offsets[11]);
-  object.timeSent = reader.readDateTime(offsets[12]);
-  object.type = _MessagetypeValueEnumMap[reader.readByteOrNull(offsets[13])] ??
+  final object = MessageDB();
+  object.chatId = reader.readString(offsets[0]);
+  object.contentFilePath = reader.readStringOrNull(offsets[1]);
+  object.fileName = reader.readStringOrNull(offsets[2]);
+  object.fileURl = reader.readStringOrNull(offsets[3]);
+  object.id = id;
+  object.isSeen = reader.readBool(offsets[4]);
+  object.isSent = reader.readBool(offsets[5]);
+  object.specialMessageAttributes = reader.readStringOrNull(offsets[6]);
+  object.text = reader.readStringOrNull(offsets[7]);
+  object.timeSent = reader.readDateTime(offsets[8]);
+  object.type = _MessageDBtypeValueEnumMap[reader.readByteOrNull(offsets[9])] ??
       MessageType.text;
-  object.video = reader.readStringOrNull(offsets[14]);
   return object;
 }
 
-P _messageDeserializeProp<P>(
+P _messageDBDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -206,205 +178,139 @@ P _messageDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
-    case 1:
       return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 5:
       return (reader.readBool(offset)) as P;
     case 6:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
-    case 9:
-      return (reader.readStringOrNull(offset)) as P;
-    case 10:
-      return (reader.readString(offset)) as P;
-    case 11:
-      return (reader.readStringOrNull(offset)) as P;
-    case 12:
       return (reader.readDateTime(offset)) as P;
-    case 13:
-      return (_MessagetypeValueEnumMap[reader.readByteOrNull(offset)] ??
+    case 9:
+      return (_MessageDBtypeValueEnumMap[reader.readByteOrNull(offset)] ??
           MessageType.text) as P;
-    case 14:
-      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-const _MessagetypeEnumValueMap = {
+const _MessageDBtypeEnumValueMap = {
   'text': 0,
-  'photo': 1,
+  'image': 1,
   'video': 2,
   'audio': 3,
   'file': 4,
 };
-const _MessagetypeValueEnumMap = {
+const _MessageDBtypeValueEnumMap = {
   0: MessageType.text,
-  1: MessageType.photo,
+  1: MessageType.image,
   2: MessageType.video,
   3: MessageType.audio,
   4: MessageType.file,
 };
 
-extension MessageQueryFilter
-    on QueryBuilder<Message, Message, QFilterCondition> {
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioIsNull() {
+Id _messageDBGetId(MessageDB object) {
+  return object.id;
+}
+
+List<IsarLinkBase<dynamic>> _messageDBGetLinks(MessageDB object) {
+  return [object.sender];
+}
+
+void _messageDBAttach(IsarCollection<dynamic> col, Id id, MessageDB object) {
+  object.id = id;
+  object.sender.attach(col, col.isar.collection<User>(), r'sender', id);
+}
+
+extension MessageDBQueryWhereSort
+    on QueryBuilder<MessageDB, MessageDB, QWhere> {
+  QueryBuilder<MessageDB, MessageDB, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'audio',
+      return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+}
+
+extension MessageDBQueryWhere
+    on QueryBuilder<MessageDB, MessageDB, QWhereClause> {
+  QueryBuilder<MessageDB, MessageDB, QAfterWhereClause> idEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioIsNotNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'audio',
-      ));
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<MessageDB, MessageDB, QAfterWhereClause> idGreaterThan(Id id,
+      {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'audio',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<MessageDB, MessageDB, QAfterWhereClause> idLessThan(Id id,
+      {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'audio',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'audio',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioBetween(
-    String? lower,
-    String? upper, {
+  QueryBuilder<MessageDB, MessageDB, QAfterWhereClause> idBetween(
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'audio',
-        lower: lower,
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
         includeLower: includeLower,
-        upper: upper,
+        upper: upperId,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
       ));
     });
   }
+}
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'audio',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'audio',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'audio',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'audio',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'audio',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> audioIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'audio',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatIdEqualTo(
+extension MessageDBQueryFilter
+    on QueryBuilder<MessageDB, MessageDB, QFilterCondition> {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> chatIdEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -417,7 +323,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatIdGreaterThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> chatIdGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -432,7 +338,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatIdLessThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> chatIdLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -447,7 +353,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatIdBetween(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> chatIdBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -466,7 +372,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatIdStartsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> chatIdStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -479,7 +385,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatIdEndsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> chatIdEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -492,7 +398,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatIdContains(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> chatIdContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -504,7 +410,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatIdMatches(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> chatIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -516,7 +422,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatIdIsEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> chatIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'chatId',
@@ -525,7 +431,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> chatIdIsNotEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> chatIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'chatId',
@@ -534,36 +440,40 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileIsNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'file',
+        property: r'contentFilePath',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileIsNotNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'file',
+        property: r'contentFilePath',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileEqualTo(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'file',
+        property: r'contentFilePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileGreaterThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -571,14 +481,15 @@ extension MessageQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'file',
+        property: r'contentFilePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileLessThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -586,14 +497,15 @@ extension MessageQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'file',
+        property: r'contentFilePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileBetween(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -602,7 +514,7 @@ extension MessageQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'file',
+        property: r'contentFilePath',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -612,75 +524,77 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileStartsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'file',
+        property: r'contentFilePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileEndsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'file',
+        property: r'contentFilePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'file',
+        property: r'contentFilePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'file',
+        property: r'contentFilePath',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileIsEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'file',
+        property: r'contentFilePath',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileIsNotEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      contentFilePathIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'file',
+        property: r'contentFilePath',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameIsNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'fileName',
@@ -688,7 +602,8 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameIsNotNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      fileNameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'fileName',
@@ -696,7 +611,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameEqualTo(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -709,7 +624,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameGreaterThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -724,7 +639,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameLessThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -739,7 +654,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameBetween(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -758,7 +673,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameStartsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -771,7 +686,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameEndsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -784,7 +699,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameContains(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -796,7 +711,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameMatches(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -808,7 +723,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameIsEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'fileName',
@@ -817,7 +732,8 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> fileNameIsNotEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      fileNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'fileName',
@@ -826,36 +742,36 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageIsNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'image',
+        property: r'fileURl',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageIsNotNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'image',
+        property: r'fileURl',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageEqualTo(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'image',
+        property: r'fileURl',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageGreaterThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -863,14 +779,14 @@ extension MessageQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'image',
+        property: r'fileURl',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageLessThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -878,14 +794,14 @@ extension MessageQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'image',
+        property: r'fileURl',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageBetween(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -894,7 +810,7 @@ extension MessageQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'image',
+        property: r'fileURl',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -904,85 +820,129 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageStartsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'image',
+        property: r'fileURl',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageEndsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'image',
+        property: r'fileURl',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageContains(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'image',
+        property: r'fileURl',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageMatches(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'image',
+        property: r'fileURl',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageIsEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'image',
+        property: r'fileURl',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> imageIsNotEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      fileURlIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'image',
+        property: r'fileURl',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> isMyMessageEqualTo(
-      bool value) {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> idEqualTo(
+      Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isMyMessage',
+        property: r'id',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> isSeenEqualTo(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> idGreaterThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> idLessThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> idBetween(
+    Id lower,
+    Id upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> isSeenEqualTo(
       bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -992,7 +952,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> isSentEqualTo(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> isSentEqualTo(
       bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1002,166 +962,40 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderIdEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'senderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderIdGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'senderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderIdLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'senderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderIdBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'senderId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'senderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'senderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderIdContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'senderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderIdMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'senderId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'senderId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'senderId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderImageIsNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderImageIsNotNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderImageEqualTo(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderImageGreaterThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1169,14 +1003,15 @@ extension MessageQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderImageLessThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1184,14 +1019,15 @@ extension MessageQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderImageBetween(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1200,7 +1036,7 @@ extension MessageQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1210,206 +1046,79 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderImageStartsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderImageEndsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderImageContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesContains(String value,
+          {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderImageMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesMatches(String pattern,
+          {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderImageIsEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition>
-      senderImageIsNotEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      specialMessageAttributesIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'senderImage',
+        property: r'specialMessageAttributes',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderNameEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'senderName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderNameGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'senderName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderNameLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'senderName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderNameBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'senderName',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderNameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'senderName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderNameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'senderName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderNameContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'senderName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderNameMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'senderName',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderNameIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'senderName',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> senderNameIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'senderName',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> textIsNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'text',
@@ -1417,7 +1126,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> textIsNotNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'text',
@@ -1425,7 +1134,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> textEqualTo(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1438,7 +1147,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> textGreaterThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1453,7 +1162,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> textLessThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1468,7 +1177,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> textBetween(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1487,7 +1196,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> textStartsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1500,7 +1209,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> textEndsWith(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1513,7 +1222,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> textContains(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1525,7 +1234,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> textMatches(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1537,7 +1246,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> textIsEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'text',
@@ -1546,7 +1255,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> textIsNotEmpty() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> textIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'text',
@@ -1555,7 +1264,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> timeSentEqualTo(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> timeSentEqualTo(
       DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1565,7 +1274,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> timeSentGreaterThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> timeSentGreaterThan(
     DateTime value, {
     bool include = false,
   }) {
@@ -1578,7 +1287,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> timeSentLessThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> timeSentLessThan(
     DateTime value, {
     bool include = false,
   }) {
@@ -1591,7 +1300,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> timeSentBetween(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> timeSentBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
@@ -1608,7 +1317,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> typeEqualTo(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> typeEqualTo(
       MessageType value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1618,7 +1327,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> typeGreaterThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> typeGreaterThan(
     MessageType value, {
     bool include = false,
   }) {
@@ -1631,7 +1340,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> typeLessThan(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> typeLessThan(
     MessageType value, {
     bool include = false,
   }) {
@@ -1644,7 +1353,7 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> typeBetween(
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> typeBetween(
     MessageType lower,
     MessageType upper, {
     bool includeLower = true,
@@ -1660,153 +1369,425 @@ extension MessageQueryFilter
       ));
     });
   }
+}
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoIsNull() {
+extension MessageDBQueryObject
+    on QueryBuilder<MessageDB, MessageDB, QFilterCondition> {}
+
+extension MessageDBQueryLinks
+    on QueryBuilder<MessageDB, MessageDB, QFilterCondition> {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> sender(
+      FilterQuery<User> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'video',
-      ));
+      return query.link(q, r'sender');
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoIsNotNull() {
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> senderIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'video',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'video',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'video',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'video',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'video',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'video',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'video',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'video',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'video',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'video',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> videoIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'video',
-        value: '',
-      ));
+      return query.linkLength(r'sender', 0, true, 0, true);
     });
   }
 }
 
-extension MessageQueryObject
-    on QueryBuilder<Message, Message, QFilterCondition> {}
+extension MessageDBQuerySortBy on QueryBuilder<MessageDB, MessageDB, QSortBy> {
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByChatId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chatId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByChatIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chatId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByContentFilePath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contentFilePath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByContentFilePathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contentFilePath', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByFileName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByFileNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByFileURl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileURl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByFileURlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileURl', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByIsSeen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSeen', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByIsSeenDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSeen', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByIsSent() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSent', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByIsSentDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSent', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy>
+      sortBySpecialMessageAttributes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'specialMessageAttributes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy>
+      sortBySpecialMessageAttributesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'specialMessageAttributes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByText() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'text', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByTextDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'text', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByTimeSent() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeSent', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByTimeSentDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeSent', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.desc);
+    });
+  }
+}
+
+extension MessageDBQuerySortThenBy
+    on QueryBuilder<MessageDB, MessageDB, QSortThenBy> {
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByChatId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chatId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByChatIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chatId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByContentFilePath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contentFilePath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByContentFilePathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'contentFilePath', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByFileName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByFileNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByFileURl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileURl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByFileURlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileURl', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByIsSeen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSeen', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByIsSeenDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSeen', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByIsSent() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSent', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByIsSentDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSent', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy>
+      thenBySpecialMessageAttributes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'specialMessageAttributes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy>
+      thenBySpecialMessageAttributesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'specialMessageAttributes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByText() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'text', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByTextDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'text', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByTimeSent() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeSent', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByTimeSentDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeSent', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.desc);
+    });
+  }
+}
+
+extension MessageDBQueryWhereDistinct
+    on QueryBuilder<MessageDB, MessageDB, QDistinct> {
+  QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByChatId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'chatId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByContentFilePath(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'contentFilePath',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByFileName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'fileName', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByFileURl(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'fileURl', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByIsSeen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isSeen');
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByIsSent() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isSent');
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QDistinct>
+      distinctBySpecialMessageAttributes({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'specialMessageAttributes',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByText(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'text', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByTimeSent() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'timeSent');
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'type');
+    });
+  }
+}
+
+extension MessageDBQueryProperty
+    on QueryBuilder<MessageDB, MessageDB, QQueryProperty> {
+  QueryBuilder<MessageDB, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<MessageDB, String, QQueryOperations> chatIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'chatId');
+    });
+  }
+
+  QueryBuilder<MessageDB, String?, QQueryOperations> contentFilePathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'contentFilePath');
+    });
+  }
+
+  QueryBuilder<MessageDB, String?, QQueryOperations> fileNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'fileName');
+    });
+  }
+
+  QueryBuilder<MessageDB, String?, QQueryOperations> fileURlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'fileURl');
+    });
+  }
+
+  QueryBuilder<MessageDB, bool, QQueryOperations> isSeenProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isSeen');
+    });
+  }
+
+  QueryBuilder<MessageDB, bool, QQueryOperations> isSentProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isSent');
+    });
+  }
+
+  QueryBuilder<MessageDB, String?, QQueryOperations>
+      specialMessageAttributesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'specialMessageAttributes');
+    });
+  }
+
+  QueryBuilder<MessageDB, String?, QQueryOperations> textProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'text');
+    });
+  }
+
+  QueryBuilder<MessageDB, DateTime, QQueryOperations> timeSentProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'timeSent');
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageType, QQueryOperations> typeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'type');
+    });
+  }
+}

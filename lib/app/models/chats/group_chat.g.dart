@@ -10,7 +10,7 @@ part of 'group_chat.dart';
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetGroupChatCollection on Isar {
-  IsarCollection<GroupChat> get groupChats => this.collection();
+  IsarCollection<GroupChat> get groups => this.collection();
 }
 
 const GroupChatSchema = CollectionSchema(
@@ -27,33 +27,23 @@ const GroupChatSchema = CollectionSchema(
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
-    r'formattedCreationDate': PropertySchema(
-      id: 2,
-      name: r'formattedCreationDate',
-      type: IsarType.string,
-    ),
     r'id': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'id',
       type: IsarType.string,
     ),
     r'image': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'image',
       type: IsarType.string,
     ),
-    r'isGroupChat': PropertySchema(
-      id: 5,
-      name: r'isGroupChat',
-      type: IsarType.bool,
-    ),
     r'name': PropertySchema(
-      id: 6,
+      id: 4,
       name: r'name',
       type: IsarType.string,
     ),
     r'usersIds': PropertySchema(
-      id: 7,
+      id: 5,
       name: r'usersIds',
       type: IsarType.stringList,
     )
@@ -63,8 +53,35 @@ const GroupChatSchema = CollectionSchema(
   deserialize: _groupChatDeserialize,
   deserializeProp: _groupChatDeserializeProp,
   idName: r'databaseId',
-  indexes: {},
-  links: {},
+  indexes: {
+    r'id': IndexSchema(
+      id: -3268401673993471357,
+      name: r'id',
+      unique: true,
+      replace: true,
+      properties: [
+        IndexPropertySchema(
+          name: r'id',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
+  links: {
+    r'users': LinkSchema(
+      id: -2349188080863844305,
+      name: r'users',
+      target: r'User',
+      single: false,
+    ),
+    r'messages': LinkSchema(
+      id: 4957660273684215075,
+      name: r'messages',
+      target: r'MessageDB',
+      single: false,
+    )
+  },
   embeddedSchemas: {},
   getId: _groupChatGetId,
   getLinks: _groupChatGetLinks,
@@ -79,7 +96,6 @@ int _groupChatEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.bio.length * 3;
-  bytesCount += 3 + object.formattedCreationDate.length * 3;
   bytesCount += 3 + object.id.length * 3;
   {
     final value = object.image;
@@ -106,12 +122,10 @@ void _groupChatSerialize(
 ) {
   writer.writeString(offsets[0], object.bio);
   writer.writeDateTime(offsets[1], object.createdAt);
-  writer.writeString(offsets[2], object.formattedCreationDate);
-  writer.writeString(offsets[3], object.id);
-  writer.writeString(offsets[4], object.image);
-  writer.writeBool(offsets[5], object.isGroupChat);
-  writer.writeString(offsets[6], object.name);
-  writer.writeStringList(offsets[7], object.usersIds);
+  writer.writeString(offsets[2], object.id);
+  writer.writeString(offsets[3], object.image);
+  writer.writeString(offsets[4], object.name);
+  writer.writeStringList(offsets[5], object.usersIds);
 }
 
 GroupChat _groupChatDeserialize(
@@ -123,10 +137,10 @@ GroupChat _groupChatDeserialize(
   final object = GroupChat(
     bio: reader.readString(offsets[0]),
     createdAt: reader.readDateTime(offsets[1]),
-    id: reader.readString(offsets[3]),
-    image: reader.readStringOrNull(offsets[4]),
-    name: reader.readString(offsets[6]),
-    usersIds: reader.readStringList(offsets[7]) ?? [],
+    id: reader.readString(offsets[2]),
+    image: reader.readStringOrNull(offsets[3]),
+    name: reader.readString(offsets[4]),
+    usersIds: reader.readStringList(offsets[5]) ?? [],
   );
   object.databaseId = id;
   return object;
@@ -146,14 +160,10 @@ P _groupChatDeserializeProp<P>(
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
-    case 4:
       return (reader.readStringOrNull(offset)) as P;
-    case 5:
-      return (reader.readBool(offset)) as P;
-    case 6:
+    case 4:
       return (reader.readString(offset)) as P;
-    case 7:
+    case 5:
       return (reader.readStringList(offset) ?? []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -165,11 +175,68 @@ Id _groupChatGetId(GroupChat object) {
 }
 
 List<IsarLinkBase<dynamic>> _groupChatGetLinks(GroupChat object) {
-  return [];
+  return [object.users, object.messages];
 }
 
 void _groupChatAttach(IsarCollection<dynamic> col, Id id, GroupChat object) {
   object.databaseId = id;
+  object.users.attach(col, col.isar.collection<User>(), r'users', id);
+  object.messages
+      .attach(col, col.isar.collection<MessageDB>(), r'messages', id);
+}
+
+extension GroupChatByIndex on IsarCollection<GroupChat> {
+  Future<GroupChat?> getById(String id) {
+    return getByIndex(r'id', [id]);
+  }
+
+  GroupChat? getByIdSync(String id) {
+    return getByIndexSync(r'id', [id]);
+  }
+
+  Future<bool> deleteById(String id) {
+    return deleteByIndex(r'id', [id]);
+  }
+
+  bool deleteByIdSync(String id) {
+    return deleteByIndexSync(r'id', [id]);
+  }
+
+  Future<List<GroupChat?>> getAllById(List<String> idValues) {
+    final values = idValues.map((e) => [e]).toList();
+    return getAllByIndex(r'id', values);
+  }
+
+  List<GroupChat?> getAllByIdSync(List<String> idValues) {
+    final values = idValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'id', values);
+  }
+
+  Future<int> deleteAllById(List<String> idValues) {
+    final values = idValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'id', values);
+  }
+
+  int deleteAllByIdSync(List<String> idValues) {
+    final values = idValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'id', values);
+  }
+
+  Future<Id> putById(GroupChat object) {
+    return putByIndex(r'id', object);
+  }
+
+  Id putByIdSync(GroupChat object, {bool saveLinks = true}) {
+    return putByIndexSync(r'id', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllById(List<GroupChat> objects) {
+    return putAllByIndex(r'id', objects);
+  }
+
+  List<Id> putAllByIdSync(List<GroupChat> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'id', objects, saveLinks: saveLinks);
+  }
 }
 
 extension GroupChatQueryWhereSort
@@ -249,6 +316,50 @@ extension GroupChatQueryWhere
         upper: upperDatabaseId,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterWhereClause> idEqualTo(String id) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'id',
+        value: [id],
+      ));
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterWhereClause> idNotEqualTo(
+      String id) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'id',
+              lower: [],
+              upper: [id],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'id',
+              lower: [id],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'id',
+              lower: [id],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'id',
+              lower: [],
+              upper: [id],
+              includeUpper: false,
+            ));
+      }
     });
   }
 }
@@ -489,143 +600,6 @@ extension GroupChatQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
-      formattedCreationDateEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'formattedCreationDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
-      formattedCreationDateGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'formattedCreationDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
-      formattedCreationDateLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'formattedCreationDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
-      formattedCreationDateBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'formattedCreationDate',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
-      formattedCreationDateStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'formattedCreationDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
-      formattedCreationDateEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'formattedCreationDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
-      formattedCreationDateContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'formattedCreationDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
-      formattedCreationDateMatches(String pattern,
-          {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'formattedCreationDate',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
-      formattedCreationDateIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'formattedCreationDate',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
-      formattedCreationDateIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'formattedCreationDate',
-        value: '',
       ));
     });
   }
@@ -902,16 +876,6 @@ extension GroupChatQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'image',
         value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> isGroupChatEqualTo(
-      bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isGroupChat',
-        value: value,
       ));
     });
   }
@@ -1275,7 +1239,124 @@ extension GroupChatQueryObject
     on QueryBuilder<GroupChat, GroupChat, QFilterCondition> {}
 
 extension GroupChatQueryLinks
-    on QueryBuilder<GroupChat, GroupChat, QFilterCondition> {}
+    on QueryBuilder<GroupChat, GroupChat, QFilterCondition> {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> users(
+      FilterQuery<User> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'users');
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'users', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'users', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'users', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'users', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
+      usersLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'users', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'users', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> messages(
+      FilterQuery<MessageDB> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'messages');
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
+      messagesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'messages', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> messagesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'messages', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
+      messagesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'messages', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
+      messagesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'messages', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
+      messagesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'messages', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition>
+      messagesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'messages', lower, includeLower, upper, includeUpper);
+    });
+  }
+}
 
 extension GroupChatQuerySortBy on QueryBuilder<GroupChat, GroupChat, QSortBy> {
   QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByBio() {
@@ -1302,20 +1383,6 @@ extension GroupChatQuerySortBy on QueryBuilder<GroupChat, GroupChat, QSortBy> {
     });
   }
 
-  QueryBuilder<GroupChat, GroupChat, QAfterSortBy>
-      sortByFormattedCreationDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'formattedCreationDate', Sort.asc);
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterSortBy>
-      sortByFormattedCreationDateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'formattedCreationDate', Sort.desc);
-    });
-  }
-
   QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1337,18 +1404,6 @@ extension GroupChatQuerySortBy on QueryBuilder<GroupChat, GroupChat, QSortBy> {
   QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByImageDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'image', Sort.desc);
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByIsGroupChat() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isGroupChat', Sort.asc);
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByIsGroupChatDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isGroupChat', Sort.desc);
     });
   }
 
@@ -1403,20 +1458,6 @@ extension GroupChatQuerySortThenBy
     });
   }
 
-  QueryBuilder<GroupChat, GroupChat, QAfterSortBy>
-      thenByFormattedCreationDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'formattedCreationDate', Sort.asc);
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterSortBy>
-      thenByFormattedCreationDateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'formattedCreationDate', Sort.desc);
-    });
-  }
-
   QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1438,18 +1479,6 @@ extension GroupChatQuerySortThenBy
   QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByImageDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'image', Sort.desc);
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByIsGroupChat() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isGroupChat', Sort.asc);
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByIsGroupChatDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isGroupChat', Sort.desc);
     });
   }
 
@@ -1481,14 +1510,6 @@ extension GroupChatQueryWhereDistinct
     });
   }
 
-  QueryBuilder<GroupChat, GroupChat, QDistinct> distinctByFormattedCreationDate(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'formattedCreationDate',
-          caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<GroupChat, GroupChat, QDistinct> distinctById(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1500,12 +1521,6 @@ extension GroupChatQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'image', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<GroupChat, GroupChat, QDistinct> distinctByIsGroupChat() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isGroupChat');
     });
   }
 
@@ -1543,13 +1558,6 @@ extension GroupChatQueryProperty
     });
   }
 
-  QueryBuilder<GroupChat, String, QQueryOperations>
-      formattedCreationDateProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'formattedCreationDate');
-    });
-  }
-
   QueryBuilder<GroupChat, String, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
@@ -1559,12 +1567,6 @@ extension GroupChatQueryProperty
   QueryBuilder<GroupChat, String?, QQueryOperations> imageProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'image');
-    });
-  }
-
-  QueryBuilder<GroupChat, bool, QQueryOperations> isGroupChatProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isGroupChat');
     });
   }
 

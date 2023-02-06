@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/api/auth_provider.dart';
+import 'package:whatsapp_clone/app/api/auth_api.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
 class SigninController extends GetxController {
@@ -27,7 +27,7 @@ class SigninController extends GetxController {
       return;
     }
     isWaitingResponse(true);
-    await AuthProvider.signInService('+$phoneNumber');
+    await AuthApi.signInService('+$phoneNumber');
     isWaitingResponse(false);
   }
 

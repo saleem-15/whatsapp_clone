@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
-import '../../../api/user_provider.dart';
+import '../../../api/user_api.dart';
 
 class ProfileScreenController extends GetxController {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -51,10 +51,10 @@ class ProfileScreenController extends GetxController {
   Future<void> onUpdateButtonPressed() async {
     User myUpdatedInfo = MySharedPref.getUserData!
       ..name = name
-      ..about = about;
+      ..bio = about;
 
     isWaitingResponse(true);
-    await UserProvider.updateUserProfile(myUpdatedInfo);
+    await UserApi.updateUserProfile(myUpdatedInfo);
     isWaitingResponse(false);
   }
 

@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Index;
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:isar/isar.dart';
@@ -14,7 +14,9 @@ class User {
   ///its only exist due to [Isar] database requirements
   late Id databaseId;
 
+  @Index(unique: true, replace: true)
   late String uid;
+  
   late String name;
   late String phoneNumber;
   late String bio;

@@ -5,10 +5,17 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:whatsapp_clone/app/api/api.dart';
+import 'package:whatsapp_clone/app/api/messaging_api.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
+import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
+import 'package:whatsapp_clone/app/models/messages/file_message.dart';
+import 'package:whatsapp_clone/app/models/messages/image_message.dart';
+import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/app/modules/image/screens/picked_photo_viewer.dart';
-import 'package:whatsapp_clone/app/api/messaging_provider.dart';
+import 'package:whatsapp_clone/app/providers/messages_provider.dart';
+import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 import '../../video/screens/picked_video_viewer.dart';
 
@@ -16,6 +23,7 @@ class AttachFileController extends GetxController {
   late final Chat chat;
 
   ChatScreenController get chatController => Get.find<ChatScreenController>();
+  MessagesProvider get messagesProvider => Get.find<MessagesProvider>();
 
   @override
   void onInit() {
@@ -106,18 +114,61 @@ class AttachFileController extends GetxController {
       return;
     }
 
+    await sendFileMessage(result);
+  }
+
+  Future<void> sendFileMessage(FilePickerResult result) async {
     List<File> files = result.paths.map((path) => File(path!)).toList();
+    final file = files[0];
 
-    log('file path: ${files.first.path}');
-    log('file name: ${files.first.path.split("/").last}');
-    // return;
+    String fileName = MessagingApi.genereteFileId(myUid, file.path);
 
-    // final fileMessage = FileMessage.toSend(
-    //   chatId: chat.id,
-    //   file: files.first.path,
+    final fileMessage = FileMessage.toSend(
+      chatId: chat.id,
+      file: file.path,
+      fileName: fileName,
+      fileSize: Utils.getFileSize(file).toStringAsFixed(1),
+    );
 
-    // );
+    /// make sure that the file is not a media file
+    if (await _checkIsMediaFile(file, fileMessage)) {
+      return;
+    }
 
-    MessagingProvider.sendFileMessage(chat.id, files[0]);
+    messagesProvider.sendFileMessage(chat, fileMessage, file);
+  }
+
+  /// checks if the file is a media file (image,video,audio)\
+  /// if its a media file then it sends the message according to
+  /// its appropriate message type
+  Future<bool> _checkIsMediaFile(File file, FileMessage fileMessage) async {
+    /// if its a video file => send a video message
+    /// image => image message
+    /// audio => audio message
+    if (file.path.isVideoFileName) {
+      final videoInfo = await Utils.getVideoInfo(fileMessage.file);
+
+      messagesProvider.sendVideoMessage(
+        chat,
+        VideoMessage.fromFileMessage(fileMessage, videoInfo!.width!, videoInfo.height!),
+        file,
+      );
+      return true;
+    } else if (file.path.isImageFileName) {
+      messagesProvider.sendImageMessage(
+        chat,
+        ImageMessage.fromFileMessage(fileMessage),
+        file,
+      );
+      return true;
+    } else if (file.path.isAudioFileName) {
+      messagesProvider.sendAudioMessage(
+        chat,
+        AudioMessage.fromFileMessage(fileMessage),
+        file,
+      );
+      return true;
+    }
+    return false;
   }
 }

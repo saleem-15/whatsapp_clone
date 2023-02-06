@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/api/auth_provider.dart';
+import 'package:whatsapp_clone/app/api/auth_api.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
 class OTPScreenController extends GetxController {
@@ -37,7 +37,7 @@ class OTPScreenController extends GetxController {
     final code = otpTextController.text;
 
     isWaitingResponse(true);
-    final isSuccess = await AuthProvider.verifyTheSentCode(code);
+    final isSuccess = await AuthApi.verifyTheSentCode(code);
     isWaitingResponse(false);
 
     if (isSuccess) {

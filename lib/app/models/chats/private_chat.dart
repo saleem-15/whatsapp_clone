@@ -5,12 +5,14 @@ import 'package:whatsapp_clone/app/api/api.dart';
 
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
+import 'package:whatsapp_clone/storage/database/models/message.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 part 'private_chat.g.dart';
 
 @collection
 class PrivateChat extends Chat {
+  /// this constructor is for isar database
   PrivateChat() : super.late();
 
   factory PrivateChat.fromChatAndUserDocs({
@@ -30,11 +32,10 @@ class PrivateChat extends Chat {
       ..usersIds = [user.uid, myUid];
   }
 
-  ///this id does not realy represents the user
-  ///its only exist due to [Isar] database requirements
-  Id databaseId = Isar.autoIncrement;
+
 
   final user = IsarLink<User>();
+
 
   @ignore
   @override

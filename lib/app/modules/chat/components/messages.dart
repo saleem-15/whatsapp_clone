@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:whatsapp_clone/app/models/message_type_enum.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
@@ -27,6 +28,7 @@ class Messages extends GetView<ChatScreenController> {
       stream: controller.getMessagesStream(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
+          Logger().i('There is no messages');
           return const SizedBox.shrink();
         }
 
@@ -53,7 +55,7 @@ class Messages extends GetView<ChatScreenController> {
                         return MessageBubble(
                           message: message as TextMessage,
                         );
-                      case MessageType.photo:
+                      case MessageType.image:
                         return ImageMessageBubble(
                           message: message as ImageMessage,
                         );
@@ -67,7 +69,7 @@ class Messages extends GetView<ChatScreenController> {
                       case MessageType.audio:
                         return AudioMessageBubble(
                           isMyMessage: message.isMyMessage,
-                          audioPath: (message as AudioMessage).audio,
+                          audioPath: (message as AudioMessage).audioUrl,
                           timeSent: Utils.formatDate(message.timeSent),
                         );
                       case MessageType.file:

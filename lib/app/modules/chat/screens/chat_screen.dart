@@ -13,7 +13,6 @@ import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 
-import '../../../../utils/ui/custom_snackbar.dart';
 import '../components/chat_text_field.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -68,12 +67,7 @@ class ChatScreen extends StatelessWidget {
               backgroundSize: 35.sp,
               iconSize: 18.sp,
               backgroundColor: MyColors.LightGreen,
-              onPressed: () {
-                // CustomSnackBar.showCustomSnackBar(message: 'message');
-                CustomSnackBar.showCustomToast(message: 'message');
-                // CustomSnackBar.showCustomToast(message: 'message');
-                // CustomSnackBar.showCustomErrorToast(message: 'message');
-              },
+              onPressed: controller.onVideoCallButtonPressed,
             ),
           ),
           SizedBox(

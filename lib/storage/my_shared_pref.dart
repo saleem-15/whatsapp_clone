@@ -20,6 +20,8 @@ class MySharedPref {
   static const String _image = 'user_image';
   static const String _userLastUpdated = 'user_last_updated';
   static const String _about = 'user_about';
+  static const String _fcmToken = 'Fcm_Token';
+  static const String _isUserDocExists = 'is_user_doc_exists';
 
   /// init get storage services
   static init() async {
@@ -41,9 +43,19 @@ class MySharedPref {
   }
 
   //***************     User Data   ******************/
+
+  static bool get getIsMyDocExists => _storage.read(_isUserDocExists) ?? false;
+  static void setIsMyDocExists(bool isUserDocExists) => _storage.write(_isUserDocExists, isUserDocExists);
+
   static String? get getUserId => _storage.read(_userId);
   static void setUserId(String userId) => _storage.write(_userId, userId);
   static void deleteUserId() => _storage.remove(_userId);
+
+  static String? get getIsFcmTokenSent => _storage.read(_fcmToken);
+  static void setIsFcmTokenSent(String fcmToken) => _storage.write(_fcmToken, fcmToken);
+
+  static String? get getFcmToken => _storage.read(_fcmToken);
+  static void setFcmToken(String userName) => _storage.write(_fcmToken, userName);
 
   static String? get getUserName => _storage.read(_name);
   static void setUserName(String userName) => _storage.write(_name, userName);
@@ -84,13 +96,13 @@ class MySharedPref {
       return null;
     }
 
-    return User(
+    return User.normal(
       uid: userId,
       name: getUserName!,
       imageUrl: getUserImage,
       phoneNumber: getUserPhoneNumber!,
       lastUpdated: getLastUpdated ?? DateTime.now(),
-      about: getUserAbout ?? 'this text comes from storage',
+      bio: getUserAbout ?? 'this text comes from storage',
     );
   }
 
@@ -106,6 +118,28 @@ class MySharedPref {
     MySharedPref.setUserImage(image);
     MySharedPref.setUserPhoneNumber(phone);
   }
+
+  // static void updateUserData({
+  //   String? name,
+  //   String? image,
+  //   String? phone,
+  //   String? about,
+  // }) {
+  //   if (name != null) {
+  //     MySharedPref.setUserName(name);
+  //   }
+
+  //   if (image != null) {
+  //     MySharedPref.setUserImage(image);
+  //   }
+
+  //   if (phone != null) {
+  //     MySharedPref.setUserPhoneNumber(phone);
+  //   }
+  //   if (about != null) {
+  //     MySharedPref.setUserAbout(about);
+  //   }
+  // }
 
   static void deleteUser() {
     deleteUserId();

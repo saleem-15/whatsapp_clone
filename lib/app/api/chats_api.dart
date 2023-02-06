@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/chats/group_chat.dart';
 import 'package:whatsapp_clone/app/models/chats/private_chat.dart';
-import 'package:whatsapp_clone/utils/extensions/my_extensions.dart';
 
 import 'api.dart';
 
@@ -14,7 +13,7 @@ class ChatsApi {
   /// How it works:
   /// 1) it uses [_getMyChatsId] to fetch all my chats Ids.
   /// 2) runs a query that fetches all my chats docuemnts.
-  /// 3) converts the group chat docuemtns into [GroupChat] objects.
+  /// 3) converts the group chat docuemtns into [chat] objects.
   /// 4) give the [_getAllPrivateChats] method a
   /// list of private chat docs, and it returns [PrivateChat] objects.
   ///

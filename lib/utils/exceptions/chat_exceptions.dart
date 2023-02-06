@@ -1,14 +1,15 @@
+import 'base_exception.dart';
+
 enum ExceptionType {
   chatAlreadyExists,
 }
 
-class ChatException implements Exception {
+class ChatException extends BaseException {
   ChatException._({
-    required this.msg,
+    required super.msg,
     required this.exceptionType,
   });
 
-  String msg;
   ExceptionType exceptionType;
 
   ///throws a custom exception from type [ChatException]

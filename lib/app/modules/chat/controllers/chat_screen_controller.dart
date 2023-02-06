@@ -3,18 +3,23 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:video_viewer/video_viewer.dart';
+import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
-import 'package:whatsapp_clone/app/api/messaging_provider.dart';
+import 'package:whatsapp_clone/app/api/messaging_api.dart';
 import 'package:whatsapp_clone/app/modules/image/screens/image_viewer_screen.dart';
+import 'package:whatsapp_clone/app/providers/messages_provider.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'package:whatsapp_clone/storage/files_manager.dart';
+import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 import 'chat_text_field_controller.dart';
 
@@ -32,13 +37,17 @@ class ChatScreenController extends GetxController {
   }
 
   Stream<List<MessageInterface>> getMessagesStream() {
-    return MessagingProvider.getMessagesStream(chat.id).map((event) {
+    return MessagingApi.getMessagesStream(chat.id).map((event) {
       final messageDocs = event.docs;
 
       final List<MessageInterface> messages = [];
 
       for (QueryDocumentSnapshot messageDoc in messageDocs) {
-        messages.add(MessageInterface.fromDoc(messageDoc));
+        Logger().i('messageDoc: ${messageDoc.get('type')}');
+
+        Logger().w('-------------: ${messageDoc.get('type')}');
+        messages.add(MessageInterface.fromFirestoreDoc(messageDoc));
+        Logger().w('-------------: ${messageDoc.get('type')}');
       }
 
       log('messages num: ${messages.length}');
@@ -122,39 +131,60 @@ class ChatScreenController extends GetxController {
     );
   }
 
-  void sendImage(File image, String? message) {
+  void sendImage(File imageFile, String? message) {
+    String imageName = MessagingApi.genereteFileId(myUid, imageFile.path);
+
     final imageMessage = ImageMessage.toSend(
       text: message,
       chatId: chat.id,
-      imageUrl: image.path,
-      imageName: '',
+      imageUrl: imageFile.path,
+      imageName: imageName,
     );
 
-    MessagingProvider.sendImageMessage(imageMessage, image);
+    Get.find<MessagesProvider>().sendImageMessage(chat, imageMessage, imageFile);
   }
 
   void sendAudio(File audioFile) {
+    String fileName = MessagingApi.genereteFileId(myUid, audioFile.path);
+
     final audioMessage = AudioMessage.toSend(
       chatId: chat.id,
-      audio: audioFile.path,
+      audioUrl: audioFile.path,
+      fileName: fileName,
     );
 
-    MessagingProvider.sendAudioMessage(audioMessage, audioFile);
+    Get.find<MessagesProvider>().sendAudioMessage(chat, audioMessage, audioFile);
   }
 
-  Future<void> sendVideo(File video, String? message) async {
+  Future<void> sendVideo(File videoFile, String? message) async {
+    String videoName = MessagingApi.genereteFileId(myUid, videoFile.path);
+
+    var videoInfo = await Utils.getVideoInfo(videoFile.path);
+
     final videoMessage = VideoMessage.toSend(
       chatId: chat.id,
       text: message,
-      videoUrl: video.path,
-      videoName: '',
+      videoUrl: videoFile.path,
+      videoName: videoName,
+      width: videoInfo!.width!,
+      height: videoInfo.height!,
+      timeSent: DateTime.now(),
     );
 
-    MessagingProvider.sendVideoMessage(videoMessage, video);
+    Get.find<MessagesProvider>().sendVideoMessage(chat, videoMessage, videoFile);
   }
 
-  onFilePressed(FileMessage message) {
+  void onFilePressed(FileMessage message) {
     // _launchUrl(message.file);
     log('file ${message.file} is pressed ');
+  }
+
+  void onVideoCallButtonPressed() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission();
+
+    log('User granted permission: ${settings.authorizationStatus}');
+    // GoogleApiAvailability.makeGooglePlayServicesAvailable()
   }
 }

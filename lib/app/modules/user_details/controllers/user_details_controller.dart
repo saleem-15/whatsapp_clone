@@ -14,7 +14,7 @@ class ChatDetailsController extends GetxController {
   // List<User> get groupUsers => (chat as GroupChat).
 
   /// used only if chat is [PrivateChat]
-  String get phoneNumber => (chat as PrivateChat).user.phoneNumber;
+  String get phoneNumber => (chat as PrivateChat).user.value!.phoneNumber;
 
   @override
   void onInit() {

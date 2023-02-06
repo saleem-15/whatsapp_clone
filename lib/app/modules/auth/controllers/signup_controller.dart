@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
-import '../../../api/auth_provider.dart';
+import '../../../api/auth_api.dart';
 
 class SignupController extends GetxController {
   GlobalKey<FormState> formKey = GlobalKey<FormState>(debugLabel: 'sign up global key');
@@ -31,7 +31,7 @@ class SignupController extends GetxController {
     }
 
     isWaitingResponse(true);
-    await AuthProvider.signUpService('+$phoneNumber', userName);
+    await AuthApi.signUpService('+$phoneNumber', userName);
     isWaitingResponse(false);
 
     // if (isSuccessfull) {

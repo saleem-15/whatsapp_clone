@@ -7,16 +7,17 @@ import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
+import 'package:whatsapp_clone/storage/database/daos/users_dao.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
 
 import 'api.dart';
-import 'user_provider.dart';
+import 'user_api.dart';
 
 /// it returnes true if signup process is successful
 
-class AuthProvider {
-  AuthProvider._();
+class AuthApi {
+  AuthApi._();
 
   ///used when verifiying the verification code (SMS Message)
   static String? verificationId;
@@ -24,11 +25,18 @@ class AuthProvider {
   /// the phone number must begin with '+' (with internationl code)
   static Future<void> signUpService(String phoneNumber, String name) async {
     /// used to check if the user have an account
-    final User? user = await UserProvider.getUserInfoByPhoneNumber(phoneNumber);
+    final User? user = await UserApi.getUserInfoByPhoneNumber(phoneNumber);
 
     /// if user alreay exists
     if (user != null) {
       MySharedPref.storeUserData(
+        id: user.uid,
+        name: user.name,
+        image: user.imageUrl,
+        phone: user.phoneNumber,
+      );
+
+      UsersDao.storeMyData(
         id: user.uid,
         name: user.name,
         image: user.imageUrl,
@@ -45,11 +53,12 @@ class AuthProvider {
 
     await verifyPhone(phoneNumber);
     MySharedPref.saveUser(await _createUserDoc(name, phoneNumber));
+    MySharedPref.setIsMyDocExists(true);
   }
 
   /// the phone number must begin with '+' (with internationl code)
   static Future<void> signInService(String phoneNumber) async {
-    final User? user = await UserProvider.getUserInfoByPhoneNumber(phoneNumber);
+    final User? user = await UserApi.getUserInfoByPhoneNumber(phoneNumber);
 
     ///user does not exists (dont have an account)
     if (user == null) {
@@ -63,6 +72,8 @@ class AuthProvider {
     }
 
     MySharedPref.saveUser(user);
+    MySharedPref.setIsMyDocExists(true);
+
     await verifyPhone(phoneNumber);
   }
 
@@ -132,12 +143,12 @@ class AuthProvider {
       await Future.delayed(const Duration(seconds: 1));
     }
 
-    final user = User(
+    final user = User.normal(
       name: name,
       phoneNumber: phoneNumber,
       imageUrl: null,
       uid: FirebaseAuth.instance.currentUser!.uid,
-      about: '',
+      bio: '',
       lastUpdated: DateTime.now(),
     );
 

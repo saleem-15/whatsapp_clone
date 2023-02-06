@@ -1,20 +1,35 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
+
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
+import 'package:whatsapp_clone/app/modules/home/controllers/home_controller.dart';
 import 'package:whatsapp_clone/app/providers/chats_provider.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
 class ChatsViewController extends GetxController {
-  ///this list is displayed in [ChatsTapView]
-  ///
-  ///it can be filtered to display the search results
-  RxList<Rx<Chat>> get chatsList => Get.find<ChatsController>().chats;
-
-  ///this is un filtered list holds all chats
-  List<Rx<Chat>> allChatsList = <Rx<Chat>>[].obs;
+  ///this is list holds all chats
+  Rx<List<Rx<Chat>>> get chatsList => Get.find<ChatsProvider>().allChatsList;
+  RxBool get isSearchMode => Get.find<HomeController>().isSearchMode;
+  final searchController = Get.find<HomeController>().searchController;
 
   @override
-  Future<void> onReady() async {
-    super.onReady();
+  void onInit() {
+    super.onInit();
+
+    ever(Get.find<ChatsProvider>().allChatsList, (callback) {
+      log('chats list has been updated**************************************');
+      update(['chats listView']);
+    });
+    ever(isSearchMode, (callback) {
+      log('isSearchMode has changed ===>$callback**************************************');
+
+      update(['chats listView']);
+    });
+  }
+
+  updateList() {
+    update(['chats listView']);
   }
 
   void onChatTilePressed(Chat chat) {
@@ -24,4 +39,22 @@ class ChatsViewController extends GetxController {
     );
   }
 
+  /// its responsible for filtiring chats
+  List<Rx<Chat>> filter(List<Rx<Chat>> chats) {
+    final searchText = Get.find<HomeController>().searchController.text.trim().toLowerCase();
+
+    if (searchText.isEmpty) {
+      return chats;
+    }
+    List<Rx<Chat>> filteredList = [];
+
+    for (int i = 0; i < chats.length; i++) {
+      bool isResult = chats[i].value.name.toLowerCase().startsWith(searchText);
+
+      if (isResult) {
+        filteredList.add(chats[i]);
+      }
+    }
+    return filteredList;
+  }
 }
