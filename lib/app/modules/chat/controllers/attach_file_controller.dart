@@ -146,7 +146,7 @@ class AttachFileController extends GetxController {
     /// image => image message
     /// audio => audio message
     if (file.path.isVideoFileName) {
-      final videoInfo = await Utils.getVideoInfo(fileMessage.file);
+      final videoInfo = await Utils.getVideoInfo(fileMessage.downloadUrl);
 
       messagesProvider.sendVideoMessage(
         chat,

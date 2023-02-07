@@ -2,13 +2,14 @@ import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:whatsapp_clone/app/api/user_api.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
-import 'package:whatsapp_clone/storage/database/daos/messages_dao.dart';
+import 'package:whatsapp_clone/config/routes/app_pages.dart';
+import 'package:whatsapp_clone/storage/database/daos/chats_dao.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
-
-import 'awesome_notifications_helper.dart';
 
 class FcmHelper {
   // prevent making instance
@@ -39,6 +40,14 @@ class FcmHelper {
       // background and foreground handlers
       FirebaseMessaging.onMessage.listen((event) => _fcmForegroundHandler);
       FirebaseMessaging.onBackgroundMessage(_fcmBackgroundHandler);
+
+      /// handle any interaction when the app is in the background
+      FirebaseMessaging.onMessageOpenedApp.listen((event) {
+        Logger().i('Notificaation is pressed');
+        _handleMessage(event);
+      });
+
+      await setupInteractedMessage();
     } on FirebaseException catch (error) {
       // if you are connected to firebase and still get error
       // check the todo up in the function else ignore the error
@@ -71,7 +80,7 @@ class FcmHelper {
       var token = await messaging.getToken();
       if (token != null) {
         MySharedPref.setFcmToken(token);
-        _sendFcmTokenToServer();
+        _sendFcmTokenToServer(token);
       } else {
         // retry generating token
         await Future.delayed(const Duration(seconds: 5));
@@ -84,8 +93,8 @@ class FcmHelper {
 
   /// this method will be triggered when the app generate fcm
   /// token successfully
-  static _sendFcmTokenToServer() {
-    UserApi.setUserFcmToken();
+  static _sendFcmTokenToServer(String fcmToken) {
+    UserApi.setUserFcmToken(fcmToken);
   }
 
   // Without this annotaion the code may not work correctly
@@ -94,19 +103,25 @@ class FcmHelper {
   static Future<void> _fcmBackgroundHandler(RemoteMessage remoteMessage) async {
     // If you're going to use other Firebase services in the background, such as Firestore,
     // make sure you call `initializeApp` before using other Firebase services.
-    await Firebase.initializeApp();
+    // await Firebase.initializeApp();
 
-    final msg = MessageInterface.fromNotificationPayload(remoteMessage.data);
-    await MessagesDao.addMsg(msg);
+    // try {
+    //   final msg = MessageInterface.fromNotificationPayload(remoteMessage.data);
+    //   await MessagesDao.addMsg(msg);
+    // } on Exception catch (e) {
+    //   Logger().e(e);
+    // }
 
     log("Handling a background message:");
     _logNotification(remoteMessage);
-    AwesomeNotificationsHelper.showNotification(
-      id: 1,
-      title: remoteMessage.notification?.title ?? 'Title',
-      body: remoteMessage.notification?.body ?? 'Body',
-      payload: remoteMessage.data.cast(),
-    );
+    // _handleMessage(remoteMessage);
+
+    // AwesomeNotificationsHelper.showNotification(
+    //   id: 1,
+    //   title: remoteMessage.notification?.title ?? 'Title',
+    //   body: remoteMessage.notification?.body ?? 'Body',
+    //   payload: remoteMessage.data.cast(),
+    // );
   }
 
   ///To handle messages while your application is in the foreground
@@ -114,16 +129,40 @@ class FcmHelper {
     Logger().d('Got a message in the foreground!');
     _logNotification(remoteMessage);
 
-    AwesomeNotificationsHelper.showNotification(
-      id: 1,
-      title: remoteMessage.notification?.title ?? 'Title',
-      body: remoteMessage.notification?.body ?? 'Body',
-      payload: remoteMessage.data.cast(),
+    // AwesomeNotificationsHelper.showNotification(
+    //   id: 1,
+    //   title: remoteMessage.notification?.title ?? 'Title',
+    //   body: remoteMessage.notification?.body ?? 'Body',
+    //   payload: remoteMessage.data.cast(),
+    // );
+  }
+
+  // It is assumed that all messages contain a data field with the key 'type'
+  static Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage = await messaging.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+  }
+
+  static Future<void> _handleMessage(RemoteMessage message) async {
+    Logger().i('Notification is pressed ${message.data}');
+    final messageChatId = message.data[MessageInterface.CHAT_ID_KEY];
+
+    final chat = await ChatsDao.getChatByMyId(messageChatId);
+    Get.toNamed(
+      Routes.CHAT_SCREEN,
+      arguments: chat!,
     );
   }
 
   static void _logNotification(RemoteMessage message) {
-    Logger().d(
+    debugPrint(
         'title: ${message.notification?.title}\nbody: ${message.notification?.body}\nMessage data: ${message.data}');
   }
 }

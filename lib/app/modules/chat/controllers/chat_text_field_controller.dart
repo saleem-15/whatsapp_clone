@@ -111,7 +111,7 @@ class ChatTextFieldController extends GetxController {
       text: text.trim(),
     );
 
-    Get.find<MessagesProvider>().sendTextMessage(chat,msg);
+    Get.find<MessagesProvider>().sendTextMessage(chat, msg);
 
     textController.clear();
   }
@@ -128,10 +128,12 @@ class ChatTextFieldController extends GetxController {
 
     final imageFile = File(pickedImage.path);
 
-    Get.to(() => PickedPhotoViewer(
-          sendImage: Get.find<ChatScreenController>().sendImage,
-          image: imageFile,
-        ));
+    Get.to(
+      () => PickedPhotoViewer(
+        sendImage: Get.find<ChatScreenController>().sendImage,
+        image: imageFile,
+      ),
+    );
   }
 
   void onMicIconPressed() async {

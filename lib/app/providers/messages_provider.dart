@@ -1,9 +1,12 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/api/messaging_api.dart';
 import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
+import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/text_message.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/providers/users_provider.dart';
@@ -69,5 +72,21 @@ class MessagesProvider extends GetxController {
       sender: me,
       message: fileMessage,
     );
+  }
+
+  Stream<List<MessageInterface>> getMessagesStream(String chatId) {
+     MessagesDao.getChatMessagesStream(chatId);
+    return MessagingApi.getMessagesStream(chatId).map((event) {
+      final messageDocs = event.docs;
+
+      final List<MessageInterface> messages = [];
+
+      for (QueryDocumentSnapshot messageDoc in messageDocs) {
+        messages.add(MessageInterface.fromFirestoreDoc(messageDoc));
+      }
+
+      log('messages num: ${messages.length}');
+      return messages;
+    });
   }
 }

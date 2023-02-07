@@ -171,7 +171,8 @@ exports.sendNotification = functions.firestore
               notification: {
                 title: senderName,
                 body: body,
-                clickAction: 'FLUTTER_NOTIFICATION_CLICK'
+                click_action: 'FLUTTER_NOTIFICATION_CLICK',
+                clickAction: 'FLUTTER_NOTIFICATION_CLICK',
               },
               data: message
             };

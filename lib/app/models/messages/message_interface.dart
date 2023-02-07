@@ -15,10 +15,12 @@ import 'video_message.dart';
 
 abstract class MessageInterface {
   static const SENDER_NAME_KEY = 'senderName';
+  static const CHAT_ID_KEY = 'chatId';
   static const SENDER_ID_KEY = 'senderId';
   static const SENDER_image_KEY = 'senderImage';
   static const CREATED_AT_KEY = 'createdAt';
   static const TEXT_KEY = 'text';
+  static const MESSAGE_TYPE_KEY = 'type';
 
   MessageInterface({
     required this.isSent,
@@ -49,11 +51,11 @@ abstract class MessageInterface {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'senderId': senderId,
-      'senderName': senderName,
-      'senderImage': senderImage,
-      'type': type.name,
-      'createdAt': Timestamp.now(),
+      SENDER_ID_KEY: senderId,
+      SENDER_NAME_KEY: senderName,
+      SENDER_image_KEY: senderImage,
+      MESSAGE_TYPE_KEY: type.name,
+      CREATED_AT_KEY: Timestamp.now(),
     };
   }
 
@@ -61,31 +63,31 @@ abstract class MessageInterface {
     throw UnimplementedError();
   }
 
-  factory MessageInterface.fromFirestoreDoc(DocumentSnapshot map) {
-    Logger().w('-------------');
+  factory MessageInterface.fromFirestoreDoc(DocumentSnapshot doc) {
+    assert(doc.exists);
 
-    switch (msgTypeEnumfromString(map['type'])) {
+    switch (msgTypeEnumfromString(doc['type'])) {
       case MessageType.text:
-        return TextMessage.fromDoc(map);
+        return TextMessage.fromDoc(doc);
 
       case MessageType.image:
-        return ImageMessage.fromDoc(map);
+        return ImageMessage.fromDoc(doc);
 
       case MessageType.video:
-        return VideoMessage.fromDoc(map);
+        return VideoMessage.fromDoc(doc);
 
       case MessageType.file:
-        return FileMessage.fromDoc(map);
+        return FileMessage.fromDoc(doc);
 
       case MessageType.audio:
-        Logger().w('-------------');
+        Logger().w('-------Audio Message------');
 
-        return AudioMessage.fromDoc(map);
+        return AudioMessage.fromDoc(doc);
 
       default:
-        Logger().w('-------------:type ${map['type']}');
+        Logger().e('Invalid Message type ${doc['type']}');
 
-        throw MessageException.invalidMessageType(map);
+        throw MessageException.invalidMessageType(doc);
     }
   }
   factory MessageInterface.fromNotificationPayload(Map<String, dynamic> map) {
@@ -103,12 +105,12 @@ abstract class MessageInterface {
         return FileMessage.fromNotificationPayload(map);
 
       case MessageType.audio:
-        Logger().w('-------------');
+        Logger().w('-------Audio Message------');
 
         return AudioMessage.fromNotificationPayload(map);
 
       default:
-        Logger().w('-------------:type ${map['type']}');
+        Logger().e('Invalid Message type ${map['type']}');
 
         throw MessageException.invalidMessageType(map);
     }
@@ -171,7 +173,7 @@ abstract class MessageInterface {
           senderName: message.sender.value!.name,
           senderImage: message.sender.value!.imageUrl,
           //
-          file: message.contentFilePath!,
+          downloadUrl: message.contentFilePath!,
           fileName: '',
           fileSize: '',
         );

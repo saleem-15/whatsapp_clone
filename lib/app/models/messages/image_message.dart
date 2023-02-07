@@ -83,7 +83,7 @@ class ImageMessage extends MessageInterface {
     return ImageMessage.toSend(
       chatId: fileMessage.chatId,
       text: null,
-      imageName: fileMessage.file,
+      imageName: fileMessage.downloadUrl,
       imageUrl: fileMessage.fileName,
     );
   }

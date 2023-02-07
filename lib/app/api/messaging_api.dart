@@ -34,7 +34,7 @@ class MessagingApi {
   }
 
   static MessageInterface fromFirestoreConverter(DocumentSnapshot<Map<String, dynamic>> snapshot) {
-    throw '-----------Fuck You-----------';
+    Logger().i(snapshot.data());
     switch (msgTypeEnumfromString(snapshot['type'])) {
       case MessageType.text:
         return TextMessage.fromDoc(snapshot);
@@ -65,8 +65,10 @@ class MessagingApi {
       fileName: imageMessage.imageName,
     );
 
+    imageMessage.imageUrl = imageUrl;
+
     /// add the message to firestore
-    await messagesCollection(imageMessage.chatId).add(imageMessage..imageUrl = imageUrl);
+    await messagesCollection(imageMessage.chatId).add(imageMessage);
   }
 
   static Future<void> sendAudioMessage(AudioMessage audioMessage, File audioFile) async {
@@ -100,7 +102,7 @@ class MessagingApi {
       fileName: fileMessage.fileName,
     );
 
-    await messagesCollection(fileMessage.chatId).add(fileMessage..file = fileUrl);
+    await messagesCollection(fileMessage.chatId).add(fileMessage..downloadUrl = fileUrl);
   }
 
   ///returnes the file Url in the firestorage\

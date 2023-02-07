@@ -3,9 +3,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_viewer/video_viewer.dart';
 import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
@@ -25,6 +25,7 @@ import 'chat_text_field_controller.dart';
 
 class ChatScreenController extends GetxController {
   late final Chat chat;
+  final messagesList = RxList<MessageInterface>();
 
   Map<String, VideoPlayerController> videos = {};
 
@@ -34,20 +35,24 @@ class ChatScreenController extends GetxController {
     Get.put(ChatTextFieldController());
 
     chat = Get.arguments;
+
+    Get.find<MessagesProvider>().getMessagesStream(chat.id);
+
+    _getMessagesStream().listen((event) {
+      Logger().i('num of masseges: ${event.length}');
+
+      messagesList.value = event;
+    });
   }
 
-  Stream<List<MessageInterface>> getMessagesStream() {
+  Stream<List<MessageInterface>> _getMessagesStream() {
     return MessagingApi.getMessagesStream(chat.id).map((event) {
       final messageDocs = event.docs;
 
       final List<MessageInterface> messages = [];
 
       for (QueryDocumentSnapshot messageDoc in messageDocs) {
-        Logger().i('messageDoc: ${messageDoc.get('type')}');
-
-        Logger().w('-------------: ${messageDoc.get('type')}');
         messages.add(MessageInterface.fromFirestoreDoc(messageDoc));
-        Logger().w('-------------: ${messageDoc.get('type')}');
       }
 
       log('messages num: ${messages.length}');
@@ -175,16 +180,10 @@ class ChatScreenController extends GetxController {
   }
 
   void onFilePressed(FileMessage message) {
-    // _launchUrl(message.file);
-    log('file ${message.file} is pressed ');
+    launchUrl(Uri.file(message.downloadUrl));
+
+    log('file ${message.downloadUrl} is pressed ');
   }
 
-  void onVideoCallButtonPressed() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings = await messaging.requestPermission();
-
-    log('User granted permission: ${settings.authorizationStatus}');
-    // GoogleApiAvailability.makeGooglePlayServicesAvailable()
-  }
+  void onVideoCallButtonPressed() {}
 }

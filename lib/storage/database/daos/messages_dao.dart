@@ -113,4 +113,18 @@ class MessagesDao {
     /// return only the ids
     return messages.map((e) => e.id).toList();
   }
+
+  static Future<Stream<List<MessageInterface>>> getChatMessagesStream(String chatId) async {
+    final chat = await ChatsDao.getChatByMyId(chatId);
+
+    return chat!.messages.filter().watch(fireImmediately: true).map((List<MessageDB> messageDB) {
+      final List<MessageInterface> msgs = [];
+
+      for (var message in messageDB) {
+        msgs.add(MessageInterface.fromDB(message));
+      }
+
+      return msgs;
+    });
+  }
 }

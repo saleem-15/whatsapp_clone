@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +29,8 @@ Future<void> main() async {
   await MySharedPref.init();
   MySharedPref.setIsMyDocExists(true);
   MySharedPref.setLastUpdated(DateTime.now());
+
+  log(MySharedPref.getFcmToken!);
 
   await Firebase.initializeApp();
   await MyDataBase.openDatabase();

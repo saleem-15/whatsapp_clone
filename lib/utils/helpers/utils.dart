@@ -40,7 +40,7 @@ class Utils {
     final fileName = getFilName(filePath);
     final extenstion = fileName.split('.').last;
 
-    return '.$extenstion';
+    return extenstion;
   }
 
   static String? extractUrl(String text) {

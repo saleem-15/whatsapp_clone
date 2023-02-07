@@ -48,7 +48,7 @@ class MessageDB {
   ///file name (stored in the device ) ex: photo.png
   String? fileName;
 
-  ///Special Attributes for each  Message type is stored here\
+  /// Special Attributes for each  Message type is stored here\
   /// stored as json, use [setSpecialMessageAttributes] & [getSpecialMessageAttributes]
   /// to set and get this field.
   String? specialMessageAttributes;
@@ -123,11 +123,12 @@ class MessageDB {
           ..isSent = message.isSent
 
           //
-          ..contentFilePath = message.file
+          ..contentFilePath = message.downloadUrl
           ..fileName = message.fileName
           ..setSpecialMessageAttributes({
             ///file size
             FileMessage.FILE_SIZE_KEY: message.fileSize,
+            FileMessage.FILE_Path_KEY: message.filePath,
           });
       case MessageType.audio:
         message as AudioMessage;

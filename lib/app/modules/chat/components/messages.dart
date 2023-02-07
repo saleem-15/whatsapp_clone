@@ -2,11 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import 'package:whatsapp_clone/app/models/message_type_enum.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
-import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/text_message.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
@@ -24,80 +22,69 @@ class Messages extends GetView<ChatScreenController> {
   final String chatId;
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<MessageInterface>>(
-      stream: controller.getMessagesStream(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          Logger().i('There is no messages');
-          return const SizedBox.shrink();
-        }
+    return Obx(
+      () => ListView.builder(
+        reverse: true,
+        itemCount: controller.messagesList.length,
+        itemBuilder: (_, index) {
+          final message = controller.messagesList[index];
 
-        final messages = snapshot.data!;
-        log('num of masseges: ${messages.length}');
+          if (index == controller.messagesList.length) {
+            log('last message');
+          }
 
-        return ListView.builder(
-          reverse: true,
-          itemCount: messages.length,
-          itemBuilder: (_, index) {
-            final message = messages[index];
+          return Row(
+            mainAxisAlignment: message.isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              Builder(
+                builder: (context) {
+                  switch (message.type) {
+                    case MessageType.text:
+                      return MessageBubble(
+                        message: message as TextMessage,
+                      );
+                    case MessageType.image:
+                      return ImageMessageBubble(
+                        message: message as ImageMessage,
+                      );
 
-            if (index == messages.length) {
-              log('last message');
-            }
+                    case MessageType.video:
+                      return VideoMessageBubble(
+                        message: message as VideoMessage,
+                        video: message.videoUrl,
+                      );
 
-            return Row(
-              mainAxisAlignment: message.isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-              children: [
-                Builder(
-                  builder: (context) {
-                    switch (message.type) {
-                      case MessageType.text:
-                        return MessageBubble(
-                          message: message as TextMessage,
-                        );
-                      case MessageType.image:
-                        return ImageMessageBubble(
-                          message: message as ImageMessage,
-                        );
+                    case MessageType.audio:
+                      return AudioMessageBubble(
+                        isMyMessage: message.isMyMessage,
+                        audioPath: (message as AudioMessage).audioUrl,
+                        timeSent: Utils.formatDate(message.timeSent),
+                      );
+                    case MessageType.file:
+                      return FileMessageBubble(message: message as FileMessage);
 
-                      case MessageType.video:
-                        return VideoMessageBubble(
-                          message: message as VideoMessage,
-                          video: message.videoUrl,
-                        );
-
-                      case MessageType.audio:
-                        return AudioMessageBubble(
-                          isMyMessage: message.isMyMessage,
-                          audioPath: (message as AudioMessage).audioUrl,
-                          timeSent: Utils.formatDate(message.timeSent),
-                        );
-                      case MessageType.file:
-                        return FileMessageBubble(message: message as FileMessage);
-
-                      default:
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 170,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Center(child: Text('unknown message type')),
+                    default:
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 170,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                          ],
-                        );
-                    }
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
+                            child: const Center(child: Text('unknown message type')),
+                          ),
+                        ],
+                      );
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

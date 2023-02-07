@@ -1,11 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
+import 'package:whatsapp_clone/fcm_helper.dart';
 
 class HomeController extends GetxController {
   final searchController = TextEditingController();
   FocusNode searchFocus = FocusNode();
   RxBool isSearchMode = false.obs;
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    await FcmHelper.setupInteractedMessage();
+
+  }
 
   void onSearchIconButtonPressed() {
     isSearchMode(true);

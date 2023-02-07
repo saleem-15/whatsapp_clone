@@ -107,7 +107,7 @@ class VideoMessage extends MessageInterface {
     return VideoMessage.toSend(
       chatId: fileMessage.chatId,
       text: null,
-      videoName: fileMessage.file,
+      videoName: fileMessage.downloadUrl,
       videoUrl: fileMessage.fileName,
       timeSent: DateTime.now(),
       width: width,

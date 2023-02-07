@@ -26,31 +26,23 @@ class FileMessageBubble extends GetView<ChatScreenController> {
     final messageColor =
         message.isMyMessage ? MessageBubbleSettings.myMessageColor : MessageBubbleSettings.othersMessageColor;
 
-    log('file name is: ${message.file.split('/').last}');
+    log('file name is: ${message.downloadUrl.split('/').last}');
 
     /// the message takes a a row of the screen,
     /// and its aligned according if its my message or not
-    return InkWell(
+    return GestureDetector(
       onTap: () => controller.onFilePressed(message),
       child: Container(
         width: 300,
+        padding: const EdgeInsets.all(10),
         margin: MessageBubbleSettings.messageMargin(
           isMyMessage: message.isMyMessage,
         ),
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.8),
-              spreadRadius: 1,
-              blurRadius: 3,
-              offset: const Offset(0, 2), // changes position of shadow
-            ),
-          ],
           color: messageColor,
           borderRadius: BorderRadius.circular(borderRadius),
         ),
-        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -74,42 +66,43 @@ class FileMessageBubble extends GetView<ChatScreenController> {
             SizedBox(
               width: double.infinity,
               height: 50.sp,
-              child: Stack(
+              child: Row(
                 children: [
                   /// file icon
-                  Align(
-                    alignment: const Alignment(-1, 0),
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white70,
-                      ),
-                      child: GradientIcon(
-                        icon: FontAwesomeIcons.solidFileLines,
-                        backgroundSize: 25.sp,
-                      ),
+                  Container(
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white70,
+                    ),
+                    child: GradientIcon(
+                      icon: FontAwesomeIcons.solidFileLines,
+                      backgroundSize: 25.sp,
                     ),
                   ),
 
-                  ///file name & file Size
-                  Align(
-                    alignment: const Alignment(0, .2),
+                  ///file (name & Size & Type)
+                  Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          /// File Name
                           Text(
                             message.fileName,
                             style: MessageBubbleSettings.messageTextStyle,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(
                             height: 5.sp,
                           ),
+
+                          /// File Size & Type
                           Text(
-                            message.fileSize,
+                            '${message.fileSize}  ${message.fileType.toUpperCase()}',
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.caption!.copyWith(
                                   fontSize: 12.sp,
                                 ),
@@ -120,9 +113,8 @@ class FileMessageBubble extends GetView<ChatScreenController> {
                   ),
 
                   /// time sent
-                  Positioned(
-                    bottom: 0,
-                    right: 8,
+                  Align(
+                    alignment: const Alignment(0, 1),
                     child: Text(
                       Utils.formatDate(message.timeSent),
                       style: MessageBubbleSettings.timeSentTextStyle,

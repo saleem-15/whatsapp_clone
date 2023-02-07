@@ -59,8 +59,7 @@ class UserApi {
     return User.fromDoc(queryResult.docs.first);
   }
 
-  static Future<void> setUserFcmToken() async {
-    final fcmToken = MySharedPref.getFcmToken!;
+  static Future<void> setUserFcmToken(String fcmToken) async {
 
     await myUserDocument.update({
       'fcmToken': fcmToken,
