@@ -4,9 +4,13 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_video_info/flutter_video_info.dart';
+import 'package:image_size_getter/file_input.dart';
+import 'package:image_size_getter/image_size_getter.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
+
+import 'dart:async';
 
 class Utils {
   static String formatDate(DateTime time) {
@@ -27,20 +31,18 @@ class Utils {
     return filePath.split('/').last;
   }
 
-  /// returnes file size as double
-  static double getFileSize(File file) {
-    int sizeInBytes = file.lengthSync();
-    double sizeInMb = sizeInBytes / (1024 * 1024);
-    return sizeInMb;
+  /// returnes file size in Bytes
+  static int getFileSize(File file) {
+    return file.lengthSync();
   }
 
   /// if file path was (/data/file_picker/HomeWork 1.docx)
   /// it will return (.docx)
-  static String getFileExtension(String filePath) {
+  static String getFileExtension(String filePath, [bool withDot = true]) {
     final fileName = getFilName(filePath);
     final extenstion = fileName.split('.').last;
 
-    return extenstion;
+    return withDot ? '.$extenstion' : extenstion;
   }
 
   static String? extractUrl(String text) {
@@ -83,4 +85,34 @@ class Utils {
   static Future<VideoData?> getVideoInfo(String videoFilePath) async {
     return await FlutterVideoInfo().getVideoInfo(videoFilePath);
   }
+
+//   Future<Size> calculateImageDimension(File imageFile) {
+//     Completer<Size> completer = Completer();
+//     final image = Image.file(imageFile);
+
+//     image.image.resolve(const ImageConfiguration()).addListener(
+//       ImageStreamListener(
+//         (ImageInfo image, bool synchronousCall) {
+//           var myImage = image.image;
+//           Size size = Size(myImage.width.toDouble(), myImage.height.toDouble());
+//           completer.complete(size);
+//         },
+//       ),
+//     );
+//     return completer.future;
+//   }
+// }
+
+// Future<Size> getImageSize(File imageFile) async {
+//   Map<String, IfdTag> exifData = await readExifFromBytes(await imageFile.readAsBytes());
+//   int width = exifData[ExifCodec.width]!.values[0];
+//   int height = exifData[ExifCodec.height]!.values[0];
+//   return Size(width, height);
+// }
+
+ static Future<Size> getImageSize(File imageFile) async {
+    final size = ImageSizeGetter.getSize(FileInput(imageFile));
+    return size;
+  }
+
 }

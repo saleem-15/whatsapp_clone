@@ -4,48 +4,90 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:whatsapp_clone/storage/files_manager.dart';
+import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
-class NetworkOrLocalImage extends StatefulWidget {
-  const NetworkOrLocalImage({
+class SavedNetworkImage extends StatefulWidget {
+  const SavedNetworkImage({
     Key? key,
     required this.imageUrl,
-    required this.fileName,
+    required this.imageFilePath,
     required this.chatId,
+    required this.timeSent,
+    required this.onImageDownloaded,
   }) : super(key: key);
 
+  /// the url used to download the image if it wasn't saved in [imageFilePath]
   final String imageUrl;
-  final String fileName;
+
+  /// the file path that the image should be stored in.\
+  /// if the file does not exist in this path the image will be
+  /// downloaded and stored in it.
+  final String imageFilePath;
   final String chatId;
+  final DateTime timeSent;
+
+  /// -called when the image is completed downloading\
+  /// -parameter [image] is downloaded image file
+  ///
+  /// `Note: the image is downloaded when its not found in [imageFilePath]`
+  final Function(File image) onImageDownloaded;
+
+  // final Function(File image) onImageDownloaded;
 
   @override
-  State<NetworkOrLocalImage> createState() => _NetworkOrLocalImageState();
+  State<SavedNetworkImage> createState() => _SavedNetworkImageState();
 }
 
-class _NetworkOrLocalImageState extends State<NetworkOrLocalImage> {
+class _SavedNetworkImageState extends State<SavedNetworkImage> {
   File? image;
+
   @override
   void initState() {
     super.initState();
     getImage();
   }
 
+  /// initilizes [image] field.\
+  /// if [widget.imageFilePath] is not null (image is saved in a file)
+  ///
+  /// if it was not saved it will be downloaded and saved.
   Future<void> getImage() async {
-    File imageFile = await FileManager.getFile(widget.fileName, widget.chatId);
+    final imageFile = File(widget.imageFilePath);
+    final isFileExists = await imageFile.exists();
 
-    if (imageFile.existsSync()) {
+    if (isFileExists) {
       image = imageFile;
-      setState(() {});
-      return;
+    } else {
+      /// if image is not stored in a file.
+      await downloadImage();
     }
-    image = await FileManager.saveFileFromNetwork(widget.imageUrl, widget.fileName, widget.chatId);
-    setState(() {});
 
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> downloadImage() async {
+    await FileManager.downloadFile(
+      downloadUrl: widget.imageUrl,
+
+      ///store the image in the provided path
+      filePath: widget.imageFilePath,
+    );
+
+    image = File(widget.imageFilePath);
+    widget.onImageDownloaded(image!);
   }
 
   @override
   Widget build(BuildContext context) {
     if (image != null) {
-      return Image.file(image!);
+      return FadeInImage(
+        image: FileImage(image!),
+        placeholder: const AssetImage(
+          Assets.placeholder_image,
+        ),
+      );
     } else {
       return const Center(
         child: CircularProgressIndicator(),

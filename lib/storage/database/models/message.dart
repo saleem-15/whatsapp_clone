@@ -23,6 +23,9 @@ class MessageDB {
 
   late final String chatId;
 
+  @Index(unique: true,replace: true)
+  late final String messageId;
+
   ///* This field helps to identify the message type
   @enumerated
   late final MessageType type;
@@ -45,9 +48,6 @@ class MessageDB {
   ///the download url for the file (image,video,audio,file)
   String? fileURl;
 
-  ///file name (stored in the device ) ex: photo.png
-  String? fileName;
-
   /// Special Attributes for each  Message type is stored here\
   /// stored as json, use [setSpecialMessageAttributes] & [getSpecialMessageAttributes]
   /// to set and get this field.
@@ -69,8 +69,9 @@ class MessageDB {
       case MessageType.text:
         message as TextMessage;
         return MessageDB()
-          ..type = MessageType.text
+          ..messageId = message.messageId
           ..chatId = message.chatId
+          ..type = MessageType.text
           ..text = message.text
           ..timeSent = message.timeSent
           //
@@ -81,8 +82,9 @@ class MessageDB {
       case MessageType.image:
         message as ImageMessage;
         return MessageDB()
-          ..type = MessageType.image
+          ..messageId = message.messageId
           ..chatId = message.chatId
+          ..type = MessageType.image
           ..text = message.text
           ..timeSent = message.timeSent
           //
@@ -91,14 +93,18 @@ class MessageDB {
 
           //
           ..fileURl = message.imageUrl
-          ..fileName = message.imageName
-          ..contentFilePath = message.imageUrl;
+          
+          ..contentFilePath = message.imagePath  ..setSpecialMessageAttributes({
+            ImageMessage.IMAGE_WIDTH_KEY: message.width,
+            ImageMessage.IMAGE_HEIGHT_KEY: message.height,
+          });
 
       case MessageType.video:
         message as VideoMessage;
         return MessageDB()
-          ..type = MessageType.video
+          ..messageId = message.messageId
           ..chatId = message.chatId
+          ..type = MessageType.video
           ..text = message.text
           ..timeSent = message.timeSent
           //
@@ -107,7 +113,7 @@ class MessageDB {
 
           //
           ..fileURl = message.videoUrl
-          ..fileName = message.videoName
+          ..contentFilePath = message.videoPath
           ..setSpecialMessageAttributes({
             VideoMessage.VIDEO_WIDTH_KEY: message.width,
             VideoMessage.VIDEO_HEIGHT_KEY: message.height,
@@ -115,33 +121,34 @@ class MessageDB {
       case MessageType.file:
         message as FileMessage;
         return MessageDB()
-          ..type = MessageType.file
+          ..messageId = message.messageId
           ..chatId = message.chatId
+          ..type = MessageType.file
           ..timeSent = message.timeSent
           //
           ..isSeen = message.isSeen
           ..isSent = message.isSent
 
           //
-          ..contentFilePath = message.downloadUrl
-          ..fileName = message.fileName
+          ..fileURl = message.downloadUrl
+          ..contentFilePath = message.filePath
           ..setSpecialMessageAttributes({
             ///file size
             FileMessage.FILE_SIZE_KEY: message.fileSize,
-            FileMessage.FILE_Path_KEY: message.filePath,
           });
       case MessageType.audio:
         message as AudioMessage;
         return MessageDB()
-          ..type = MessageType.audio
+          ..messageId = message.messageId
           ..chatId = message.chatId
+          ..type = MessageType.audio
           ..timeSent = message.timeSent
           //
           ..isSeen = message.isSeen
           ..isSent = message.isSent
           //
-          ..contentFilePath = message.audioUrl;
-      // ..fileName = message.;
+          ..fileURl = message.audioUrl
+          ..contentFilePath = message.audioPath;
 
       default:
         throw MessageException.invalidMessageType();

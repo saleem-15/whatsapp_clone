@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_viewer/video_viewer.dart';
-import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
@@ -27,6 +26,8 @@ class ChatScreenController extends GetxController {
   late final Chat chat;
   final messagesList = RxList<MessageInterface>();
 
+  MessagesProvider get messagesProvider => Get.find<MessagesProvider>();
+
   Map<String, VideoPlayerController> videos = {};
 
   @override
@@ -36,7 +37,7 @@ class ChatScreenController extends GetxController {
 
     chat = Get.arguments;
 
-    Get.find<MessagesProvider>().getMessagesStream(chat.id);
+    messagesProvider.getMessagesStream(chat.id);
 
     _getMessagesStream().listen((event) {
       Logger().i('num of masseges: ${event.length}');
@@ -55,7 +56,6 @@ class ChatScreenController extends GetxController {
         messages.add(MessageInterface.fromFirestoreDoc(messageDoc));
       }
 
-      log('messages num: ${messages.length}');
       return messages;
     });
   }
@@ -92,15 +92,17 @@ class ChatScreenController extends GetxController {
   }
 
   Future<void> onImagePressed(ImageMessage message) async {
-    final isImageStored = await FileManager.isFileSaved(message.imageName, message.chatId);
+    final isImageStored = await FileManager.isFileSaved(message.imagePath);
     if (!isImageStored) {
+      log('image is not stored');
       return;
     }
 
     //to remove the keyboaed (better animation)
     Get.focusScope?.unfocus();
 
-    final imageFile = await FileManager.getFile(message.imageName, message.chatId);
+    final imageFile = File(message.imagePath);
+    // await FileManager.getFile(message.imagePath, message.chatId);
 
     Get.to(() => ImageViewerScreen(
           imageMessage: message,
@@ -116,7 +118,7 @@ class ChatScreenController extends GetxController {
   }
 
   onViedeoPressed(VideoMessage videoMessage) async {
-    final isVideoLoaded = await FileManager.isFileSaved(videoMessage.videoName, videoMessage.chatId);
+    final isVideoLoaded = await FileManager.isFileSaved(videoMessage.videoPath);
     if (!isVideoLoaded) {
       return;
     }
@@ -136,47 +138,92 @@ class ChatScreenController extends GetxController {
     );
   }
 
-  void sendImage(File imageFile, String? message) {
-    String imageName = MessagingApi.genereteFileId(myUid, imageFile.path);
+  Future<void> sendImage(File imageFile, String? message) async {
+    final time = DateTime.now();
+
+    final imageDimensions = await Utils.getImageSize(imageFile);
+    Logger().w(imageDimensions);
+
+    /// file name without the file extension
+    String imageName = FileManager.generateMediaFileName(
+      FileType.image,
+      chat.id,
+      time,
+    );
+
+    final imagePath = await FileManager.saveToFile(
+      imageFile,
+      '$imageName${Utils.getFileExtension(imageFile.path)}',
+      chat.id,
+    );
+
+    Logger().w(imagePath);
 
     final imageMessage = ImageMessage.toSend(
       text: message,
       chatId: chat.id,
-      imageUrl: imageFile.path,
-      imageName: imageName,
+      imagePath: imagePath,
+      timeSent: time,
+      height: imageDimensions.height,
+      width: imageDimensions.width,
     );
 
-    Get.find<MessagesProvider>().sendImageMessage(chat, imageMessage, imageFile);
+    messagesProvider.sendImageMessage(chat, imageMessage, imageFile);
   }
 
-  void sendAudio(File audioFile) {
-    String fileName = MessagingApi.genereteFileId(myUid, audioFile.path);
+  Future<void> sendAudio(File audioFile) async {
+    final time = DateTime.now();
+
+    /// file name without the file extension
+    String audioFileName = FileManager.generateMediaFileName(
+      FileType.audio,
+      chat.id,
+      time,
+    );
+
+    final audioFilePath = await FileManager.saveToFile(
+      audioFile,
+      '$audioFileName${Utils.getFileExtension(audioFile.path)}',
+      chat.id,
+    );
 
     final audioMessage = AudioMessage.toSend(
       chatId: chat.id,
-      audioUrl: audioFile.path,
-      fileName: fileName,
+      audioPath: audioFilePath,
+      timeSent: time,
     );
 
-    Get.find<MessagesProvider>().sendAudioMessage(chat, audioMessage, audioFile);
+    messagesProvider.sendAudioMessage(chat, audioMessage, audioFile);
   }
 
   Future<void> sendVideo(File videoFile, String? message) async {
-    String videoName = MessagingApi.genereteFileId(myUid, videoFile.path);
+    final time = DateTime.now();
 
+    /// file name without the file extension
+    String videoFileName = FileManager.generateMediaFileName(
+      FileType.video,
+      chat.id,
+      time,
+    );
+
+    final videoFilePath = await FileManager.saveToFile(
+      videoFile,
+      '$videoFileName${Utils.getFileExtension(videoFile.path)}',
+      chat.id,
+    );
+
+    /// get the video width & height
     var videoInfo = await Utils.getVideoInfo(videoFile.path);
 
     final videoMessage = VideoMessage.toSend(
       chatId: chat.id,
       text: message,
-      videoUrl: videoFile.path,
-      videoName: videoName,
+      videoPath: videoFilePath,
       width: videoInfo!.width!,
       height: videoInfo.height!,
-      timeSent: DateTime.now(),
     );
 
-    Get.find<MessagesProvider>().sendVideoMessage(chat, videoMessage, videoFile);
+    messagesProvider.sendVideoMessage(chat, videoMessage, videoFile);
   }
 
   void onFilePressed(FileMessage message) {
@@ -186,4 +233,17 @@ class ChatScreenController extends GetxController {
   }
 
   void onVideoCallButtonPressed() {}
+
+  ///called when an image of an [ImageMessage] is downloaded
+  ///
+  ///it must update the database with the stored image file path
+  void onImageDownloaded(ImageMessage imageMessage, File downloadedImage) {
+    imageMessage.imagePath = downloadedImage.path;
+    messagesProvider.updateMessage(imageMessage);
+  }
+
+  void onvideoDownloaded(VideoMessage videoMessage, File downloadedVideo) {
+    videoMessage.videoPath = downloadedVideo.path;
+    messagesProvider.updateMessage(videoMessage);
+  }
 }

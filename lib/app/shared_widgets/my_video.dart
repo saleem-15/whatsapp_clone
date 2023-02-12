@@ -12,15 +12,19 @@ class NetworkOrLocalVideo extends StatefulWidget {
   const NetworkOrLocalVideo({
     Key? key,
     required this.videoUrl,
-    required this.fileName,
+    required this.videoFilePath,
     required this.chatId,
+    required this.onVideoDownloaded,
     this.borderRadius = BorderRadius.zero,
   }) : super(key: key);
 
   final String videoUrl;
-  final String fileName;
+
+  final String videoFilePath;
   final String chatId;
   final BorderRadius? borderRadius;
+
+  final Function(File image) onVideoDownloaded;
 
   @override
   State<NetworkOrLocalVideo> createState() => _NetworkOrLocalVideoState();
@@ -39,17 +43,53 @@ class _NetworkOrLocalVideoState extends State<NetworkOrLocalVideo> {
     getVideo();
   }
 
+  // Future<void> getVideo() async {
+  //   File videoFile = await FileManager.getFile(widget.videoFilePath, widget.chatId);
+
+  //   // debugger();
+  //   if (await videoFile.exists()) {
+  //     Logger().w('The file does exist: ${videoFile.path}');
+  //     video = videoFile;
+  //     await initilizeVideoController();
+  //     // debugger();
+  //     return;
+  //   }
+
+  //   // debugger();
+  //   video = await FileManager.saveFileFromNetwork(widget.videoUrl, widget.videoFilePath, widget.chatId);
+  //   await initilizeVideoController();
+  // }
+
+  /// initilizes [video] field.\
+  /// if [widget.videoFilePath] is not null (video is saved in a file)
+  ///
+  /// if it was not saved it will be downloaded and saved.
   Future<void> getVideo() async {
-    File videoFile = await FileManager.getFile(widget.fileName, widget.chatId);
+    final videoFile = File(widget.videoFilePath);
+    final isFileExists = await videoFile.exists();
 
-    if (videoFile.existsSync()) {
+    if (isFileExists) {
       video = videoFile;
-      await initilizeVideoController();
-      return;
+    } else {
+      /// if video is not stored in a file.
+      await downloadVideo();
     }
-
-    video = await FileManager.saveFileFromNetwork(widget.videoUrl, widget.fileName, widget.chatId);
     await initilizeVideoController();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> downloadVideo() async {
+    await FileManager.downloadFile(
+      downloadUrl: widget.videoUrl,
+
+      ///store the video in the provided path
+      filePath: widget.videoFilePath,
+    );
+
+    video = File(widget.videoFilePath);
+    widget.onVideoDownloaded(video!);
   }
 
   Future<void> initilizeVideoController() async {

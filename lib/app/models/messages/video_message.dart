@@ -1,16 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
+import 'package:whatsapp_clone/app/providers/users_provider.dart';
 
+import '../../modules/chat/components/messages/media_message_size.dart';
 import '../message_type_enum.dart';
 
-enum MediaType {
-  landscape,
-  portrait,
-}
+
 
 class VideoMessage extends MessageInterface {
   /// json fields names (to ensure that i always (send) and (recieve) the right field name)
@@ -29,10 +27,11 @@ class VideoMessage extends MessageInterface {
     required super.senderId,
     this.text,
     required this.videoUrl,
-    required this.videoName,
+    required this.videoPath,
     int? height,
     int? width,
-  })  : height = height!,
+  })  : assert(videoUrl != null),
+        height = height!,
         width = width!,
         super(type: MessageType.video);
 
@@ -41,8 +40,8 @@ class VideoMessage extends MessageInterface {
   late final int width;
   late final int height;
 
-  String videoUrl;
-  String videoName;
+  String? videoUrl;
+  String videoPath;
   String? text;
 
   double get aspectRatio => height / width;
@@ -62,7 +61,7 @@ class VideoMessage extends MessageInterface {
     return super.toMap()
       ..addAll({
         'text': text,
-        VIDEO_NAME_KEY: videoName,
+        VIDEO_NAME_KEY: videoPath,
         VIDEO_URL_KEY: videoUrl,
         VIDEO_HEIGHT_KEY: height,
         VIDEO_WIDTH_KEY: width,
@@ -70,21 +69,21 @@ class VideoMessage extends MessageInterface {
   }
 
   @override
-  factory VideoMessage.fromDoc(DocumentSnapshot<Object?> map) {
+  factory VideoMessage.fromDoc(DocumentSnapshot doc) {
     return VideoMessage(
       isSent: false,
       isSeen: false,
-      chatId: map.id,
-      senderId: map['senderId'],
-      senderName: map['senderName'],
-      senderImage: map['senderImage'],
-      videoUrl: map[VIDEO_URL_KEY],
-      videoName: map[VIDEO_NAME_KEY],
-      text: map['text'],
-      timeSent: map.getDateTime('createdAt')!,
-      width: map[VIDEO_WIDTH_KEY],
-      height: map[VIDEO_HEIGHT_KEY],
-    );
+      chatId: doc.id,
+      senderId: doc['senderId'],
+      senderName: doc['senderName'],
+      senderImage: doc['senderImage'],
+      videoUrl: doc[VIDEO_URL_KEY],
+      videoPath: doc[VIDEO_NAME_KEY],
+      text: doc['text'],
+      timeSent: doc.getDateTime('createdAt')!,
+      width: doc[VIDEO_WIDTH_KEY],
+      height: doc[VIDEO_HEIGHT_KEY],
+    )..messageId = doc.id;
   }
 
   factory VideoMessage.fromNotificationPayload(Map<String, dynamic> map) {
@@ -96,7 +95,7 @@ class VideoMessage extends MessageInterface {
       timeSent: map[MessageInterface.CREATED_AT_KEY],
       senderId: map[MessageInterface.SENDER_ID_KEY],
       text: map[MessageInterface.TEXT_KEY],
-      videoName: map[VIDEO_NAME_KEY],
+      videoPath: map[VIDEO_NAME_KEY],
       videoUrl: map[VIDEO_URL_KEY],
       height: map[VIDEO_HEIGHT_KEY],
       width: map[VIDEO_WIDTH_KEY],
@@ -107,37 +106,27 @@ class VideoMessage extends MessageInterface {
     return VideoMessage.toSend(
       chatId: fileMessage.chatId,
       text: null,
-      videoName: fileMessage.downloadUrl,
-      videoUrl: fileMessage.fileName,
-      timeSent: DateTime.now(),
+      videoPath: fileMessage.downloadUrl,
       width: width,
       height: height,
-    );
+    )..videoUrl = fileMessage.fileName;
   }
 
-  @override
-  factory VideoMessage.toSend({
-    required String chatId,
-    required String? text,
-    required String videoName,
-    required String videoUrl,
-    required DateTime timeSent,
-    required int width,
-    required int height,
-  }) {
-    return VideoMessage(
-      isSent: false,
-      isSeen: false,
-      chatId: chatId,
-      senderId: FirebaseAuth.instance.currentUser!.uid,
-      senderName: MySharedPref.getUserName!,
-      senderImage: MySharedPref.getUserImage,
-      timeSent: timeSent,
-      text: text,
-      videoUrl: videoUrl,
-      videoName: videoName,
-      height: height,
-      width: width,
-    );
-  }
+  VideoMessage.toSend({
+    required super.chatId,
+    this.text,
+    required this.videoPath,
+    int? height,
+    int? width,
+  })  : height = height!,
+        width = width!,
+        super(
+          type: MessageType.video,
+          isSeen: false,
+          isSent: false,
+          senderId: Get.find<UsersProvider>().me!.uid,
+          senderName: Get.find<UsersProvider>().me!.name,
+          senderImage: Get.find<UsersProvider>().me!.imageUrl,
+          timeSent: DateTime.now(),
+        );
 }

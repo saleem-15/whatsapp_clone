@@ -43,7 +43,7 @@ class ImageViewerScreen extends StatelessWidget {
       ),
       body: Center(
         child: Hero(
-          tag: imageMessage.imageUrl,
+          tag: imageMessage.imageUrl!,
           child: ExtendedImage(
             image: FileImage(imageFile),
             fit: BoxFit.contain,
