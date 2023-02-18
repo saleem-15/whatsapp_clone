@@ -4,16 +4,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
+import 'package:get/get.dart';
+
+import '../providers/users_provider.dart';
+
+// class Api{
 
 final FirebaseAuth auth = FirebaseAuth.instance;
-final String myUid = MySharedPref.getUserId!;
 final FirebaseFirestore db = FirebaseFirestore.instance;
 
 final rootStorage = FirebaseStorage.instance.ref();
 final usersCollection = db.collection('users');
-final myUserDocument = usersCollection.doc(myUid);
 final chatsCollection = db.collection('chats');
+String get myUid => Get.find<UsersProvider>().me!.uid;
+DocumentReference get myUserDocument => usersCollection.doc(myUid);
 
 extension CollectionExtensions on CollectionReference {
   /// gets multiple documents,
@@ -23,7 +27,6 @@ extension CollectionExtensions on CollectionReference {
 
     for (String docId in documentsIds) {
       futures.add(doc(docId).get());
-      
     }
 
     return Future.wait(futures);

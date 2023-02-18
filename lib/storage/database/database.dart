@@ -40,13 +40,10 @@ class MyDataBase {
   /// Delets all data in the database
   static Future<void> clearDatabase() async {
     await isar.writeTxn(() async {
-      await isar.users.clear();
-      await isar.privateChats.clear();
       await isar.groups.clear();
+      await isar.privateChats.clear();
       await isar.messages.clear();
+      await isar.users.clear();
     });
-
-    
-
   }
 }

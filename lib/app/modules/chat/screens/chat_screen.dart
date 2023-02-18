@@ -35,7 +35,7 @@ class ChatScreen extends StatelessWidget {
             child: Row(
               children: [
                 Hero(
-                  tag: controller.chat.image!,
+                  tag: controller.chat.id,
                   child: CircleAvatar(
                     backgroundImage: controller.chat.imageProvider,
                     maxRadius: 20,

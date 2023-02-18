@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
+import 'package:whatsapp_clone/storage/database/daos/users_dao.dart';
 
 import '../../../api/user_api.dart';
+import '../../../providers/users_provider.dart';
 
 class ProfileScreenController extends GetxController {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -24,9 +25,10 @@ class ProfileScreenController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    final user = Get.find<UsersProvider>().me!;
 
-    nameController.text = MySharedPref.getUserName!;
-    phoneNumberFieledController.text = MySharedPref.getUserPhoneNumber!;
+    nameController.text = user.name;
+    phoneNumberFieledController.text = user.phoneNumber;
 
     _autoDisableLoginButton();
   }
@@ -49,7 +51,7 @@ class ProfileScreenController extends GetxController {
   }
 
   Future<void> onUpdateButtonPressed() async {
-    User myUpdatedInfo = MySharedPref.getUserData!
+    User myUpdatedInfo = (await UsersDao.getMyData())!
       ..name = name
       ..bio = about;
 

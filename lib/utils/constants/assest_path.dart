@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 class Assets {
+  static const placeholder_image = 'assets/image placeholder.png';
   static const illustraion = 'assets/illustration 1.png';
   static const empty_chats = 'assets/empty_chats.png';
   static const default_user_image = 'assets/default_user_image.jpg';
@@ -11,4 +12,6 @@ class Assets {
 
   ///icons
   static const SEARCH_ICON = 'assets/icons/ico_search.png';
+  static const loading = 'assets/lottie/loading.json';
+  static const circular_loading = 'assets/lottie/circular_loading.json';
 }

@@ -10,7 +10,7 @@ abstract class Chat {
   Chat({
     required this.usersIds,
     required this.name,
-    this.image,
+    this.imageUrl,
     required this.bio,
     required this.createdAt,
     required this.id,
@@ -29,7 +29,7 @@ abstract class Chat {
   late String name;
   late String bio;
   late DateTime createdAt;
-  String? image;
+  String? imageUrl;
 
   @ignore
   bool get isGroupChat;
@@ -44,5 +44,6 @@ abstract class Chat {
 
   @ignore
   ImageProvider get imageProvider =>
-      (image.isBlank! ? const AssetImage(Assets.default_user_image) : NetworkImage(image!)) as ImageProvider;
+      (imageUrl.isBlank! ? const AssetImage(Assets.default_user_image) : NetworkImage(imageUrl!))
+          as ImageProvider;
 }

@@ -14,7 +14,7 @@ import 'package:whatsapp_clone/utils/exceptions/message_exceptions.dart';
 import '../../../app/models/messages/file_message.dart';
 import '../../../app/models/messages/message_interface.dart';
 
-part 'message.g.dart';
+part '../generated_code/message.g.dart';
 
 @Collection(accessor: 'messages')
 class MessageDB {

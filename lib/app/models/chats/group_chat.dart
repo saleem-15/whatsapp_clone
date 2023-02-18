@@ -10,14 +10,14 @@ import 'package:get/get_utils/get_utils.dart';
 
 import '../user.dart';
 
-part 'group_chat.g.dart';
+part '../../../storage/database/generated_code/group_chat.g.dart';
 
 @Collection(accessor: 'groups')
 class GroupChat extends Chat {
   GroupChat({
     required super.id,
     required super.name,
-    super.image,
+    super.imageUrl,
     required super.bio,
     required super.createdAt,
     required super.usersIds,
@@ -28,7 +28,7 @@ class GroupChat extends Chat {
     return GroupChat(
       id: chatDoc.id,
       createdAt: chatDoc.getDateTime('createdAt')!,
-      image: chatDoc['imageUrl'],
+      imageUrl: chatDoc['imageUrl'],
       name: chatDoc['groupName'],
       bio: chatDoc['bio'] ?? 'Some Bullshit Quote',
       usersIds: chatDoc.getStringList('members'),
@@ -40,7 +40,8 @@ class GroupChat extends Chat {
   @ignore //dont store this field in the database
   @override
   ImageProvider get imageProvider =>
-      (image.isBlank! ? const AssetImage(Assets.default_user_image) : NetworkImage(image!)) as ImageProvider;
+      (imageUrl.isBlank! ? const AssetImage(Assets.default_user_image) : NetworkImage(imageUrl!))
+          as ImageProvider;
 
   @ignore //dont store this field in the database
   @override
@@ -48,5 +49,5 @@ class GroupChat extends Chat {
 
   @override
   String toString() =>
-      'GroupChat(\nid: $id name: $name, bio: $bio, image: $image,createdAt:$createdAt,usersIds: $usersIds)';
+      'GroupChat(\nid: $id name: $name, bio: $bio, image: $imageUrl,createdAt:$createdAt,usersIds: $usersIds)';
 }

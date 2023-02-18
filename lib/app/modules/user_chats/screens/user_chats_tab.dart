@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -20,7 +18,7 @@ class ChatsTapView extends StatelessWidget {
     return Obx(
       () {
         final myChats = controller.chatsList;
-        log('Chats Tap==> chats length: ${myChats.value.length}');
+        // log('Chats Tap==> num of chats: ${myChats.value.length}');
 
         if (myChats.value.isEmpty) {
           return Align(
@@ -47,7 +45,6 @@ class ChatsTapView extends StatelessWidget {
           );
         }
 
-        log('search mode: ${controller.isSearchMode.value}');
         return Obx(
           () => SearchableListView<Rx<Chat>>(
             list: myChats.value,

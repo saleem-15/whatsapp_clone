@@ -39,9 +39,9 @@ dependencies:
 
 
   #video related packages
-  chewie: ^1.1.0                # video player
+  chewie: ^1.4.0
   flutter_video_info:           # used to get video info (width,height)
-  video_viewer: ^1.2.7  
+  # video_viewer: ^1.2.7  
 
   #audio related packages
   voice_message_package: ^0.0.74
@@ -70,6 +70,8 @@ dependencies:
   logger: ^1.1.0
   exif: ^3.1.2
   image_size_getter: ^2.1.2
+  video_player: ^2.5.1
+  lottie: ^2.2.0
   
     
   #infinite_scroll_pagination: ^3.2.0  # used EVERY WHERE
@@ -97,6 +99,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/lottie/
     
 
 

@@ -2,7 +2,7 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:video_viewer/video_viewer.dart';
+import 'package:video_player/video_player.dart';
 
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
@@ -67,7 +67,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
               dialogBackgroundColor: Colors.black54,
               iconTheme: Theme.of(context).iconTheme.copyWith(color: Colors.white)),
           child: Hero(
-            tag: widget.videoMessage.videoUrl,
+            tag: widget.videoMessage.videoUrl!,
             child: Material(
               color: Colors.transparent,
               child: Chewie(

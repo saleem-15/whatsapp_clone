@@ -5,10 +5,7 @@ import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/app/providers/users_provider.dart';
 
-import '../../modules/chat/components/messages/media_message_size.dart';
 import '../message_type_enum.dart';
-
-
 
 class VideoMessage extends MessageInterface {
   /// json fields names (to ensure that i always (send) and (recieve) the right field name)
@@ -44,14 +41,7 @@ class VideoMessage extends MessageInterface {
   String videoPath;
   String? text;
 
-  double get aspectRatio => height / width;
-  MediaType get mediaType {
-    if (width > height) {
-      return MediaType.landscape;
-    }
-
-    return MediaType.portrait;
-  }
+  double get aspectRatio => width / height;
 
   @override
 

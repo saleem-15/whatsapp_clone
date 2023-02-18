@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
+import 'package:whatsapp_clone/app/modules/chat/components/messages/media_message_size.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/app/shared_widgets/my_image.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
@@ -9,23 +11,27 @@ import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 ///this is documentaion
 class ImageMessageBubble extends GetView<ChatScreenController> {
-  const ImageMessageBubble({
-    Key? key,
+  ImageMessageBubble({
+    super.key,
     required this.message,
-  }) : super(key: key);
+  }) : displayedSize = MediaMessageSize.calculateMediaSize(
+          messageHeight: message.height.toDouble(),
+          messageWidth: message.width.toDouble(),
+        );
 
   final ImageMessage message;
 
+  /// the calculated video size
+  late final Size displayedSize;
   final double borderRadius = 15;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      splashColor: Colors.transparent,
+    Logger().i(
+        'image message: sender: ${message.senderName}\n image actual size: (${message.width},${message.height})\n  Image Message Bubble ${displayedSize.toString()}');
+    return GestureDetector(
       onTap: () => controller.onImagePressed(message),
       child: Container(
-        // height: 100,
-        width: 300,
         margin: MessageBubbleSettings.messageMargin(
           isMyMessage: message.isMyMessage,
         ),
@@ -54,14 +60,19 @@ class ImageMessageBubble extends GetView<ChatScreenController> {
             Stack(
               children: [
                 /// The image
-                Hero(
-                  tag: message.imageUrl,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(borderRadius),
-                    child: NetworkOrLocalImage(
-                      chatId: message.chatId,
-                      fileName: message.imageName,
-                      imageUrl: message.imageUrl,
+                SizedBox.fromSize(
+                  size: displayedSize,
+                  child: Hero(
+                    tag: message.imageUrl!,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(borderRadius),
+                      child: SavedNetworkImage(
+                        chatId: message.chatId,
+                        imageFilePath: message.imagePath,
+                        imageUrl: message.imageUrl!,
+                        timeSent: message.timeSent,
+                        onImageDownloaded: (image) => controller.onImageDownloaded(message, image),
+                      ),
                     ),
                   ),
                 ),
@@ -80,7 +91,9 @@ class ImageMessageBubble extends GetView<ChatScreenController> {
 
             /// Text (shown if there is any)
             if (message.text != null)
-              Padding(
+              Container(
+                /// the caption must have the wirth of the image
+                width: displayedSize.width,
                 padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
                 child: Text(
                   message.text!,
@@ -93,12 +106,3 @@ class ImageMessageBubble extends GetView<ChatScreenController> {
     );
   }
 }
-
-      //  boxShadow: [
-      //       BoxShadow(
-      //         color: Colors.grey.withOpacity(0.8),
-      //         spreadRadius: 1,
-      //         blurRadius: 3,
-      //         offset: const Offset(0, 2), // changes position of shadow
-      //       ),
-      //     ],

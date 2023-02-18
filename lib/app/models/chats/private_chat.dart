@@ -8,7 +8,7 @@ import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/storage/database/models/message.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
-part 'private_chat.g.dart';
+part '../../../storage/database/generated_code/private_chat.g.dart';
 
 @collection
 class PrivateChat extends Chat {
@@ -20,33 +20,32 @@ class PrivateChat extends Chat {
     required QueryDocumentSnapshot userDoc,
   }) {
     final user = User.fromDoc(userDoc);
+
     return PrivateChat()
       ..id = chatDoc.id
       ..createdAt = (chatDoc['createdAt'] as Timestamp).toDate()
+      ..user.value = user
 
       /// super type [Chat] variables
       ..user.value = user
       ..name = user.name
-      ..image = user.imageUrl
+      ..imageUrl = user.imageUrl
       ..bio = user.bio
       ..usersIds = [user.uid, myUid];
   }
 
-
-
   final user = IsarLink<User>();
-
 
   @ignore
   @override
-  ImageProvider get imageProvider =>
-      (image == null || image!.isEmpty ? const AssetImage(Assets.default_user_image) : NetworkImage(image!))
-          as ImageProvider;
+  ImageProvider get imageProvider => (imageUrl == null || imageUrl!.isEmpty
+      ? const AssetImage(Assets.default_user_image)
+      : NetworkImage(imageUrl!)) as ImageProvider;
 
   @ignore
   @override
   bool get isGroupChat => false;
 
   @override
-  String toString() => 'PrivateChat(\nid: $id\n user: $user,\nimage: $image,\ncreatedAt:$createdAt)';
+  String toString() => 'PrivateChat(\nid: $id\n user: $user,\nimage: $imageUrl,\ncreatedAt:$createdAt)';
 }

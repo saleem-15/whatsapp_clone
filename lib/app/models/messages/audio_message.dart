@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:logger/logger.dart';
+import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
+import '../../providers/users_provider.dart';
 import '../message_type_enum.dart';
 
 class AudioMessage extends MessageInterface {
@@ -20,10 +19,12 @@ class AudioMessage extends MessageInterface {
     required super.timeSent,
     super.senderImage,
     required super.senderId,
-    required this.audioUrl,
+    this.audioUrl,
+    this.audioPath,
   }) : super(type: MessageType.audio);
 
-  String audioUrl;
+  String? audioUrl;
+  String? audioPath;
 
   @override
   Map<String, dynamic> toMap() {
@@ -34,50 +35,42 @@ class AudioMessage extends MessageInterface {
   }
 
   @override
-  factory AudioMessage.fromDoc(DocumentSnapshot map) {
-    Logger().w('-------------');
-
+  factory AudioMessage.fromDoc(DocumentSnapshot doc) {
     // Logger().d(map.data());
     var x = AudioMessage(
       isSent: false,
       isSeen: false,
-      chatId: map.id,
-      senderId: map[MessageInterface.SENDER_ID_KEY],
-      senderName: map[MessageInterface.SENDER_NAME_KEY],
-      senderImage: map[MessageInterface.SENDER_image_KEY],
-      audioUrl: map[AUDIO_KEY],
-      timeSent: map.getDateTime(MessageInterface.CREATED_AT_KEY)!,
-    );
-    Logger().d(x);
+      chatId: doc.id,
+      senderId: doc[MessageInterface.SENDER_ID_KEY],
+      senderName: doc[MessageInterface.SENDER_NAME_KEY],
+      senderImage: doc[MessageInterface.SENDER_image_KEY],
+      audioUrl: doc[AUDIO_KEY],
+      timeSent: doc.getDateTime(MessageInterface.CREATED_AT_KEY)!,
+    )..messageId = doc.id;
+
+    // Logger().d(x);
     return x;
   }
 
-  @override
-  factory AudioMessage.toSend({
-    required String chatId,
-    required String audioUrl,
-    required String fileName,
-  }) {
-    var x = AudioMessage(
-      isSent: false,
-      isSeen: false,
-      chatId: chatId,
-      senderId: FirebaseAuth.instance.currentUser!.uid,
-      senderName: MySharedPref.getUserName!,
-      senderImage: MySharedPref.getUserImage,
-      timeSent: DateTime.now(),
-      audioUrl: audioUrl,
-    );
-    Logger().d(x);
-    return x;
-  }
+  AudioMessage.toSend({
+    required super.chatId,
+    required super.timeSent,
+    required this.audioPath,
+  }) : super(
+          type: MessageType.audio,
+          isSeen: false,
+          isSent: false,
+          senderId: Get.find<UsersProvider>().me!.uid,
+          senderName: Get.find<UsersProvider>().me!.name,
+          senderImage: Get.find<UsersProvider>().me!.imageUrl,
+        );
 
   factory AudioMessage.fromFileMessage(FileMessage fileMessage) {
     return AudioMessage.toSend(
       chatId: fileMessage.chatId,
-      audioUrl: fileMessage.fileName,
-      fileName: fileMessage.fileName,
-    );
+      timeSent: fileMessage.timeSent,
+      audioPath: fileMessage.filePath,
+    )..audioUrl = fileMessage.filePath;
   }
 
   @override

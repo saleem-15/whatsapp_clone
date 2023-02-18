@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'private_chat.dart';
+part of '../../../app/models/chats/group_chat.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,13 +9,13 @@ part of 'private_chat.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
-extension GetPrivateChatCollection on Isar {
-  IsarCollection<PrivateChat> get privateChats => this.collection();
+extension GetGroupChatCollection on Isar {
+  IsarCollection<GroupChat> get groups => this.collection();
 }
 
-const PrivateChatSchema = CollectionSchema(
-  name: r'PrivateChat',
-  id: -8590651543030638465,
+const GroupChatSchema = CollectionSchema(
+  name: r'GroupChat',
+  id: 3160916123829667037,
   properties: {
     r'bio': PropertySchema(
       id: 0,
@@ -48,10 +48,10 @@ const PrivateChatSchema = CollectionSchema(
       type: IsarType.stringList,
     )
   },
-  estimateSize: _privateChatEstimateSize,
-  serialize: _privateChatSerialize,
-  deserialize: _privateChatDeserialize,
-  deserializeProp: _privateChatDeserializeProp,
+  estimateSize: _groupChatEstimateSize,
+  serialize: _groupChatSerialize,
+  deserialize: _groupChatDeserialize,
+  deserializeProp: _groupChatDeserializeProp,
   idName: r'databaseId',
   indexes: {
     r'id': IndexSchema(
@@ -69,28 +69,28 @@ const PrivateChatSchema = CollectionSchema(
     )
   },
   links: {
-    r'user': LinkSchema(
-      id: -5068002747214670308,
-      name: r'user',
+    r'users': LinkSchema(
+      id: -2349188080863844305,
+      name: r'users',
       target: r'User',
-      single: true,
+      single: false,
     ),
     r'messages': LinkSchema(
-      id: -7692304221371244,
+      id: 4957660273684215075,
       name: r'messages',
       target: r'MessageDB',
       single: false,
     )
   },
   embeddedSchemas: {},
-  getId: _privateChatGetId,
-  getLinks: _privateChatGetLinks,
-  attach: _privateChatAttach,
+  getId: _groupChatGetId,
+  getLinks: _groupChatGetLinks,
+  attach: _groupChatAttach,
   version: '3.0.5',
 );
 
-int _privateChatEstimateSize(
-  PrivateChat object,
+int _groupChatEstimateSize(
+  GroupChat object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -98,7 +98,7 @@ int _privateChatEstimateSize(
   bytesCount += 3 + object.bio.length * 3;
   bytesCount += 3 + object.id.length * 3;
   {
-    final value = object.image;
+    final value = object.imageUrl;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -114,8 +114,8 @@ int _privateChatEstimateSize(
   return bytesCount;
 }
 
-void _privateChatSerialize(
-  PrivateChat object,
+void _groupChatSerialize(
+  GroupChat object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -123,29 +123,30 @@ void _privateChatSerialize(
   writer.writeString(offsets[0], object.bio);
   writer.writeDateTime(offsets[1], object.createdAt);
   writer.writeString(offsets[2], object.id);
-  writer.writeString(offsets[3], object.image);
+  writer.writeString(offsets[3], object.imageUrl);
   writer.writeString(offsets[4], object.name);
   writer.writeStringList(offsets[5], object.usersIds);
 }
 
-PrivateChat _privateChatDeserialize(
+GroupChat _groupChatDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = PrivateChat();
-  object.bio = reader.readString(offsets[0]);
-  object.createdAt = reader.readDateTime(offsets[1]);
+  final object = GroupChat(
+    bio: reader.readString(offsets[0]),
+    createdAt: reader.readDateTime(offsets[1]),
+    id: reader.readString(offsets[2]),
+    imageUrl: reader.readStringOrNull(offsets[3]),
+    name: reader.readString(offsets[4]),
+    usersIds: reader.readStringList(offsets[5]) ?? [],
+  );
   object.databaseId = id;
-  object.id = reader.readString(offsets[2]);
-  object.image = reader.readStringOrNull(offsets[3]);
-  object.name = reader.readString(offsets[4]);
-  object.usersIds = reader.readStringList(offsets[5]) ?? [];
   return object;
 }
 
-P _privateChatDeserializeProp<P>(
+P _groupChatDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -169,28 +170,26 @@ P _privateChatDeserializeProp<P>(
   }
 }
 
-Id _privateChatGetId(PrivateChat object) {
+Id _groupChatGetId(GroupChat object) {
   return object.databaseId;
 }
 
-List<IsarLinkBase<dynamic>> _privateChatGetLinks(PrivateChat object) {
-  return [object.user, object.messages];
+List<IsarLinkBase<dynamic>> _groupChatGetLinks(GroupChat object) {
+  return [object.users, object.messages];
 }
 
-void _privateChatAttach(
-    IsarCollection<dynamic> col, Id id, PrivateChat object) {
+void _groupChatAttach(IsarCollection<dynamic> col, Id id, GroupChat object) {
   object.databaseId = id;
-  object.user.attach(col, col.isar.collection<User>(), r'user', id);
-  object.messages
-      .attach(col, col.isar.collection<MessageDB>(), r'messages', id);
+  object.users.attach(col, col.isar.collection<User>(), r'users', id);
+  object.messages.attach(col, col.isar.collection<MessageDB>(), r'messages', id);
 }
 
-extension PrivateChatByIndex on IsarCollection<PrivateChat> {
-  Future<PrivateChat?> getById(String id) {
+extension GroupChatByIndex on IsarCollection<GroupChat> {
+  Future<GroupChat?> getById(String id) {
     return getByIndex(r'id', [id]);
   }
 
-  PrivateChat? getByIdSync(String id) {
+  GroupChat? getByIdSync(String id) {
     return getByIndexSync(r'id', [id]);
   }
 
@@ -202,12 +201,12 @@ extension PrivateChatByIndex on IsarCollection<PrivateChat> {
     return deleteByIndexSync(r'id', [id]);
   }
 
-  Future<List<PrivateChat?>> getAllById(List<String> idValues) {
+  Future<List<GroupChat?>> getAllById(List<String> idValues) {
     final values = idValues.map((e) => [e]).toList();
     return getAllByIndex(r'id', values);
   }
 
-  List<PrivateChat?> getAllByIdSync(List<String> idValues) {
+  List<GroupChat?> getAllByIdSync(List<String> idValues) {
     final values = idValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'id', values);
   }
@@ -222,36 +221,33 @@ extension PrivateChatByIndex on IsarCollection<PrivateChat> {
     return deleteAllByIndexSync(r'id', values);
   }
 
-  Future<Id> putById(PrivateChat object) {
+  Future<Id> putById(GroupChat object) {
     return putByIndex(r'id', object);
   }
 
-  Id putByIdSync(PrivateChat object, {bool saveLinks = true}) {
+  Id putByIdSync(GroupChat object, {bool saveLinks = true}) {
     return putByIndexSync(r'id', object, saveLinks: saveLinks);
   }
 
-  Future<List<Id>> putAllById(List<PrivateChat> objects) {
+  Future<List<Id>> putAllById(List<GroupChat> objects) {
     return putAllByIndex(r'id', objects);
   }
 
-  List<Id> putAllByIdSync(List<PrivateChat> objects, {bool saveLinks = true}) {
+  List<Id> putAllByIdSync(List<GroupChat> objects, {bool saveLinks = true}) {
     return putAllByIndexSync(r'id', objects, saveLinks: saveLinks);
   }
 }
 
-extension PrivateChatQueryWhereSort
-    on QueryBuilder<PrivateChat, PrivateChat, QWhere> {
-  QueryBuilder<PrivateChat, PrivateChat, QAfterWhere> anyDatabaseId() {
+extension GroupChatQueryWhereSort on QueryBuilder<GroupChat, GroupChat, QWhere> {
+  QueryBuilder<GroupChat, GroupChat, QAfterWhere> anyDatabaseId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension PrivateChatQueryWhere
-    on QueryBuilder<PrivateChat, PrivateChat, QWhereClause> {
-  QueryBuilder<PrivateChat, PrivateChat, QAfterWhereClause> databaseIdEqualTo(
-      Id databaseId) {
+extension GroupChatQueryWhere on QueryBuilder<GroupChat, GroupChat, QWhereClause> {
+  QueryBuilder<GroupChat, GroupChat, QAfterWhereClause> databaseIdEqualTo(Id databaseId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: databaseId,
@@ -260,8 +256,7 @@ extension PrivateChatQueryWhere
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterWhereClause>
-      databaseIdNotEqualTo(Id databaseId) {
+  QueryBuilder<GroupChat, GroupChat, QAfterWhereClause> databaseIdNotEqualTo(Id databaseId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -283,8 +278,8 @@ extension PrivateChatQueryWhere
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterWhereClause>
-      databaseIdGreaterThan(Id databaseId, {bool include = false}) {
+  QueryBuilder<GroupChat, GroupChat, QAfterWhereClause> databaseIdGreaterThan(Id databaseId,
+      {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: databaseId, includeLower: include),
@@ -292,8 +287,7 @@ extension PrivateChatQueryWhere
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterWhereClause> databaseIdLessThan(
-      Id databaseId,
+  QueryBuilder<GroupChat, GroupChat, QAfterWhereClause> databaseIdLessThan(Id databaseId,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -302,7 +296,7 @@ extension PrivateChatQueryWhere
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterWhereClause> databaseIdBetween(
+  QueryBuilder<GroupChat, GroupChat, QAfterWhereClause> databaseIdBetween(
     Id lowerDatabaseId,
     Id upperDatabaseId, {
     bool includeLower = true,
@@ -318,8 +312,7 @@ extension PrivateChatQueryWhere
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterWhereClause> idEqualTo(
-      String id) {
+  QueryBuilder<GroupChat, GroupChat, QAfterWhereClause> idEqualTo(String id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'id',
@@ -328,8 +321,7 @@ extension PrivateChatQueryWhere
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterWhereClause> idNotEqualTo(
-      String id) {
+  QueryBuilder<GroupChat, GroupChat, QAfterWhereClause> idNotEqualTo(String id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -364,9 +356,8 @@ extension PrivateChatQueryWhere
   }
 }
 
-extension PrivateChatQueryFilter
-    on QueryBuilder<PrivateChat, PrivateChat, QFilterCondition> {
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> bioEqualTo(
+extension GroupChatQueryFilter on QueryBuilder<GroupChat, GroupChat, QFilterCondition> {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> bioEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -379,7 +370,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> bioGreaterThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> bioGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -394,7 +385,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> bioLessThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> bioLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -409,7 +400,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> bioBetween(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> bioBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -428,7 +419,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> bioStartsWith(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> bioStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -441,7 +432,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> bioEndsWith(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> bioEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -454,8 +445,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> bioContains(
-      String value,
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> bioContains(String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -466,8 +456,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> bioMatches(
-      String pattern,
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> bioMatches(String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -478,7 +467,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> bioIsEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> bioIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'bio',
@@ -487,8 +476,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      bioIsNotEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> bioIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'bio',
@@ -497,8 +485,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      createdAtEqualTo(DateTime value) {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> createdAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'createdAt',
@@ -507,8 +494,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      createdAtGreaterThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> createdAtGreaterThan(
     DateTime value, {
     bool include = false,
   }) {
@@ -521,8 +507,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      createdAtLessThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> createdAtLessThan(
     DateTime value, {
     bool include = false,
   }) {
@@ -535,8 +520,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      createdAtBetween(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> createdAtBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
@@ -553,8 +537,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      databaseIdEqualTo(Id value) {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> databaseIdEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'databaseId',
@@ -563,8 +546,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      databaseIdGreaterThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> databaseIdGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -577,8 +559,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      databaseIdLessThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> databaseIdLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -591,8 +572,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      databaseIdBetween(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> databaseIdBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -609,7 +589,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> idEqualTo(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> idEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -622,7 +602,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> idGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -637,7 +617,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> idLessThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> idLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -652,7 +632,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> idBetween(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> idBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -671,7 +651,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> idStartsWith(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> idStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -684,7 +664,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> idEndsWith(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> idEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -697,8 +677,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> idContains(
-      String value,
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> idContains(String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -709,8 +688,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> idMatches(
-      String pattern,
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> idMatches(String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -721,7 +699,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> idIsEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> idIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -730,7 +708,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> idIsNotEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> idIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'id',
@@ -739,7 +717,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> imageIsNull() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'image',
@@ -747,8 +725,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      imageIsNotNull() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'image',
@@ -756,7 +733,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> imageEqualTo(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -769,8 +746,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      imageGreaterThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -785,7 +761,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> imageLessThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -800,7 +776,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> imageBetween(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -819,7 +795,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> imageStartsWith(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -832,7 +808,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> imageEndsWith(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -845,8 +821,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> imageContains(
-      String value,
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageContains(String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -857,8 +832,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> imageMatches(
-      String pattern,
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageMatches(String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -869,7 +843,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> imageIsEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'image',
@@ -878,8 +852,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      imageIsNotEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> imageIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'image',
@@ -888,7 +861,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> nameEqualTo(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -901,7 +874,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> nameGreaterThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> nameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -916,7 +889,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> nameLessThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> nameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -931,7 +904,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> nameBetween(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> nameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -950,7 +923,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> nameStartsWith(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -963,7 +936,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> nameEndsWith(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -976,8 +949,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> nameContains(
-      String value,
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> nameContains(String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -988,8 +960,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> nameMatches(
-      String pattern,
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> nameMatches(String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -1000,7 +971,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> nameIsEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'name',
@@ -1009,8 +980,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      nameIsNotEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
@@ -1019,8 +989,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsElementEqualTo(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsElementEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1033,8 +1002,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsElementGreaterThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsElementGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1049,8 +1017,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsElementLessThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsElementLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1065,8 +1032,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsElementBetween(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsElementBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -1085,8 +1051,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsElementStartsWith(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsElementStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1099,8 +1064,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsElementEndsWith(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsElementEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1113,8 +1077,8 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsElementContains(String value, {bool caseSensitive = true}) {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsElementContains(String value,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'usersIds',
@@ -1124,8 +1088,8 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsElementMatches(String pattern, {bool caseSensitive = true}) {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsElementMatches(String pattern,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'usersIds',
@@ -1135,8 +1099,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsElementIsEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsElementIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'usersIds',
@@ -1145,8 +1108,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsElementIsNotEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsElementIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'usersIds',
@@ -1155,8 +1117,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsLengthEqualTo(int length) {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
         r'usersIds',
@@ -1168,8 +1129,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsIsEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
         r'usersIds',
@@ -1181,8 +1141,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsIsNotEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
         r'usersIds',
@@ -1194,8 +1153,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsLengthLessThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsLengthLessThan(
     int length, {
     bool include = false,
   }) {
@@ -1210,8 +1168,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsLengthGreaterThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsLengthGreaterThan(
     int length, {
     bool include = false,
   }) {
@@ -1226,8 +1183,7 @@ extension PrivateChatQueryFilter
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      usersIdsLengthBetween(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIdsLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1245,54 +1201,87 @@ extension PrivateChatQueryFilter
   }
 }
 
-extension PrivateChatQueryObject
-    on QueryBuilder<PrivateChat, PrivateChat, QFilterCondition> {}
+extension GroupChatQueryObject on QueryBuilder<GroupChat, GroupChat, QFilterCondition> {}
 
-extension PrivateChatQueryLinks
-    on QueryBuilder<PrivateChat, PrivateChat, QFilterCondition> {
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> user(
-      FilterQuery<User> q) {
+extension GroupChatQueryLinks on QueryBuilder<GroupChat, GroupChat, QFilterCondition> {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> users(FilterQuery<User> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'user');
+      return query.link(q, r'users');
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> userIsNull() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'user', 0, true, 0, true);
+      return query.linkLength(r'users', length, true, length, true);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition> messages(
-      FilterQuery<MessageDB> q) {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'users', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'users', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'users', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'users', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> usersLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'users', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> messages(FilterQuery<MessageDB> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'messages');
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      messagesLengthEqualTo(int length) {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> messagesLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'messages', length, true, length, true);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      messagesIsEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> messagesIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'messages', 0, true, 0, true);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      messagesIsNotEmpty() {
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> messagesIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'messages', 0, false, 999999, true);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      messagesLengthLessThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> messagesLengthLessThan(
     int length, {
     bool include = false,
   }) {
@@ -1301,8 +1290,7 @@ extension PrivateChatQueryLinks
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      messagesLengthGreaterThan(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> messagesLengthGreaterThan(
     int length, {
     bool include = false,
   }) {
@@ -1311,240 +1299,230 @@ extension PrivateChatQueryLinks
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterFilterCondition>
-      messagesLengthBetween(
+  QueryBuilder<GroupChat, GroupChat, QAfterFilterCondition> messagesLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'messages', lower, includeLower, upper, includeUpper);
+      return query.linkLength(r'messages', lower, includeLower, upper, includeUpper);
     });
   }
 }
 
-extension PrivateChatQuerySortBy
-    on QueryBuilder<PrivateChat, PrivateChat, QSortBy> {
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> sortByBio() {
+extension GroupChatQuerySortBy on QueryBuilder<GroupChat, GroupChat, QSortBy> {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByBio() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'bio', Sort.asc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> sortByBioDesc() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByBioDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'bio', Sort.desc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> sortByCreatedAt() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.asc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> sortByCreatedAtDesc() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> sortById() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> sortByIdDesc() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> sortByImage() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByImage() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'image', Sort.asc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> sortByImageDesc() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByImageDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'image', Sort.desc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> sortByName() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension PrivateChatQuerySortThenBy
-    on QueryBuilder<PrivateChat, PrivateChat, QSortThenBy> {
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenByBio() {
+extension GroupChatQuerySortThenBy on QueryBuilder<GroupChat, GroupChat, QSortThenBy> {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByBio() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'bio', Sort.asc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenByBioDesc() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByBioDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'bio', Sort.desc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenByCreatedAt() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.asc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenByCreatedAtDesc() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenByDatabaseId() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByDatabaseId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'databaseId', Sort.asc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenByDatabaseIdDesc() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByDatabaseIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'databaseId', Sort.desc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenById() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenByImage() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByImage() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'image', Sort.asc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenByImageDesc() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByImageDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'image', Sort.desc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenByName() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<GroupChat, GroupChat, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension PrivateChatQueryWhereDistinct
-    on QueryBuilder<PrivateChat, PrivateChat, QDistinct> {
-  QueryBuilder<PrivateChat, PrivateChat, QDistinct> distinctByBio(
-      {bool caseSensitive = true}) {
+extension GroupChatQueryWhereDistinct on QueryBuilder<GroupChat, GroupChat, QDistinct> {
+  QueryBuilder<GroupChat, GroupChat, QDistinct> distinctByBio({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'bio', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QDistinct> distinctByCreatedAt() {
+  QueryBuilder<GroupChat, GroupChat, QDistinct> distinctByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createdAt');
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QDistinct> distinctById(
-      {bool caseSensitive = true}) {
+  QueryBuilder<GroupChat, GroupChat, QDistinct> distinctById({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'id', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QDistinct> distinctByImage(
-      {bool caseSensitive = true}) {
+  QueryBuilder<GroupChat, GroupChat, QDistinct> distinctByImage({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'image', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QDistinct> distinctByName(
-      {bool caseSensitive = true}) {
+  QueryBuilder<GroupChat, GroupChat, QDistinct> distinctByName({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<PrivateChat, PrivateChat, QDistinct> distinctByUsersIds() {
+  QueryBuilder<GroupChat, GroupChat, QDistinct> distinctByUsersIds() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'usersIds');
     });
   }
 }
 
-extension PrivateChatQueryProperty
-    on QueryBuilder<PrivateChat, PrivateChat, QQueryProperty> {
-  QueryBuilder<PrivateChat, int, QQueryOperations> databaseIdProperty() {
+extension GroupChatQueryProperty on QueryBuilder<GroupChat, GroupChat, QQueryProperty> {
+  QueryBuilder<GroupChat, int, QQueryOperations> databaseIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'databaseId');
     });
   }
 
-  QueryBuilder<PrivateChat, String, QQueryOperations> bioProperty() {
+  QueryBuilder<GroupChat, String, QQueryOperations> bioProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'bio');
     });
   }
 
-  QueryBuilder<PrivateChat, DateTime, QQueryOperations> createdAtProperty() {
+  QueryBuilder<GroupChat, DateTime, QQueryOperations> createdAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createdAt');
     });
   }
 
-  QueryBuilder<PrivateChat, String, QQueryOperations> idProperty() {
+  QueryBuilder<GroupChat, String, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<PrivateChat, String?, QQueryOperations> imageProperty() {
+  QueryBuilder<GroupChat, String?, QQueryOperations> imageProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'image');
     });
   }
 
-  QueryBuilder<PrivateChat, String, QQueryOperations> nameProperty() {
+  QueryBuilder<GroupChat, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
     });
   }
 
-  QueryBuilder<PrivateChat, List<String>, QQueryOperations> usersIdsProperty() {
+  QueryBuilder<GroupChat, List<String>, QQueryOperations> usersIdsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'usersIds');
     });

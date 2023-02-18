@@ -5,9 +5,10 @@ import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:whatsapp_clone/app/api/user_api.dart';
 import 'package:whatsapp_clone/app/api/chats_creater_api.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/exceptions/chat_exceptions.dart';
 import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
+
+import '../../../providers/users_provider.dart';
 
 class QRScreenController extends GetxController {
   late String userName;
@@ -18,8 +19,10 @@ class QRScreenController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    userName = MySharedPref.getUserName!;
-    userPhoneNumber = MySharedPref.getUserPhoneNumber!;
+    final user = Get.find<UsersProvider>().me!;
+
+    userName = user.name;
+    userPhoneNumber = user.phoneNumber;
     userImage = UserApi.userImage;
   }
 

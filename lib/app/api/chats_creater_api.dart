@@ -24,7 +24,7 @@ Future<User?> checkMyContactsAreExists(List<String> phoneNumbers) async {
 Future<bool> checkIsMeAndTheUserHavePrivateChat(String userUid) async {
   final result = await usersCollection.doc(myUid).get();
 
-  List myContactsIds = result['myContacts'];
+  List myContactsIds = result['contacts'];
 
   return myContactsIds.contains(userUid);
 }
@@ -33,6 +33,8 @@ Future<bool> checkIsMeAndTheUserHavePrivateChat(String userUid) async {
 ///
 /// throws [ChatException] if the chat already exists
 Future<void> createPrivateChat(String userId) async {
+  /// check if there is an existing chat between this user
+  /// and the user with [userId]
   final doWeHaveAnExistingChat = await checkIsMeAndTheUserHavePrivateChat(userId);
 
   if (doWeHaveAnExistingChat) {
@@ -57,23 +59,27 @@ Future<void> createPrivateChat(String userId) async {
     },
   );
 
-  ///add our chat document id to his chats list
+  ///Add me as a contact for the user & Add chat document id used to
+  ///communicate between both of us
   DocumentReference otherUserDoc = usersCollection.doc(userId);
   batch.update(
     otherUserDoc,
     {
       'chats': FieldValue.arrayUnion([chatDoc.id]),
-      'myContacts': FieldValue.arrayUnion([myUid])
+      // 'contacts': FieldValue.arrayUnion([myUid]),
+      'contacts.$myUid': chatDoc.id,
     },
   );
 
-  ///add the chat document id to my chats list
+  ///Add the user as a contact for `me` & Add chat document id used to
+  ///communicate between both of us
   DocumentReference myUserDoc = usersCollection.doc(myUid);
   batch.update(
     myUserDoc,
     {
       'chats': FieldValue.arrayUnion([chatDoc.id]),
-      'myContacts': FieldValue.arrayUnion([userId])
+      // 'contacts': FieldValue.arrayUnion([userId])
+      'contacts.$userId': chatDoc.id,
     },
   );
 

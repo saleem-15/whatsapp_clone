@@ -19,7 +19,6 @@ class ChatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    chat.printInfo();
     return GetBuilder<ChatsViewController>(
       builder: (controller) {
         return ListTile(

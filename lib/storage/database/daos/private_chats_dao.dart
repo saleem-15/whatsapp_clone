@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:whatsapp_clone/app/models/chats/private_chat.dart';
+import 'package:whatsapp_clone/storage/database/daos/users_dao.dart';
 import 'package:whatsapp_clone/storage/database/database.dart';
 
 class PrivateChatsDao {
@@ -9,6 +10,7 @@ class PrivateChatsDao {
 
   static Future<void> addPrivateChat(PrivateChat privateChat) async {
     await isar.writeTxn(() async {
+      UsersDao.addUser(privateChat.user.value!);
       await isar.privateChats.put(privateChat);
       await privateChat.user.save();
       await privateChat.messages.save();
@@ -76,10 +78,17 @@ class PrivateChatsDao {
     return isar.privateChats.where().watch(fireImmediately: true);
   }
 
-  static Future<List<String>> getAllPrivateChatsIDs() async {
+  /// returns all user contacts as `map<userId, chatId>`
+  static Future<Map<String, String>> getContactsMap() async {
     final privateChats = await getAllPrivateChats();
 
-    /// return only the ids
-    return privateChats.map((e) => e.id).toList();
+    Map contacts = {};
+
+    for (var element in privateChats) {
+      element.user.loadSync();
+      contacts[element.user.value!.uid] = element.id;
+    }
+
+    return contacts.cast();
   }
 }

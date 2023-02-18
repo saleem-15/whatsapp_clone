@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/chats/group_chat.dart';
 import 'package:whatsapp_clone/app/models/chats/private_chat.dart';
 
@@ -21,48 +20,48 @@ class ChatsApi {
   /// `(createdAt, members array, chatType)`
   /// so i need to also fetch the other user document,
   /// the method [_getAllPrivateChats] takes care of that & it returns a [PrivateChat] object
-  static Future<List<Chat>> getAllMyChats() async {
-    /// (1) ids of my chats (private & group chats)
-    List<String> chatIds = await _getMyChatsId();
+  // static Future<List<Chat>> getAllMyChats() async {
+  //   /// (1) ids of my chats (private & group chats)
+  //   List<String> chatIds = await _getMyChatsId();
 
-    /// if there is not any chats => return empty list
-    if (chatIds.isEmpty) {
-      return [];
-    }
+  //   /// if there is not any chats => return empty list
+  //   if (chatIds.isEmpty) {
+  //     return [];
+  //   }
 
-    List<QueryDocumentSnapshot> privateChatsDocs = [];
-    List<Chat> allMyChats = [];
+  //   List<QueryDocumentSnapshot> privateChatsDocs = [];
+  //   List<Chat> allMyChats = [];
 
-    /// All my chats (private & group)
+  //   /// All my chats (private & group)
 
-    /// (2) query to retrive all my chat Documents (private & Groups chats)
-    final queryResult = await getChatDocs(chatIds);
+  //   /// (2) query to retrive all my chat Documents (private & Groups chats)
+  //   final queryResult = await getChatDocs(chatIds);
 
-    for (final chatDoc in queryResult.docs) {
-      /// (3) convert my group chat doc into a [GroupChat] object
-      if (chatDoc['chatType'] == 'group') {
-        allMyChats.add(GroupChat.fromChatDoc(chatDoc));
+  //   for (final chatDoc in queryResult.docs) {
+  //     /// (3) convert my group chat doc into a [GroupChat] object
+  //     if (chatDoc['chatType'] == 'group') {
+  //       allMyChats.add(GroupChat.fromChatDoc(chatDoc));
 
-        /// if it was a private chat
-      } else {
-        /// I collect all my private chat documents in a list
-        /// so i make a 1 request to firestore to get all of them
-        /// instead of making a separate request for each private chat
-        privateChatsDocs.add(chatDoc);
-      }
-    }
+  //       /// if it was a private chat
+  //     } else {
+  //       /// I collect all my private chat documents in a list
+  //       /// so i make a 1 request to firestore to get all of them
+  //       /// instead of making a separate request for each private chat
+  //       privateChatsDocs.add(chatDoc);
+  //     }
+  //   }
 
-    if (privateChatsDocs.isNotEmpty) {
-      ///(4)
-      final myPrivateChats = await _getAllPrivateChats(privateChatsDocs);
-      allMyChats.addAll(myPrivateChats);
-    }
+  //   if (privateChatsDocs.isNotEmpty) {
+  //     ///(4)
+  //     final myPrivateChats = await _getAllPrivateChats(privateChatsDocs);
+  //     allMyChats.addAll(myPrivateChats);
+  //   }
 
-    return allMyChats;
-  }
+  //   return allMyChats;
+  // }
 
   /// `input`: list of group chat ids\
-  /// `output`:list of group chat docs
+  /// `output`: list of group chat objects
   static Future<List<GroupChat>> getGroupChatsByIds({required List<String> groupChatIds}) async {
     if (groupChatIds.isEmpty) {
       return [];
@@ -86,16 +85,16 @@ class ChatsApi {
       return [];
     }
 
-    /// query to retrive all my Group chat Documents
+    /// retrive all my private chat Documents
     final queryResult = await getChatDocs(privateChatIds);
 
-    /// transform the group chat doc into a [GroupChat] object
-    return await _getAllPrivateChats(queryResult.docs);
+    /// transform the private chat doc into a [PrivateChat] object
+    return _getAllPrivateChats(queryResult.docs);
   }
 
   /// makes a query to get the chat docs (works for both private & group chats)
   static Future<QuerySnapshot> getChatDocs(List<String> chatDocsIds) async {
-    return await chatsCollection
+    return chatsCollection
         .where(
           FieldPath.documentId,
           whereIn: chatDocsIds,
@@ -103,16 +102,65 @@ class ChatsApi {
         .get();
   }
 
+  /// `input`: `Map<userId, chatId>`\
+  /// `output`:list of private chat docs
+  static Future<List<PrivateChat>> fetchContacts({required Map<String, String> contacts}) async {
+    if (contacts.isEmpty) {
+      assert(false);
+      return [];
+    }
+
+    /// retrive all my contacts chat Documents
+    var chatIDs = contacts.values.toList();
+    final chatDocs = await getChatDocs(chatIDs);
+
+    /// request to get all the users Docs
+    final usersDocs = await usersCollection
+        .where(
+          FieldPath.documentId,
+          whereIn: contacts.keys.toList(),
+        )
+        .get();
+
+    return usersDocs.docs
+        .map(
+          (userDoc) => PrivateChat.fromChatAndUserDocs(
+            userDoc: userDoc,
+            chatDoc: getChatDoc(userDoc.id, chatDocs.docs),
+          ),
+        )
+        .toList();
+  }
+
+  /// `input`: userId, list of private chat docs\
+  /// `outputs`: private chatDoc between me and the user with [userId]
+  static QueryDocumentSnapshot getChatDoc(
+    String userId,
+    List<QueryDocumentSnapshot> chatDocs,
+  ) {
+    return chatDocs.firstWhere((chatDoc) {
+      String otherUserId = getOtherUser(chatDoc.getStringList('members'));
+      if (otherUserId == userId) {
+        return true;
+      }
+      return false;
+    });
+  }
+
   /// retrives the info of all the private chats from Firestore
   /// and returns them as privateChat objects
   static Future<List<PrivateChat>> _getAllPrivateChats(List<QueryDocumentSnapshot> privateChatsDocs) async {
-    /// key: otherUserId
+    /// key: otherUserId (contactId)
     /// value: priavateChatDoc
     Map<String, QueryDocumentSnapshot> otherUsers = _getOtherUsersMap(privateChatsDocs);
 
     /// request to get all the users info
-    final queryResult =
-        await usersCollection.where(FieldPath.documentId, whereIn: otherUsers.keys.toList()).get();
+    final queryResult = await usersCollection
+        .where(
+          FieldPath.documentId,
+          whereIn: otherUsers.keys.toList(),
+        )
+        .get();
 
     return queryResult.docs
         .map(
@@ -131,26 +179,31 @@ class ChatsApi {
     Map<String, QueryDocumentSnapshot> otherUsers = {};
 
     for (final privateChat in privateChatDocs) {
-      final chatMembers = privateChat['members'];
+      final chatMembers = privateChat.getStringList('members');
 
-      String otherUser = chatMembers[0] == myUid ? chatMembers[1] : chatMembers[0];
+      String otherUser = getOtherUser(chatMembers);
 
       otherUsers.addAll({otherUser: privateChat});
     }
     return otherUsers;
   }
 
-  /// returnes the ids of users chats (private & group chats)
-  static Future<List<String>> _getMyChatsId() async {
-    ///this is my user document
-    final myDoc = await usersCollection.doc(myUid).get();
-
-    /// make sure that my document exists
-    assert(myDoc.exists);
-
-    final privateChats = myDoc.getStringList('chats');
-    final myGroups = myDoc.getStringList('groups');
-
-    return [...privateChats, ...myGroups];
+  static String getOtherUser(List<String> chatMembers) {
+    String otherUser = chatMembers[0] == myUid ? chatMembers[1] : chatMembers[0];
+    return otherUser;
   }
+
+  /// returnes the ids of users chats (private & group chats)
+  // static Future<List<String>> _getMyChatsId() async {
+  //   ///this is my user document
+  //   final myDoc = await usersCollection.doc(myUid).get();
+
+  //   /// make sure that my document exists
+  //   assert(myDoc.exists);
+
+  //   final privateChats = myDoc.getStringList('chats');
+  //   final myGroups = myDoc.getStringList('groups');
+
+  //   return [...privateChats, ...myGroups];
+  // }
 }

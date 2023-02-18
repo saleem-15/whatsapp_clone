@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +9,6 @@ import 'package:whatsapp_clone/app/modules/auth/controllers/auth_controller.dart
 import 'package:whatsapp_clone/app/modules/auth/screens/signup_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
 import 'package:whatsapp_clone/app/providers/users_provider.dart';
-import 'package:whatsapp_clone/fcm_helper.dart';
 import 'package:whatsapp_clone/storage/database/database.dart';
 
 import 'app/api/user_api.dart';
@@ -19,7 +16,8 @@ import 'package:whatsapp_clone/config/routes/app_pages.dart';
 import 'app/providers/chats_provider.dart';
 import 'app/providers/groups_provider.dart';
 import 'app/providers/messages_provider.dart';
-import 'app/providers/private_chats_provider.dart';
+import 'app/providers/contacts_provider.dart';
+import 'fcm_helper.dart';
 import 'storage/my_shared_pref.dart';
 import 'config/theme/my_theme.dart';
 
@@ -28,20 +26,34 @@ Future<void> main() async {
 
   await MySharedPref.init();
   MySharedPref.setIsMyDocExists(true);
-  MySharedPref.setLastUpdated(DateTime.now());
-
-  log(MySharedPref.getFcmToken!);
 
   await Firebase.initializeApp();
+
   await MyDataBase.openDatabase();
   // await MyDataBase.clearDatabase();
 
-  initControllers();
+  // await UsersDao.addUser(User.normal(
+  //   uid: 'pn993AKenlMhLOnaqLDR6BAlxXp1',
+  //   name: 'emulater',
+  //   phoneNumber: '+970567244417',
+  //   imageUrl: null,
+  //   lastUpdated: DateTime.now(),
+  //   bio: 'my about',
+  // ));
+
+  await initControllers();
+
+  // await Get.find<AuthController>().logout();
   FcmHelper.initFcm();
 
   await UserApi.init();
   UserApi.wathcMyDocChanges();
 
+  // var d = await myUserDocument.get();
+  // var m = d.get('contacts');
+  // log(m.runtimeType.toString());
+
+  // Logger().wtf(m);
   // MyContacts.listenToContacts();
 
   // resetApp();
@@ -53,12 +65,16 @@ Future<void> main() async {
   runApp(const Main());
 }
 
-void initControllers() {
+Future<void> initControllers() async {
   Get.put(AuthController(), permanent: true);
-
-  Get.lazyPut(() => UsersProvider(), fenix: true);
+  await Get.putAsync(() async {
+    final usersProvider = UsersProvider();
+    await usersProvider.init();
+    return usersProvider;
+  }, permanent: true);
+  // Get.lazyPut(() => UsersProvider(), fenix: true);
   Get.lazyPut(() => ChatsProvider(), fenix: true);
-  Get.lazyPut(() => PrivateChatsProvider(), fenix: true);
+  Get.lazyPut(() => ContactsProvider(), fenix: true);
   Get.lazyPut(() => GroupChatsProvider(), fenix: true);
   Get.lazyPut(() => MessagesProvider(), fenix: true);
 }

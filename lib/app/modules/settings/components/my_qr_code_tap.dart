@@ -6,7 +6,8 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 import 'package:whatsapp_clone/app/modules/settings/controllers/qr_screen_controller.dart';
 import 'package:whatsapp_clone/config/theme/my_styles.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
+
+import '../../../providers/users_provider.dart';
 
 class MyQRCodeTap extends StatelessWidget {
   const MyQRCodeTap({
@@ -48,7 +49,7 @@ class MyQRCodeTap extends StatelessWidget {
               // image: const AssetImage(Assets.illustraion),
               typeNumber: 3,
               size: 200.sp,
-              data: MySharedPref.getUserId!,
+              data: Get.find<UsersProvider>().me!.uid,
               errorCorrectLevel: QrErrorCorrectLevel.M,
               roundEdges: true,
             ),

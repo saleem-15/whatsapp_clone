@@ -37,6 +37,8 @@ abstract class MessageInterface {
   bool isSent = false;
   bool isSeen = false;
 
+  /// the Backend generated ID
+  late final String messageId;
   final String chatId;
   final MessageType type;
   final DateTime timeSent;
@@ -55,7 +57,7 @@ abstract class MessageInterface {
       SENDER_NAME_KEY: senderName,
       SENDER_image_KEY: senderImage,
       MESSAGE_TYPE_KEY: type.name,
-      CREATED_AT_KEY: Timestamp.now(),
+      CREATED_AT_KEY: timeSent,
     };
   }
 
@@ -117,6 +119,7 @@ abstract class MessageInterface {
   }
 
   factory MessageInterface.fromDB(MessageDB message) {
+    final otherAtrributes = message.getSpecialMessageAttributes();
     switch (message.type) {
       case MessageType.text:
         return TextMessage(
@@ -128,7 +131,7 @@ abstract class MessageInterface {
           senderId: message.sender.value!.uid,
           senderName: message.sender.value!.name,
           senderImage: message.sender.value!.imageUrl,
-        );
+        )..messageId = message.messageId;
       case MessageType.image:
         return ImageMessage(
           chatId: message.chatId,
@@ -142,9 +145,11 @@ abstract class MessageInterface {
           senderName: message.sender.value!.name,
           senderImage: message.sender.value!.imageUrl,
           //
-          imageUrl: message.contentFilePath!,
-          imageName: message.fileName!,
-        );
+          imageUrl: message.fileURl!,
+          imagePath: message.contentFilePath!,
+          height: otherAtrributes![ImageMessage.IMAGE_HEIGHT_KEY],
+          width: otherAtrributes[ImageMessage.IMAGE_WIDTH_KEY],
+        )..messageId = message.messageId;
       case MessageType.video:
         return VideoMessage(
           chatId: message.chatId,
@@ -158,9 +163,11 @@ abstract class MessageInterface {
           senderName: message.sender.value!.name,
           senderImage: message.sender.value!.imageUrl,
           //
-          videoUrl: message.contentFilePath!,
-          videoName: message.fileName!,
-        );
+          videoUrl: message.fileURl!,
+          videoPath: message.contentFilePath!,
+          width: otherAtrributes![VideoMessage.VIDEO_WIDTH_KEY],
+          height: otherAtrributes[VideoMessage.VIDEO_HEIGHT_KEY],
+        )..messageId = message.messageId;
       case MessageType.file:
         return FileMessage(
           chatId: message.chatId,
@@ -173,10 +180,11 @@ abstract class MessageInterface {
           senderName: message.sender.value!.name,
           senderImage: message.sender.value!.imageUrl,
           //
-          downloadUrl: message.contentFilePath!,
+          downloadUrl: message.fileURl!,
+          filePath: message.contentFilePath!,
           fileName: '',
-          fileSize: '',
-        );
+          fileSizeInBytes: otherAtrributes![FileMessage.FILE_SIZE_KEY],
+        )..messageId = message.messageId;
       case MessageType.audio:
         return AudioMessage(
           chatId: message.chatId,
@@ -189,8 +197,10 @@ abstract class MessageInterface {
           senderName: message.sender.value!.name,
           senderImage: message.sender.value!.imageUrl,
           //
-          audioUrl: message.contentFilePath!,
-        );
+
+          audioUrl: message.fileURl!,
+          audioPath: message.contentFilePath!,
+        )..messageId = message.messageId;
 
       default:
         throw MessageException.invalidMessageType();

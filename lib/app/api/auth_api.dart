@@ -29,12 +29,12 @@ class AuthApi {
 
     /// if user alreay exists
     if (user != null) {
-      MySharedPref.storeUserData(
-        id: user.uid,
-        name: user.name,
-        image: user.imageUrl,
-        phone: user.phoneNumber,
-      );
+      // MySharedPref.storeUserData(
+      //   id: user.uid,
+      //   name: user.name,
+      //   image: user.imageUrl,
+      //   phone: user.phoneNumber,
+      // );
 
       UsersDao.storeMyData(
         id: user.uid,
@@ -52,7 +52,8 @@ class AuthApi {
     }
 
     await verifyPhone(phoneNumber);
-    MySharedPref.saveUser(await _createUserDoc(name, phoneNumber));
+    UsersDao.setMyData(await _createUserDoc(name, phoneNumber));
+    // MySharedPref.saveUser(await _createUserDoc(name, phoneNumber));
     MySharedPref.setIsMyDocExists(true);
   }
 
@@ -71,7 +72,8 @@ class AuthApi {
       return;
     }
 
-    MySharedPref.saveUser(user);
+    UsersDao.setMyData(user);
+    // MySharedPref.saveUser(user);
     MySharedPref.setIsMyDocExists(true);
 
     await verifyPhone(phoneNumber);
@@ -153,7 +155,12 @@ class AuthApi {
     );
 
     await usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).set(
-          user.toMap(),
+          user.toMap()
+            ..addAll({
+              'groups': [],
+              'myContacts': [],
+              'chats': [],
+            }),
         );
 
     return user;

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,11 +7,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
+import 'package:whatsapp_clone/app/providers/users_provider.dart';
 import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon.dart';
 import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/config/theme/my_styles.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
 import '../controllers/user_details_controller.dart';
 
@@ -20,6 +22,7 @@ class ChatDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugger();
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -89,17 +92,20 @@ class ChatDetailsScreen extends StatelessWidget {
                 controller.chat.name,
                 style: Theme.of(context).textTheme.headline2,
               ),
-              if (!controller.isGroupChat)
+
+              if (!controller.isGroupChat) ...[
                 SizedBox(
                   height: 10.sp,
                 ),
 
-              /// User phoneNumber (if it was a user)
-              if (!controller.isGroupChat)
+                /// User phoneNumber (if it was a user)
                 Text(
                   controller.phoneNumber,
                   style: Theme.of(context).textTheme.caption,
                 ),
+              ],
+
+              // if (!controller.isGroupChat)
 
               Divider(
                 height: 30.sp,
@@ -163,7 +169,7 @@ class ChatDetailsScreen extends StatelessWidget {
               SizedBox(
                 height: 100,
                 child: groupParticipants(
-                  [MySharedPref.getUserData!],
+                  [Get.find<UsersProvider>().me!],
                   context,
                 ),
               )

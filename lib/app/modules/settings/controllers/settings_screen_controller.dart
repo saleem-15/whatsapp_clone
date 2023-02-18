@@ -4,8 +4,8 @@ import 'package:whatsapp_clone/app/modules/auth/controllers/auth_controller.dart
 import 'package:whatsapp_clone/app/modules/settings/screens/qr_screen.dart';
 import 'package:whatsapp_clone/app/api/user_api.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
+import '../../../providers/users_provider.dart';
 import '../components/logout_bottom_sheet.dart';
 
 class SettingsScreenController extends GetxController {
@@ -16,8 +16,10 @@ class SettingsScreenController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    userName = MySharedPref.getUserName!;
-    userPhoneNumber = MySharedPref.getUserPhoneNumber!;
+    final user = Get.find<UsersProvider>().me!;
+
+    userName = user.name;
+    userPhoneNumber = user.phoneNumber;
     userImage = UserApi.userImage;
   }
 

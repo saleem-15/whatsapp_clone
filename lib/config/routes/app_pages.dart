@@ -15,6 +15,7 @@ import '../../app/modules/settings/screens/profile_screen.dart';
 import '../../app/modules/settings/screens/settings_screen.dart';
 import '../../app/modules/settings/screens/terms_screen.dart';
 import '../../app/modules/user_details/views/user_details_screen.dart';
+import '../../app/modules/video/screens/picked_video_viewer.dart';
 import '../../app/modules/video/screens/video_viewer_screen.dart';
 
 part 'app_routes.dart';
@@ -88,6 +89,10 @@ class AppPages {
     GetPage(
       name: _Paths.NEW_GROUP_DETAILS,
       page: () => GroupDetailsScreen(),
+    ),
+    GetPage(
+      name: _Paths.PICKED_VIDEO_SCREEN,
+      page: () => PickedVideoScreen(),
     ),
   ];
 }

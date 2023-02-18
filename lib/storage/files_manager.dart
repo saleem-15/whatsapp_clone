@@ -2,25 +2,30 @@
 
 import 'dart:developer';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'package:dio/dio.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
-import 'package:http/http.dart' as http;
+import 'package:whatsapp_clone/storage/database/daos/users_dao.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 // ...
 
+enum FileType {
+  image,
+  video,
+  audio,
+  file,
+}
+
 class FileManager {
   FileManager._();
-  // static final _instance = FileManager();
-  // static FileManager get instance => _instance;
 
   ///this function creates the file structure for the app
   ///
   ///if it was called  and the file structure already exists
   ///notihing will happen
-  static Future<void> initFiles() async {
+  static Future<void> init() async {
     final appDir = await getExternalStorageDirectory();
 
     await Directory('${appDir!.path}/chats').create();
@@ -32,7 +37,7 @@ class FileManager {
   /// if the chat folder does not exist it creates the folder and returnes its path
   static Future<String> getChatStoragePath(String chatId) async {
     //make sure that the file structure is valid
-    await initFiles();
+    await init();
     final appDir = await getExternalStorageDirectory();
     final path = '${appDir!.path}/$chatId';
 
@@ -40,18 +45,17 @@ class FileManager {
     return path;
   }
 
-  ///saves the file in the chat storage path
-  static Future<void> saveToFile(File file, String chatId) async {
-    log('the file to be saved: ${file.path}');
-
+  ///saves the file in the chat storage path\
+  ///returns the path where file is saved
+  static Future<String> saveToFile(File file, String fileName, String chatId) async {
     final chatStoragePath = await getChatStoragePath(chatId);
 
-    /// file name like => (myPhoto.jpg)
-    final fileName = basename(file.path);
+    final filePath = '$chatStoragePath/$fileName';
 
     ///copy the file into the chat storage path
-    file.copy('$chatStoragePath/$fileName');
-    log('FileManage => saveToFile => the file is saved in  =>$chatStoragePath/$fileName');
+    await file.copy(filePath);
+    log('FileManage => saveToFile => the file is saved in  =>$filePath');
+    return filePath;
   }
 
   /// returnes the file from the chat storage
@@ -65,10 +69,11 @@ class FileManager {
 
   ///-----------------------------------------------------------------
   ///Checks if the file exists in the chat storage path
-  static Future<bool> isFileSaved(String fileName, String chatId) async {
-    final File file = await getFile(fileName, chatId);
+  static Future<bool> isFileSaved(String filePath) async {
+    // final File file = await getFile(filePath, chatId);
 
-    return file.exists();
+    // return file.exists();
+    return File(filePath).exists();
   }
 
   // Future<bool> isFileSaved(String fileName, String chatId) async {
@@ -124,28 +129,68 @@ class FileManager {
 
   /// returns the path of the saved file
   /// Warning: this function works only on 'Firebase Storage'
-  static Future<File> saveFileFromNetwork(String fileURl, String fileName, String chatId) async {
-    final isSaved = await isFileSaved(fileURl, chatId);
+  // static Future<File> saveFileFromNetwork(String fileURl, String fileName, String chatId) async {
+  //   final isSaved = await isFileSaved(fileURl, chatId);
 
-    if (isSaved) {
-      ///throw exception only if its (Debug mode)
-      if (kDebugMode) {
-        throw Exception('saveFileFromNetwork = >the file is saved before => fileName: $fileName');
-      }
+  //   if (isSaved) {
+  //     ///throw exception only if its (Debug mode)
+  //     if (kDebugMode) {
+  //       throw Exception('saveFileFromNetwork = >the file is saved before => fileName: $fileName');
+  //     }
 
-      final file = await getFile(fileURl, chatId);
-      return file;
+  //     final file = await getFile(fileURl, chatId);
+  //     return file;
+  //   }
+
+  //   final response = await http.get(Uri.parse(fileURl));
+
+  //   final chatStoragePath = await getChatStoragePath(chatId);
+
+  //   final storedFile = File('$chatStoragePath/$fileName');
+
+  //   await storedFile.writeAsBytes(response.bodyBytes);
+
+  //   return storedFile;
+  // }
+
+  // downloadFile(String chatId) async {
+  //   final dio = Dio();
+  //   String downloadUrl = 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4';
+  //   String fileName = 'sample_video.mp4';
+
+  //   final chatStoragePath = await getChatStoragePath(chatId);
+  //   String filePath = '$chatStoragePath/$fileName';
+
+  //   await dio.download(
+  //     downloadUrl,
+  //     filePath,
+  //     onReceiveProgress: (received, total) {
+  //       // _downloadProgress = received / total;
+  //     },
+  //   );
+
+  // }
+
+  ///-Downloads the file from [downloadUrl] and saves it to [filePath]
+  ///
+  ///-[onProgressChanges] is called when a progress happens to the download
+  static Future<void> downloadFile({
+    required String downloadUrl,
+    required String filePath,
+    void Function(int received, int total)? onProgressChanges,
+  }) async {
+    final dio = Dio();
+
+    try {
+      await dio.download(
+        downloadUrl,
+        filePath,
+        onReceiveProgress: onProgressChanges,
+      );
+    } on DioError catch (e) {
+      Logger().e(e.message);
     }
-
-    final response = await http.get(Uri.parse(fileURl));
-
-    final chatStoragePath = await getChatStoragePath(chatId);
-
-    final storedFile = File('$chatStoragePath/$fileName');
-
-    await storedFile.writeAsBytes(response.bodyBytes);
-
-    return storedFile;
+    return;
   }
 
   /// deletes the file (if exists) from the chat storage path
@@ -172,17 +217,76 @@ class FileManager {
 
     ///stores the image path
     /// (I stored the user image path due to various image extensions (jpg,png,...) )
-    MySharedPref.setUserImage(storagePath);
+
+    UsersDao.updateMyData(
+      imageUrl: storagePath,
+      updateImage: true,
+    );
   }
 
   ///returnes  user image
-  static Future<File?> getUserImage() async {
-    String? userImagePath = MySharedPref.getUserImage;
+  // static Future<File?> getUserImage() async {
+  //   String? userImagePath = MySharedPref.getUserImage;
 
-    if (userImagePath == null) {
-      return null;
+  //   if (userImagePath == null) {
+  //     return null;
+  //   }
+
+  //   return File(userImagePath);
+  // }
+
+  /// -this method creates a unique file name in a specifc chat.\
+  /// -this means the file name is always unique for this chat.\
+  /// -`the file name may exist in another chat`.\
+  /// -Ex: IMG-20221008-00001\
+  /// `Note: this function does not output the file extension,
+  /// You have to manually add it `\
+  /// -Use [generateFileMessageFileName] for generating file names for `FileMessage`
+  static String generateMediaFileName(FileType fileType, String chatId, DateTime fileTimeSent) {
+    assert(fileType.name != FileType.file.name);
+
+    String prefix;
+
+    switch (fileType) {
+      case FileType.audio:
+        prefix = "AUD";
+        break;
+
+      case FileType.video:
+        prefix = "VID";
+        break;
+
+      case FileType.image:
+        prefix = "IMG";
+        break;
+
+      default:
+        throw 'This function is only used for (image,video,audio) messages';
     }
 
-    return File(userImagePath);
+    String date = fileTimeSent.toString().substring(0, 10).replaceAll("-", "");
+    int counter = MySharedPref.getChatCounter(chatId);
+
+    return "$prefix-$date-${counter.toString().padLeft(5, '0')}";
+  }
+
+  ///Only used to generate the `fileName for fileMessage`\
+  ///[originalFileName]=> if the user has sent a file with name 'homeWork.docx'
+  /// u must pass this name to this method.
+  ///
+  ///use [generateMediaFileName] for generating file names for `(image,video,audio) messages`
+  static String generateFileMessageFileName(DateTime fileTimeSent, {required String originalFileName}) {
+    return '${fileTimeSent.toIso8601String()}*$originalFileName';
+
+    // final chatFolder = await getChatStoragePath(chatId);
+
+    // String filePath = '$chatFolder/$fileName';
+    // int counter = 1;
+    // while (await File(filePath).exists()) {
+    //   fileName = '$fileName($counter)';
+    //   counter++;
+    // }
+
+    // return fileName;
   }
 }

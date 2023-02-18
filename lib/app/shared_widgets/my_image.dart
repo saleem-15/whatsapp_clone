@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:whatsapp_clone/storage/files_manager.dart';
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 class SavedNetworkImage extends StatefulWidget {
   const SavedNetworkImage({
@@ -27,7 +26,7 @@ class SavedNetworkImage extends StatefulWidget {
   final DateTime timeSent;
 
   /// -called when the image is completed downloading\
-  /// -parameter [image] is downloaded image file
+  /// -parameter [imageUrl] is downloaded image file
   ///
   /// `Note: the image is downloaded when its not found in [imageFilePath]`
   final Function(File image) onImageDownloaded;
@@ -82,11 +81,9 @@ class _SavedNetworkImageState extends State<SavedNetworkImage> {
   @override
   Widget build(BuildContext context) {
     if (image != null) {
-      return FadeInImage(
-        image: FileImage(image!),
-        placeholder: const AssetImage(
-          Assets.placeholder_image,
-        ),
+      return Image.file(
+        image!,
+        // fit: BoxFit.cover,
       );
     } else {
       return const Center(

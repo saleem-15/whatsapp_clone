@@ -16,26 +16,27 @@ import '../models/chats/chat_interface.dart';
 import '../models/messages/image_message.dart';
 import '../models/user.dart';
 
-import 'package:logger/logger.dart';
-
 class MessagesProvider extends GetxController {
   User get me => Get.find<UsersProvider>().me!;
 
   ///sends a text message\
   Future<void> sendTextMessage(Chat chat, TextMessage textMessage) async {
-    Logger().d(textMessage.toString());
-
-    MessagingApi.sendTextMessage(textMessage);
+    final response = await MessagingApi.sendTextMessage(textMessage);
     MessagesDao.addMessage(
       chat: chat,
       sender: me,
-      message: textMessage,
+      message: textMessage..messageId = response,
     );
   }
 
   ///sends a image message\
-  void sendImageMessage(Chat chat, ImageMessage imageMessage, File imageFile) {
-    MessagingApi.sendImageMessage(imageMessage, imageFile);
+  Future<void> sendImageMessage(Chat chat, ImageMessage imageMessage, File imageFile) async {
+    final response = await MessagingApi.sendImageMessage(imageMessage, imageFile);
+
+    imageMessage
+      ..imageUrl = response[1]
+      ..messageId = response[0];
+
     MessagesDao.addMessage(
       chat: chat,
       sender: me,
@@ -45,7 +46,12 @@ class MessagesProvider extends GetxController {
 
   ///sends a video message\
   void sendVideoMessage(Chat chat, VideoMessage videoMessage, File videoFile) async {
-    MessagingApi.sendVideoMessage(videoMessage, videoFile);
+    final response = await MessagingApi.sendVideoMessage(videoMessage, videoFile);
+
+    videoMessage
+      ..messageId = response[0]
+      ..videoUrl = response[1];
+
     MessagesDao.addMessage(
       chat: chat,
       sender: me,
@@ -54,8 +60,13 @@ class MessagesProvider extends GetxController {
   }
 
   ///sends a audio message\
-  void sendAudioMessage(Chat chat, AudioMessage audioMessage, File audioFile) {
-    MessagingApi.sendAudioMessage(audioMessage, audioFile);
+  Future<void> sendAudioMessage(Chat chat, AudioMessage audioMessage, File audioFile) async {
+    final response = await MessagingApi.sendAudioMessage(audioMessage, audioFile);
+
+    audioMessage
+      ..messageId = response[0]
+      ..audioUrl = response[1];
+
     MessagesDao.addMessage(
       chat: chat,
       sender: me,
@@ -64,8 +75,12 @@ class MessagesProvider extends GetxController {
   }
 
   ///sends a file message\
-  void sendFileMessage(Chat chat, FileMessage fileMessage, File file) {
-    MessagingApi.sendFileMessage(fileMessage, file);
+  Future<void> sendFileMessage(Chat chat, FileMessage fileMessage, File file) async {
+    final respnse = await MessagingApi.sendFileMessage(fileMessage, file);
+
+    fileMessage
+      ..messageId = respnse[0]
+      ..downloadUrl = respnse[1];
 
     MessagesDao.addMessage(
       chat: chat,
@@ -75,7 +90,7 @@ class MessagesProvider extends GetxController {
   }
 
   Stream<List<MessageInterface>> getMessagesStream(String chatId) {
-     MessagesDao.getChatMessagesStream(chatId);
+    MessagesDao.getChatMessagesStream(chatId);
     return MessagingApi.getMessagesStream(chatId).map((event) {
       final messageDocs = event.docs;
 
@@ -88,5 +103,12 @@ class MessagesProvider extends GetxController {
       log('messages num: ${messages.length}');
       return messages;
     });
+  }
+
+  void updateMessage(MessageInterface imageMessage) {
+    MessagesDao.updateDownloadUrl(
+      imageMessage,
+      silent: false,
+    );
   }
 }

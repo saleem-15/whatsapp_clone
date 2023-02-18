@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/message_type_enum.dart';
@@ -29,10 +27,6 @@ class Messages extends GetView<ChatScreenController> {
         itemBuilder: (_, index) {
           final message = controller.messagesList[index];
 
-          if (index == controller.messagesList.length) {
-            log('last message');
-          }
-
           return Row(
             mainAxisAlignment: message.isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
             children: [
@@ -41,23 +35,31 @@ class Messages extends GetView<ChatScreenController> {
                   switch (message.type) {
                     case MessageType.text:
                       return MessageBubble(
+                        // key: Key(message.timeSent.),
                         message: message as TextMessage,
                       );
                     case MessageType.image:
+                      message as ImageMessage;
                       return ImageMessageBubble(
-                        message: message as ImageMessage,
+                        key: Key(message.imageUrl ?? message.imagePath),
+                        message: message,
                       );
 
                     case MessageType.video:
+                    
+                      message as VideoMessage;
                       return VideoMessageBubble(
-                        message: message as VideoMessage,
-                        video: message.videoUrl,
+                        key: Key(message.videoUrl ?? message.videoPath),
+                        message: message,
+                        video: message.videoUrl!,
                       );
 
                     case MessageType.audio:
+                      message as AudioMessage;
                       return AudioMessageBubble(
+                        key: Key(message.audioUrl ?? message.audioPath!),
                         isMyMessage: message.isMyMessage,
-                        audioPath: (message as AudioMessage).audioUrl,
+                        audioPath: message.audioUrl!,
                         timeSent: Utils.formatDate(message.timeSent),
                       );
                     case MessageType.file:

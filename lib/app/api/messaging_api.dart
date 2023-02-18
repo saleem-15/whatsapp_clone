@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/message_type_enum.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
@@ -10,7 +11,7 @@ import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/text_message.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
+import 'package:whatsapp_clone/app/providers/users_provider.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 import 'package:logger/logger.dart';
 import 'api.dart';
@@ -18,8 +19,14 @@ import 'api.dart';
 class MessagingApi {
   MessagingApi._();
 
-  static final senderName = MySharedPref.getUserName!;
-  static final senderImage = MySharedPref.getUserImage;
+  static late final String senderName;
+  static late final String? senderImage;
+
+  static void init() {
+    final user = Get.find<UsersProvider>().me!;
+    senderName = user.name;
+    senderImage = user.imageUrl;
+  }
 
   static CollectionReference messagesCollection(String chatId) =>
       chatsCollection.doc(chatId).collection('messages').withConverter<MessageInterface>(
@@ -53,25 +60,32 @@ class MessagingApi {
     }
   }
 
-  static Future<void> sendTextMessage(TextMessage textMessage) async {
-    Logger().d(textMessage.toString());
-    await messagesCollection(textMessage.chatId).add(textMessage);
+  /// returns the message doc id
+  static Future<String> sendTextMessage(TextMessage textMessage) async {
+    final msgDoc = await messagesCollection(textMessage.chatId).add(textMessage);
+
+    return msgDoc.id;
   }
 
-  static Future<void> sendImageMessage(ImageMessage imageMessage, File imageFile) async {
+  /// 0 index =>the message doc id\
+  /// 1 index =>the file download url
+  static Future<List> sendImageMessage(ImageMessage imageMessage, File imageFile) async {
     final imageUrl = await uploadFileToFirestorage(
       chatId: imageMessage.chatId,
       file: imageFile,
-      fileName: imageMessage.imageName,
+      fileName: imageMessage.imagePath,
     );
 
     imageMessage.imageUrl = imageUrl;
 
     /// add the message to firestore
-    await messagesCollection(imageMessage.chatId).add(imageMessage);
+    final response = await messagesCollection(imageMessage.chatId).add(imageMessage);
+    return [response.id, imageUrl];
   }
 
-  static Future<void> sendAudioMessage(AudioMessage audioMessage, File audioFile) async {
+  /// 0 index =>the message doc id\
+  /// 1 index =>the file download url
+  static Future<List> sendAudioMessage(AudioMessage audioMessage, File audioFile) async {
     final audioUrl = await uploadFileToFirestorage(
       chatId: audioMessage.chatId,
       file: audioFile,
@@ -79,30 +93,41 @@ class MessagingApi {
     );
 
     /// add the message to firestore
-    await messagesCollection(audioMessage.chatId).add(audioMessage..audioUrl = audioUrl);
+    final response = await messagesCollection(audioMessage.chatId).add(audioMessage..audioUrl = audioUrl);
+    return [response.id, audioUrl];
   }
 
-  static Future<void> sendVideoMessage(VideoMessage videoMessage, File videoFile) async {
+  /// 0 index =>the message doc id\
+  /// 1 index =>the file download url
+  static Future<List> sendVideoMessage(VideoMessage videoMessage, File videoFile) async {
     final videoUrl = await uploadFileToFirestorage(
       chatId: videoMessage.chatId,
       file: videoFile,
-      fileName: videoMessage.videoName,
+      fileName: videoMessage.videoPath,
     );
 
     videoMessage.videoUrl = videoUrl;
 
     /// add the message to firestore
-    await messagesCollection(videoMessage.chatId).add(videoMessage);
+    final response = await messagesCollection(videoMessage.chatId).add(videoMessage);
+
+    return [response.id, videoUrl];
   }
 
-  static Future<void> sendFileMessage(FileMessage fileMessage, File file) async {
+  /// 0 index =>the message doc id\
+  /// 1 index =>the file download url
+  static Future<List> sendFileMessage(FileMessage fileMessage, File file) async {
     final fileUrl = await uploadFileToFirestorage(
       chatId: fileMessage.chatId,
       file: file,
       fileName: fileMessage.fileName,
     );
 
-    await messagesCollection(fileMessage.chatId).add(fileMessage..downloadUrl = fileUrl);
+    fileMessage.downloadUrl = fileUrl;
+
+    final response = await messagesCollection(fileMessage.chatId).add(fileMessage);
+
+    return [response.id, fileUrl];
   }
 
   ///returnes the file Url in the firestorage\

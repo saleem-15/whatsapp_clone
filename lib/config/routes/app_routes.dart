@@ -17,8 +17,12 @@ abstract class Routes {
   static const PRIVACY_POLICY_SCREEN = _Paths.PRIVACY_POLICY_SCREEN;
   static const APP_INFO_SCREEN = _Paths.APP_INFO_SCREEN;
 
-  ///Requires as argumets: [VideoMessage] & [VideoPlayerController] for the video
+  ///Requires as argumets:
+  ///[videoFile] & [sendVideoFunction]
+  static const PICKED_VIDEO_SCREEN = _Paths.PICKED_VIDEO_SCREEN;
 
+  ///Requires as argumets:
+  /// [VideoMessage] & [VideoPlayerController] for the video
   static const VIDEO_VIEWER_SCREEN = _Paths.VIDEO_VIEWER_SCREEN;
 
   ///YOU HAVE TO PASS [Chat] ARGUMENT Ass (argument)
@@ -48,6 +52,7 @@ abstract class _Paths {
   static const PROFILE_SCREEN = '/Profile-screen';
   static const ACCOUNT_SCREEN = '/Account-screen';
   static const HELP_SCREEN = '/Help-screen';
+  static const PICKED_VIDEO_SCREEN = '/Picked-video-screen';
   static const TERMS_AND_CONDITIONS_SCREEN = '/Terms-And-Conditions-screen';
   static const PRIVACY_POLICY_SCREEN = '/Privacy-policy-screen';
   static const APP_INFO_SCREEN = '/App-Info-screen';

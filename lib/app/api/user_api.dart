@@ -11,15 +11,15 @@ import 'package:logger/logger.dart';
 
 import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/app/providers/groups_provider.dart';
-import 'package:whatsapp_clone/app/providers/private_chats_provider.dart';
+import 'package:whatsapp_clone/app/providers/contacts_provider.dart';
 import 'package:whatsapp_clone/storage/database/daos/groups_dao.dart';
 import 'package:whatsapp_clone/storage/database/daos/private_chats_dao.dart';
 import 'package:whatsapp_clone/storage/database/daos/users_dao.dart';
-import 'package:whatsapp_clone/storage/files_manager.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
+import '../providers/users_provider.dart';
 import 'api.dart';
 
 class UserApi {
@@ -32,7 +32,9 @@ class UserApi {
   static late bool isMyDocExists;
 
   static Future<void> init() async {
-    File? imageFile = await FileManager.getUserImage();
+    //Todo: get the real user image
+    File? imageFile;
+    // await FileManager.getUserImage();
 
     if (imageFile == null) {
       userImage = Rx(const AssetImage(Assets.default_user_image));
@@ -60,7 +62,6 @@ class UserApi {
   }
 
   static Future<void> setUserFcmToken(String fcmToken) async {
-
     await myUserDocument.update({
       'fcmToken': fcmToken,
     });
@@ -102,7 +103,7 @@ class UserApi {
     await usersCollection.doc(user.uid).update(userMap);
   }
 
-  ///,returnes the file Url in the firestorage
+  ///returns the file Url in the firestorage
   static Future<String> updateUserImage(File imageFile) async {
     final fileExtension = Utils.getFileExtension(imageFile.path);
 
@@ -123,7 +124,7 @@ class UserApi {
 
     final myDoc = await usersCollection.doc(myUid).get();
 
-    final List<String> contactsIds = myDoc.getStringList('myContacts');
+    final List<String> contactsIds = myDoc.getStringList('contacts');
 
     final contactsDocs = await usersCollection.getMultipleDocuments(contactsIds);
 
@@ -144,25 +145,26 @@ class UserApi {
     myDocumentStream = myUserDocument.snapshots();
 
     myDocumentListener = myDocumentStream.listen((document) async {
-      log('****************my document has changed****************');
+      // log('****************my document has changed****************');
 
       final changedChats = await getChangesInChats(document);
 
       applyChanges(changedChats);
 
-      final nameInDoc = document['name'];
-      final phoneInDoc = document['phoneNumber'];
-      final aboutInDoc = document['about'];
-      final imageInDoc = document[User.user_image_url_key];
+      final String nameInDoc = document['name'];
+      final String phoneInDoc = document['phoneNumber'];
+      final String bioInDoc = document['about'];
+      final String? imageInDoc = document[User.user_image_url_key];
 
-      if (nameInDoc != MySharedPref.getUserName ||
-          phoneInDoc != MySharedPref.getUserPhoneNumber ||
-          aboutInDoc != MySharedPref.getUserAbout ||
-          imageInDoc != MySharedPref.getUserImage) {
+      final user = Get.find<UsersProvider>().me!;
+
+      if (nameInDoc != user.name ||
+          phoneInDoc != user.phoneNumber ||
+          bioInDoc != user.bio ||
+          imageInDoc != user.imageUrl) {
         UsersDao.updateMyData(
           name: nameInDoc,
-          phone: phoneInDoc,
-          bio: aboutInDoc,
+          bio: bioInDoc,
           imageUrl: imageInDoc,
         );
       }
@@ -173,8 +175,8 @@ class UserApi {
   ///
   /// it returns a map with 4 entries
   /// {`newChats`, `removedChats`,`newGroups`,`removedGroups`}
-  static Future<Map<String, List<String>>> getChangesInChats(DocumentSnapshot doc) async {
-    /// changes in groups
+  static Future<Map<String, dynamic>> getChangesInChats(DocumentSnapshot doc) async {
+    /// ******changes in groups******
     List<String> fetchedGroupChatIDsList = doc.getStringList('groups');
     final storedGroupsList = await GroupChatsDao.getAllGroupChatsIDs();
     Logger().i('Stored Groups ID\'s: $storedGroupsList');
@@ -182,54 +184,91 @@ class UserApi {
     final newGroups = fetchedGroupChatIDsList.where((item) => !storedGroupsList.contains(item)).toList();
     final removedGroups = storedGroupsList.where((item) => !fetchedGroupChatIDsList.contains(item)).toList();
 
-    /// changes in private chats
-    List<String> fetchedPrivateChatsIDsList = doc.getStringList('chats');
-    final storedPrivateChatsList = await PrivateChatsDao.getAllPrivateChatsIDs();
-    Logger().i('Stored Private Chats ID\'s: $storedPrivateChatsList');
+    /// ******changes in contacts******
 
-    final newPrivateChats =
-        fetchedPrivateChatsIDsList.where((item) => !storedPrivateChatsList.contains(item)).toList();
-    final removedPrivateChats =
-        storedPrivateChatsList.where((item) => !fetchedPrivateChatsIDsList.contains(item)).toList();
+    /// contacts are stored as a map<userId,privateChatId> in firestore
+    final fetchedContacts = doc.get('contacts') as Map;
+    final storedContacts = await PrivateChatsDao.getContactsMap();
+
+    Logger().i('Stored Private Chats ID\'s: $storedContacts');
+
+    Map<String, String> newContacts = {};
+    Map<String, String> removedContacts = {};
+
+    fetchedContacts.forEach((contactId, chatId) {
+      ///check if the contact is stored locally
+      bool isStoredLocally = storedContacts.keys.contains(contactId);
+
+      if (!isStoredLocally) {
+        newContacts[contactId] = chatId;
+      }
+    });
+
+    storedContacts.forEach((contactId, chatId) {
+      ///check if the contact is stored in Backend
+      bool isExistInBackend = fetchedContacts.keys.contains(contactId);
+
+      if (!isExistInBackend) {
+        removedContacts[contactId] = chatId;
+      }
+    });
+
+    Logger().wtf('New Contacts: \n$newContacts');
+    Logger().wtf('Removed Contacts: \n$removedContacts');
 
     return {
-      'newChats': newPrivateChats,
-      'removedChats': removedPrivateChats,
+      'newContacts': newContacts,
+      'removedContacts': removedContacts,
       'removedGroups': removedGroups,
       'newGroups': newGroups,
     };
   }
+
+  static Future<List<User>> fetchUsers(List<String> usersIds) async {
+    final result = await usersCollection
+        .where(
+          FieldPath.documentId,
+          whereIn: usersIds,
+        )
+        .get();
+
+    return result.docs
+        .map(
+          (userDoc) => User.fromDoc(userDoc),
+        )
+        .toList();
+  }
 }
 
-void applyChanges(Map<String, List<String>> changedChats) {
+void applyChanges(Map<String, dynamic> changedChats) {
   /// new private chats
-  final newPrivateChats = changedChats['newChats'];
+  final newContacts = changedChats['newContacts'] as Map;
 
-  if (newPrivateChats!.isNotEmpty) {
-    Logger().i('new Private Chats ID\'s: $newPrivateChats');
-    Get.find<PrivateChatsProvider>().fetchMultipleNewPrivateChat(newPrivateChats);
+  if (newContacts.isNotEmpty) {
+    Logger().i('new Private Chats ID\'s: $newContacts');
+    Get.find<ContactsProvider>().fetchMultipleNewContacts(newContacts.cast());
   }
 
   ///deleted private chats
-  final deletedPrivateChats = changedChats['removedChats'];
+  final deletedContacts = changedChats['removedContacts'] as Map;
 
-  if (deletedPrivateChats!.isNotEmpty) {
-    Logger().i('removed Private Chats ID\'s: $deletedPrivateChats');
-    Get.find<PrivateChatsProvider>().deleteMultiplePrivateChats(deletedPrivateChats);
+  if (deletedContacts.isNotEmpty) {
+    Logger().i('removed Private Chats ID\'s: $deletedContacts');
+    Get.find<ContactsProvider>().deleteMultipleContacts(deletedContacts.cast());
   }
 
   ///new groups
-  final newGroupChats = changedChats['newGroups'];
+  final newGroupChats = changedChats['newGroups'] as List<String>;
 
-  if (newGroupChats!.isNotEmpty) {
+  if (newGroupChats.isNotEmpty) {
     Logger().i('new Groups ID\'s: $newGroupChats');
-    Get.find<GroupChatsProvider>().fetchMultipleNewGroupChat(newGroupChats);
+    Get.find<GroupChatsProvider>().fetchNewGroups(newGroupChats);
   }
 
   ///deleted groups
-  final deletedGroupChatsIDs = changedChats['removedGroups'];
+  final deletedGroupChatsIDs = changedChats['removedGroups'] as List<String>;
 
-  if (deletedGroupChatsIDs!.isNotEmpty) {
+  if (deletedGroupChatsIDs.isNotEmpty) {
     Logger().i('Deleted Groups ID\'s: $deletedGroupChatsIDs');
     Get.find<GroupChatsProvider>().deleteMultipleGroupChat(deletedGroupChatsIDs);
   }

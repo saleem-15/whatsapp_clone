@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:video_viewer/video_viewer.dart';
+import 'package:video_player/video_player.dart';
 
 import 'package:whatsapp_clone/storage/files_manager.dart';
 
@@ -14,6 +14,7 @@ class NetworkOrLocalVideo extends StatefulWidget {
     required this.videoUrl,
     required this.videoFilePath,
     required this.chatId,
+    required this.aspectRatio,
     required this.onVideoDownloaded,
     this.borderRadius = BorderRadius.zero,
   }) : super(key: key);
@@ -21,6 +22,9 @@ class NetworkOrLocalVideo extends StatefulWidget {
   final String videoUrl;
 
   final String videoFilePath;
+
+  final double aspectRatio;
+
   final String chatId;
   final BorderRadius? borderRadius;
 
@@ -95,6 +99,7 @@ class _NetworkOrLocalVideoState extends State<NetworkOrLocalVideo> {
   Future<void> initilizeVideoController() async {
     videoPlayerController = VideoPlayerController.file(video!);
     chewieController = ChewieController(
+      aspectRatio: widget.aspectRatio,
       videoPlayerController: videoPlayerController,
       allowMuting: false,
       autoInitialize: true,

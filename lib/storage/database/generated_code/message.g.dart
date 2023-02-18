@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'message.dart';
+part of '../models/message.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -27,25 +27,25 @@ const MessageDBSchema = CollectionSchema(
       name: r'contentFilePath',
       type: IsarType.string,
     ),
-    r'fileName': PropertySchema(
-      id: 2,
-      name: r'fileName',
-      type: IsarType.string,
-    ),
     r'fileURl': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'fileURl',
       type: IsarType.string,
     ),
     r'isSeen': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'isSeen',
       type: IsarType.bool,
     ),
     r'isSent': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'isSent',
       type: IsarType.bool,
+    ),
+    r'messageId': PropertySchema(
+      id: 5,
+      name: r'messageId',
+      type: IsarType.string,
     ),
     r'specialMessageAttributes': PropertySchema(
       id: 6,
@@ -74,7 +74,21 @@ const MessageDBSchema = CollectionSchema(
   deserialize: _messageDBDeserialize,
   deserializeProp: _messageDBDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'messageId': IndexSchema(
+      id: -635287409172016016,
+      name: r'messageId',
+      unique: true,
+      replace: true,
+      properties: [
+        IndexPropertySchema(
+          name: r'messageId',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
   links: {
     r'sender': LinkSchema(
       id: 8257306667636939656,
@@ -104,17 +118,12 @@ int _messageDBEstimateSize(
     }
   }
   {
-    final value = object.fileName;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.fileURl;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
   }
+  bytesCount += 3 + object.messageId.length * 3;
   {
     final value = object.specialMessageAttributes;
     if (value != null) {
@@ -138,10 +147,10 @@ void _messageDBSerialize(
 ) {
   writer.writeString(offsets[0], object.chatId);
   writer.writeString(offsets[1], object.contentFilePath);
-  writer.writeString(offsets[2], object.fileName);
-  writer.writeString(offsets[3], object.fileURl);
-  writer.writeBool(offsets[4], object.isSeen);
-  writer.writeBool(offsets[5], object.isSent);
+  writer.writeString(offsets[2], object.fileURl);
+  writer.writeBool(offsets[3], object.isSeen);
+  writer.writeBool(offsets[4], object.isSent);
+  writer.writeString(offsets[5], object.messageId);
   writer.writeString(offsets[6], object.specialMessageAttributes);
   writer.writeString(offsets[7], object.text);
   writer.writeDateTime(offsets[8], object.timeSent);
@@ -157,11 +166,11 @@ MessageDB _messageDBDeserialize(
   final object = MessageDB();
   object.chatId = reader.readString(offsets[0]);
   object.contentFilePath = reader.readStringOrNull(offsets[1]);
-  object.fileName = reader.readStringOrNull(offsets[2]);
-  object.fileURl = reader.readStringOrNull(offsets[3]);
+  object.fileURl = reader.readStringOrNull(offsets[2]);
   object.id = id;
-  object.isSeen = reader.readBool(offsets[4]);
-  object.isSent = reader.readBool(offsets[5]);
+  object.isSeen = reader.readBool(offsets[3]);
+  object.isSent = reader.readBool(offsets[4]);
+  object.messageId = reader.readString(offsets[5]);
   object.specialMessageAttributes = reader.readStringOrNull(offsets[6]);
   object.text = reader.readStringOrNull(offsets[7]);
   object.timeSent = reader.readDateTime(offsets[8]);
@@ -184,11 +193,11 @@ P _messageDBDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 4:
       return (reader.readBool(offset)) as P;
     case 5:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
@@ -229,6 +238,61 @@ List<IsarLinkBase<dynamic>> _messageDBGetLinks(MessageDB object) {
 void _messageDBAttach(IsarCollection<dynamic> col, Id id, MessageDB object) {
   object.id = id;
   object.sender.attach(col, col.isar.collection<User>(), r'sender', id);
+}
+
+extension MessageDBByIndex on IsarCollection<MessageDB> {
+  Future<MessageDB?> getByMessageId(String messageId) {
+    return getByIndex(r'messageId', [messageId]);
+  }
+
+  MessageDB? getByMessageIdSync(String messageId) {
+    return getByIndexSync(r'messageId', [messageId]);
+  }
+
+  Future<bool> deleteByMessageId(String messageId) {
+    return deleteByIndex(r'messageId', [messageId]);
+  }
+
+  bool deleteByMessageIdSync(String messageId) {
+    return deleteByIndexSync(r'messageId', [messageId]);
+  }
+
+  Future<List<MessageDB?>> getAllByMessageId(List<String> messageIdValues) {
+    final values = messageIdValues.map((e) => [e]).toList();
+    return getAllByIndex(r'messageId', values);
+  }
+
+  List<MessageDB?> getAllByMessageIdSync(List<String> messageIdValues) {
+    final values = messageIdValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'messageId', values);
+  }
+
+  Future<int> deleteAllByMessageId(List<String> messageIdValues) {
+    final values = messageIdValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'messageId', values);
+  }
+
+  int deleteAllByMessageIdSync(List<String> messageIdValues) {
+    final values = messageIdValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'messageId', values);
+  }
+
+  Future<Id> putByMessageId(MessageDB object) {
+    return putByIndex(r'messageId', object);
+  }
+
+  Id putByMessageIdSync(MessageDB object, {bool saveLinks = true}) {
+    return putByIndexSync(r'messageId', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByMessageId(List<MessageDB> objects) {
+    return putAllByIndex(r'messageId', objects);
+  }
+
+  List<Id> putAllByMessageIdSync(List<MessageDB> objects,
+      {bool saveLinks = true}) {
+    return putAllByIndexSync(r'messageId', objects, saveLinks: saveLinks);
+  }
 }
 
 extension MessageDBQueryWhereSort
@@ -304,6 +368,51 @@ extension MessageDBQueryWhere
         upper: upperId,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterWhereClause> messageIdEqualTo(
+      String messageId) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'messageId',
+        value: [messageId],
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterWhereClause> messageIdNotEqualTo(
+      String messageId) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'messageId',
+              lower: [],
+              upper: [messageId],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'messageId',
+              lower: [messageId],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'messageId',
+              lower: [messageId],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'messageId',
+              lower: [],
+              upper: [messageId],
+              includeUpper: false,
+            ));
+      }
     });
   }
 }
@@ -594,154 +703,6 @@ extension MessageDBQueryFilter
     });
   }
 
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'fileName',
-      ));
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
-      fileNameIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'fileName',
-      ));
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'fileName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'fileName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'fileName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'fileName',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'fileName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'fileName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'fileName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'fileName',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileNameIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'fileName',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
-      fileNameIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'fileName',
-        value: '',
-      ));
-    });
-  }
-
   QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> fileURlIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -958,6 +919,138 @@ extension MessageDBQueryFilter
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isSent',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'messageId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      messageIdGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'messageId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'messageId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'messageId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'messageId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'messageId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'messageId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'messageId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'messageId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      messageIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'messageId',
+        value: '',
       ));
     });
   }
@@ -1415,18 +1508,6 @@ extension MessageDBQuerySortBy on QueryBuilder<MessageDB, MessageDB, QSortBy> {
     });
   }
 
-  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByFileName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fileName', Sort.asc);
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByFileNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fileName', Sort.desc);
-    });
-  }
-
   QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByFileURl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'fileURl', Sort.asc);
@@ -1460,6 +1541,18 @@ extension MessageDBQuerySortBy on QueryBuilder<MessageDB, MessageDB, QSortBy> {
   QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByIsSentDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isSent', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByMessageId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'messageId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> sortByMessageIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'messageId', Sort.desc);
     });
   }
 
@@ -1540,18 +1633,6 @@ extension MessageDBQuerySortThenBy
     });
   }
 
-  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByFileName() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fileName', Sort.asc);
-    });
-  }
-
-  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByFileNameDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fileName', Sort.desc);
-    });
-  }
-
   QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByFileURl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'fileURl', Sort.asc);
@@ -1597,6 +1678,18 @@ extension MessageDBQuerySortThenBy
   QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByIsSentDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isSent', Sort.desc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByMessageId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'messageId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterSortBy> thenByMessageIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'messageId', Sort.desc);
     });
   }
 
@@ -1668,13 +1761,6 @@ extension MessageDBQueryWhereDistinct
     });
   }
 
-  QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByFileName(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'fileName', caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByFileURl(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1691,6 +1777,13 @@ extension MessageDBQueryWhereDistinct
   QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByIsSent() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isSent');
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QDistinct> distinctByMessageId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'messageId', caseSensitive: caseSensitive);
     });
   }
 
@@ -1742,12 +1835,6 @@ extension MessageDBQueryProperty
     });
   }
 
-  QueryBuilder<MessageDB, String?, QQueryOperations> fileNameProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'fileName');
-    });
-  }
-
   QueryBuilder<MessageDB, String?, QQueryOperations> fileURlProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'fileURl');
@@ -1763,6 +1850,12 @@ extension MessageDBQueryProperty
   QueryBuilder<MessageDB, bool, QQueryOperations> isSentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isSent');
+    });
+  }
+
+  QueryBuilder<MessageDB, String, QQueryOperations> messageIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'messageId');
     });
   }
 

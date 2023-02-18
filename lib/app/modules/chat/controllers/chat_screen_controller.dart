@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:video_viewer/video_viewer.dart';
+import 'package:video_player/video_player.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
@@ -65,14 +65,6 @@ class ChatScreenController extends GetxController {
       Routes.CHAT_DETAILS_SCREEN,
       arguments: chat,
     );
-    // Get.to(
-    //   () => UserDetailsScreen(
-    //     name: widget.name,
-    //     image: widget.image,
-    //     chatPath: widget.chatPath,
-    //     isGroup: isGroupChat,
-    //   ),
-    // );
   }
 
   Future<VideoPlayerController> initilizeVideoController(String videoUrl) async {
@@ -136,6 +128,8 @@ class ChatScreenController extends GetxController {
         'videoMessage': videoMessage,
       },
     );
+
+    // Get.put
   }
 
   Future<void> sendImage(File imageFile, String? message) async {

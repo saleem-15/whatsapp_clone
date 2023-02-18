@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
-import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
+import '../../providers/users_provider.dart';
 import '../message_type_enum.dart';
 
 class TextMessage extends MessageInterface {
@@ -28,31 +28,31 @@ class TextMessage extends MessageInterface {
   }
 
   @override
-  factory TextMessage.fromDoc(DocumentSnapshot<Object?> map) {
+  factory TextMessage.fromDoc(DocumentSnapshot doc) {
     return TextMessage(
       isSent: false,
       isSeen: false,
-      // isSent: map['isSent'],
-      // isSeen: map['isSeen'],
-      chatId: map.id,
-      senderId: map['senderId'],
-      senderName: map['senderName'],
-      senderImage: map['senderImage'],
-      text: map['text'],
-      timeSent: (map['createdAt'] as Timestamp).toDate(),
-    );
+      chatId: doc.id,
+      senderId: doc['senderId'],
+      senderName: doc['senderName'],
+      senderImage: doc['senderImage'],
+      text: doc['text'],
+      timeSent: (doc['createdAt'] as Timestamp).toDate(),
+    )..messageId = doc.id;
   }
 
   ///parameters are => chatId
   @override
   factory TextMessage.toSend({required String chatId, required String text}) {
+    final user = Get.find<UsersProvider>().me!;
+
     return TextMessage(
       isSent: false,
       isSeen: false,
       chatId: chatId,
-      senderId: FirebaseAuth.instance.currentUser!.uid,
-      senderName: MySharedPref.getUserName!,
-      senderImage: MySharedPref.getUserImage,
+      senderId: user.uid,
+      senderName: user.name,
+      senderImage: user.imageUrl,
       timeSent: DateTime.now(),
       text: text,
     );

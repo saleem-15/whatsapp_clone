@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:get/get.dart';
 
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
@@ -9,7 +7,7 @@ import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
 class ChatsViewController extends GetxController {
   ///this is list holds all chats
-  Rx<List<Rx<Chat>>> get chatsList => Get.find<ChatsProvider>().allChatsList;
+  Rx<List<Rx<Chat>>> get chatsList => Get.find<ChatsProvider>().chatsList;
   RxBool get isSearchMode => Get.find<HomeController>().isSearchMode;
   final searchController = Get.find<HomeController>().searchController;
 
@@ -17,12 +15,11 @@ class ChatsViewController extends GetxController {
   void onInit() {
     super.onInit();
 
-    ever(Get.find<ChatsProvider>().allChatsList, (callback) {
-      log('chats list has been updated**************************************');
+    ever(Get.find<ChatsProvider>().chatsList, (callback) {
       update(['chats listView']);
     });
     ever(isSearchMode, (callback) {
-      log('isSearchMode has changed ===>$callback**************************************');
+      // log('isSearchMode has changed ===>$callback**************************************');
 
       update(['chats listView']);
     });

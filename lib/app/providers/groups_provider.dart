@@ -5,6 +5,9 @@ import 'package:whatsapp_clone/storage/database/daos/groups_dao.dart';
 import '../api/chats_api.dart';
 import 'package:whatsapp_clone/utils/extensions/my_extensions.dart';
 
+import '../api/user_api.dart';
+import '../models/user.dart';
+
 /// its responsiple for user chats list.
 /// like `(fetching,adding,deleting,updating) its data`
 class GroupChatsProvider extends GetxController {
@@ -24,36 +27,22 @@ class GroupChatsProvider extends GetxController {
     });
   }
 
-  // void addChat(Chat chat) {
-  //   groupsList.add(chat.obs);
-  // }
-
-  // void addListOfChats(List<Chat> chat) {
-  //   groupsList.addAll(chat.convertToRxElements);
-  // }
-
-  // Future<void> _fetchChats() async {
-  //   List<Chat> chatsList = await ChatsApi.getAllMyChats();
-  //   log('number of chats: ${chatsList.length}------------------------------');
-  //   chats.addAll(chatsList.convertToRxElements);
-  // }
-
-  // Future<void> reFetchChats() async {
-  //   List<Chat> chatsList = await ChatsApi.getAllMyChats();
-  //   groupsList.replaceRange(0, groupsList.length, chatsList.convertToRxElements);
-  // }
-
   /// fetches the group document then inserts it in the database
-  Future<void> fetchMultipleNewGroupChat(List<String> newGroupChatsIds) async {
-    final groups = await ChatsApi.getGroupChatsByIds(groupChatIds: newGroupChatsIds);
+  Future<void> fetchNewGroups(List<String> newGroupIds) async {
+    final groups = await ChatsApi.getGroupChatsByIds(groupChatIds: newGroupIds);
+
+    for (var group in groups) {
+      List<User> usersList = await UserApi.fetchUsers(group.usersIds);
+      group.users.addAll(usersList);
+    }
     await GroupChatsDao.addMultipleGroupChats(groups);
   }
 
-  /// `fetches` multiple group documents `then inserts them in the database`
-  Future<void> fetchNewGroupChat(List<String> groupChatsIds) async {
-    final group = await ChatsApi.getGroupChatsByIds(groupChatIds: groupChatsIds);
-    await GroupChatsDao.addMultipleGroupChats(group);
-  }
+  // /// `fetches` multiple group documents `then inserts them in the database`
+  // Future<void> fetchNewGroupChat(List<String> groupChatsIds) async {
+  //   final group = await ChatsApi.getGroupChatsByIds(groupChatIds: groupChatsIds);
+  //   await GroupChatsDao.addMultipleGroupChats(group);
+  // }
 
   /// deletes  group from the database
   Future<void> deleteGroupChat(String groupChatId) async {

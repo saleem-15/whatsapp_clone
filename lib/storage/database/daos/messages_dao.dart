@@ -14,8 +14,11 @@ class MessagesDao {
 
   //------------------------adding-------------------------------
   /// this method is faster than [addMsg]
-  static Future<void> addMessage(
-      {required Chat chat, required User sender, required MessageInterface message}) async {
+  static Future<void> addMessage({
+    required Chat chat,
+    required User sender,
+    required MessageInterface message,
+  }) async {
     final msg = MessageDB.fromMessageInterface(message);
     msg.sender.value = sender;
 
@@ -38,7 +41,19 @@ class MessagesDao {
     final chat = (await ChatsDao.getChatByMyId(message.chatId))!;
     Logger().w('chat fetched: $chat');
 
-    return await addMessage(chat: chat, sender: sender!, message: message);
+    return addMessage(chat: chat, sender: sender!, message: message);
+  }
+
+  ///pass the message with its updated file url\
+  ///only used For updating the message download url\
+  ///`WARNING: If it was used for any thing else unpredictable problems will arise`
+  static void updateDownloadUrl(MessageInterface message, {bool silent = true}) {
+    final msg = MessageDB.fromMessageInterface(message);
+
+    isar.writeTxnSync(silent: silent, () {
+      /// save the message in the messages collection
+      isar.messages.putSync(msg);
+    });
   }
 
   static Future<void> addMultipleMessages(Chat chat, List<MessageInterface> messages) async {
