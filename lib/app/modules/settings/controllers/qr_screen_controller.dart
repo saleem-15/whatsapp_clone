@@ -12,18 +12,18 @@ import '../../../providers/users_provider.dart';
 
 class QRScreenController extends GetxController {
   late String userName;
-  late Rx<ImageProvider> userImage;
+  late ImageProvider userImage;
 
   late String userPhoneNumber;
 
   @override
   void onInit() {
     super.onInit();
-    final user = Get.find<UsersProvider>().me!;
+    final user = Get.find<UsersProvider>().me.value;
 
     userName = user.name;
     userPhoneNumber = user.phoneNumber;
-    userImage = UserApi.userImage;
+    userImage = user.imageProvider;
   }
 
   void onShareIconPressed() {}

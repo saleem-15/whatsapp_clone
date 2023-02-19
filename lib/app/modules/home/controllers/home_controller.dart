@@ -12,7 +12,7 @@ class HomeController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     
-    await FcmHelper.setupInteractedMessage();
+    // await FcmHelper.setupInteractedMessage();
   }
 
   void onSearchIconButtonPressed() {

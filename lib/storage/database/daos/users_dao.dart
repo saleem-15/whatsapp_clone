@@ -98,7 +98,7 @@ class UsersDao {
 
     await addUser(
       User.normal(
-        uid: Get.find<UsersProvider>().me!.uid,
+        uid: Get.find<UsersProvider>().me.value.uid,
         bio: bio ?? user!.bio,
         name: name ?? user!.name,
         imageUrl: updateImage ? imageUrl : user!.imageUrl,
@@ -119,5 +119,12 @@ class UsersDao {
     /// phone number is used as the database id
     final userPhone = int.parse(MySharedPref.getUserPhoneNumber!);
     return getUser(userPhone);
+  }
+
+  static Stream<User?> myDataStream() {
+    /// phone number is used as the database id
+    final userPhone = int.parse(MySharedPref.getUserPhoneNumber!);
+
+    return isar.users.watchObject(userPhone);
   }
 }

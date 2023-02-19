@@ -28,7 +28,7 @@ class MyQRCodeTap extends StatelessWidget {
             const Spacer(),
             Obx(
               () => CircleAvatar(
-                backgroundImage: controller.userImage.value,
+                backgroundImage: controller.userImage,
                 radius: 50.r,
               ),
             ),
@@ -49,7 +49,7 @@ class MyQRCodeTap extends StatelessWidget {
               // image: const AssetImage(Assets.illustraion),
               typeNumber: 3,
               size: 200.sp,
-              data: Get.find<UsersProvider>().me!.uid,
+              data: Get.find<UsersProvider>().me.value.uid,
               errorCorrectLevel: QrErrorCorrectLevel.M,
               roundEdges: true,
             ),

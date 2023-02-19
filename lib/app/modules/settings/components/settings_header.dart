@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:whatsapp_clone/app/providers/users_provider.dart';
 
 import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
@@ -77,9 +78,9 @@ class UserAvatar extends StatelessWidget {
   UserAvatar({
     super.key,
     required this.avatarSize,
-  }) : userImageProvider = UserApi.userImage;
+  }) : userImageProvider = Get.find<UsersProvider>().me.value.imageProvider;
 
-  late final Rx<ImageProvider> userImageProvider;
+  late final ImageProvider userImageProvider;
   final double avatarSize;
 
   @override
@@ -87,11 +88,9 @@ class UserAvatar extends StatelessWidget {
     return Stack(
       children: [
         ///user image
-        Obx(
-          () => CircleAvatar(
-            radius: avatarSize,
-            backgroundImage: userImageProvider.value,
-          ),
+        CircleAvatar(
+          radius: avatarSize,
+          backgroundImage: userImageProvider,
         ),
 
         ///Edit Button
@@ -147,7 +146,7 @@ class UserAvatar extends StatelessWidget {
 
     final userImageFile = File(image.path);
 
-    userImageProvider.value = FileImage(userImageFile);
+    userImageProvider = FileImage(userImageFile);
 
     FileManager.saveUserImage(userImageFile);
 

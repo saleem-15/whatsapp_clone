@@ -29,13 +29,6 @@ class AuthApi {
 
     /// if user alreay exists
     if (user != null) {
-      // MySharedPref.storeUserData(
-      //   id: user.uid,
-      //   name: user.name,
-      //   image: user.imageUrl,
-      //   phone: user.phoneNumber,
-      // );
-
       UsersDao.storeMyData(
         id: user.uid,
         name: user.name,
@@ -53,7 +46,6 @@ class AuthApi {
 
     await verifyPhone(phoneNumber);
     UsersDao.setMyData(await _createUserDoc(name, phoneNumber));
-    // MySharedPref.saveUser(await _createUserDoc(name, phoneNumber));
     MySharedPref.setIsMyDocExists(true);
   }
 
@@ -73,7 +65,6 @@ class AuthApi {
     }
 
     UsersDao.setMyData(user);
-    // MySharedPref.saveUser(user);
     MySharedPref.setIsMyDocExists(true);
 
     await verifyPhone(phoneNumber);

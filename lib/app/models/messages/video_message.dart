@@ -114,9 +114,9 @@ class VideoMessage extends MessageInterface {
           type: MessageType.video,
           isSeen: false,
           isSent: false,
-          senderId: Get.find<UsersProvider>().me!.uid,
-          senderName: Get.find<UsersProvider>().me!.name,
-          senderImage: Get.find<UsersProvider>().me!.imageUrl,
+          senderId: Get.find<UsersProvider>().me.value.uid,
+          senderName: Get.find<UsersProvider>().me.value.name,
+          senderImage: Get.find<UsersProvider>().me.value.imageUrl,
           timeSent: DateTime.now(),
         );
 }

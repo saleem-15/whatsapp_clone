@@ -44,7 +44,7 @@ class TextMessage extends MessageInterface {
   ///parameters are => chatId
   @override
   factory TextMessage.toSend({required String chatId, required String text}) {
-    final user = Get.find<UsersProvider>().me!;
+    final user = Get.find<UsersProvider>().me.value;
 
     return TextMessage(
       isSent: false,

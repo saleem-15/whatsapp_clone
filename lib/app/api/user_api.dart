@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
@@ -16,7 +15,6 @@ import 'package:whatsapp_clone/storage/database/daos/groups_dao.dart';
 import 'package:whatsapp_clone/storage/database/daos/private_chats_dao.dart';
 import 'package:whatsapp_clone/storage/database/daos/users_dao.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 import '../providers/users_provider.dart';
@@ -25,24 +23,10 @@ import 'api.dart';
 class UserApi {
   UserApi._();
 
-  static late final StreamSubscription<DocumentSnapshot<Object?>> myDocumentListener;
-  static late final Stream<DocumentSnapshot<Object?>> myDocumentStream;
+  static StreamSubscription<DocumentSnapshot>? myDocumentListener;
+  static late Stream<DocumentSnapshot> myDocumentStream;
 
-  static late Rx<ImageProvider> userImage;
   static late bool isMyDocExists;
-
-  static Future<void> init() async {
-    //Todo: get the real user image
-    File? imageFile;
-    // await FileManager.getUserImage();
-
-    if (imageFile == null) {
-      userImage = Rx(const AssetImage(Assets.default_user_image));
-      return;
-    }
-
-    userImage = Rx(FileImage(imageFile));
-  }
 
   /// returns null if the user does not exist
   static Future<User?> getUserInfoByPhoneNumber(String phoneNumber) async {
@@ -140,7 +124,7 @@ class UserApi {
   static Future<void> wathcMyDocChanges() async {
     while (!MySharedPref.getIsMyDocExists) {
       Logger().i('My Document doesnt yet exists');
-      await Future.delayed(const Duration(seconds: 10));
+      await Future.delayed(const Duration(seconds: 1));
     }
     myDocumentStream = myUserDocument.snapshots();
 
@@ -156,7 +140,7 @@ class UserApi {
       final String bioInDoc = document['about'];
       final String? imageInDoc = document[User.user_image_url_key];
 
-      final user = Get.find<UsersProvider>().me!;
+      final user = Get.find<UsersProvider>().me.value;
 
       if (nameInDoc != user.name ||
           phoneInDoc != user.phoneNumber ||
@@ -237,6 +221,10 @@ class UserApi {
           (userDoc) => User.fromDoc(userDoc),
         )
         .toList();
+  }
+
+  static void stopWathcingMyDocChanges() {
+    myDocumentListener?.cancel();
   }
 }
 

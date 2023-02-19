@@ -16,7 +16,7 @@ final FirebaseFirestore db = FirebaseFirestore.instance;
 final rootStorage = FirebaseStorage.instance.ref();
 final usersCollection = db.collection('users');
 final chatsCollection = db.collection('chats');
-String get myUid => Get.find<UsersProvider>().me!.uid;
+String get myUid => Get.find<UsersProvider>().me.value.uid;
 DocumentReference get myUserDocument => usersCollection.doc(myUid);
 
 extension CollectionExtensions on CollectionReference {

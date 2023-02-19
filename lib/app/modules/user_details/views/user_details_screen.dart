@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +20,6 @@ class ChatDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugger();
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -169,7 +166,7 @@ class ChatDetailsScreen extends StatelessWidget {
               SizedBox(
                 height: 100,
                 child: groupParticipants(
-                  [Get.find<UsersProvider>().me!],
+                  [Get.find<UsersProvider>().me.value],
                   context,
                 ),
               )

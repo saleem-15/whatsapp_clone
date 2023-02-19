@@ -154,8 +154,8 @@ class MySharedPref {
   //   setUserPhoneNumber(user.phoneNumber);
   // }
 
-  static void clearAllData() {
-    _storage.erase();
+  static Future<void> clearAllData() {
+    return _storage.erase();
   }
 
   /// each chat has a counter, (used for file naming),

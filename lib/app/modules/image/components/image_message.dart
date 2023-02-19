@@ -27,8 +27,10 @@ class ImageMessageBubble extends GetView<ChatScreenController> {
 
   @override
   Widget build(BuildContext context) {
-    Logger().i(
-        'image message: sender: ${message.senderName}\n image actual size: (${message.width},${message.height})\n  Image Message Bubble ${displayedSize.toString()}');
+    Logger().i('''
+image message: sender: ${message.senderName}
+image actual size: (${message.width},${message.height})
+Image Message Bubble ${displayedSize.toString()}''');
     return GestureDetector(
       onTap: () => controller.onImagePressed(message),
       child: Container(

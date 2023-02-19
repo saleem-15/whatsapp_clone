@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/auth_controller.dart';
 import 'package:whatsapp_clone/app/modules/settings/screens/qr_screen.dart';
-import 'package:whatsapp_clone/app/api/user_api.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
 
 import '../../../providers/users_provider.dart';
@@ -11,16 +10,16 @@ import '../components/logout_bottom_sheet.dart';
 class SettingsScreenController extends GetxController {
   late final String userName;
   late final String userPhoneNumber;
-  late Rx<ImageProvider> userImage;
+  late ImageProvider userImage;
 
   @override
   void onInit() {
     super.onInit();
-    final user = Get.find<UsersProvider>().me!;
+    final user = Get.find<UsersProvider>().me.value;
 
     userName = user.name;
     userPhoneNumber = user.phoneNumber;
-    userImage = UserApi.userImage;
+    userImage = user.imageProvider;
   }
 
   void onQrIconPressed() {

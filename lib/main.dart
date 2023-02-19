@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/auth_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/screens/signup_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
@@ -30,7 +32,7 @@ Future<void> main() async {
   await Firebase.initializeApp();
 
   await MyDataBase.openDatabase();
-  // await MyDataBase.clearDatabase();
+  await MyDataBase.clearDatabase();
 
   // await UsersDao.addUser(User.normal(
   //   uid: 'pn993AKenlMhLOnaqLDR6BAlxXp1',
@@ -43,20 +45,7 @@ Future<void> main() async {
 
   await initControllers();
 
-  // await Get.find<AuthController>().logout();
-  FcmHelper.initFcm();
-
-  await UserApi.init();
-  UserApi.wathcMyDocChanges();
-
-  // var d = await myUserDocument.get();
-  // var m = d.get('contacts');
-  // log(m.runtimeType.toString());
-
-  // Logger().wtf(m);
   // MyContacts.listenToContacts();
-
-  // resetApp();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
@@ -66,12 +55,36 @@ Future<void> main() async {
 }
 
 Future<void> initControllers() async {
-  Get.put(AuthController(), permanent: true);
-  await Get.putAsync(() async {
-    final usersProvider = UsersProvider();
-    await usersProvider.init();
-    return usersProvider;
-  }, permanent: true);
+  final authController = AuthController(
+    onAuthorized: () async {
+      Logger().wtf('is Authorized: ${FirebaseAuth.instance.currentUser != null}');
+
+      await Get.putAsync(
+        () async {
+          final usersProvider = UsersProvider();
+          await usersProvider.init();
+          return usersProvider;
+        },
+      );
+
+      UserApi.wathcMyDocChanges();
+      await FcmHelper.initFcm();
+      FcmHelper.setupInteractedMessage();
+    },
+    onUnAuthorized: () {
+      Logger().wtf('is Authorized: ${FirebaseAuth.instance.currentUser != null}');
+
+      Get.delete<UsersProvider>();
+      UserApi.stopWathcingMyDocChanges();
+    },
+  );
+
+  Get.put(authController, permanent: true);
+  // await Get.putAsync(() async {
+  //   final usersProvider = UsersProvider();
+  //   await usersProvider.init();
+  //   return usersProvider;
+  // }, permanent: true);
   // Get.lazyPut(() => UsersProvider(), fenix: true);
   Get.lazyPut(() => ChatsProvider(), fenix: true);
   Get.lazyPut(() => ContactsProvider(), fenix: true);
@@ -131,11 +144,11 @@ class Main extends StatelessWidget {
   }
 }
 
-// /// clears all the stored data & signs out (used when developing the app)
-// void resetApp() {
-//   firebase_auth.FirebaseAuth.instance.signOut();
-//   MySharedPref.clearAllData();
-// }
+/// clears all the stored data & signs out (used when developing the app)
+Future<void> resetApp() async {
+  await firebase_auth.FirebaseAuth.instance.signOut();
+  await MySharedPref.clearAllData();
+}
 
 // class Application extends StatefulWidget {
 //   @override

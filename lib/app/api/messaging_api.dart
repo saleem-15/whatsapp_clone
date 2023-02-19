@@ -23,9 +23,9 @@ class MessagingApi {
   static late final String? senderImage;
 
   static void init() {
-    final user = Get.find<UsersProvider>().me!;
-    senderName = user.name;
-    senderImage = user.imageUrl;
+    final user = Get.find<UsersProvider>().me;
+    senderName = user.value.name;
+    senderImage = user.value.imageUrl;
   }
 
   static CollectionReference messagesCollection(String chatId) =>

@@ -25,7 +25,7 @@ class ProfileScreenController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    final user = Get.find<UsersProvider>().me!;
+    final user = Get.find<UsersProvider>().me.value;
 
     nameController.text = user.name;
     phoneNumberFieledController.text = user.phoneNumber;

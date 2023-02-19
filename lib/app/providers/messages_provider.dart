@@ -17,14 +17,14 @@ import '../models/messages/image_message.dart';
 import '../models/user.dart';
 
 class MessagesProvider extends GetxController {
-  User get me => Get.find<UsersProvider>().me!;
+  Rx<User> get me => Get.find<UsersProvider>().me;
 
   ///sends a text message\
   Future<void> sendTextMessage(Chat chat, TextMessage textMessage) async {
     final response = await MessagingApi.sendTextMessage(textMessage);
     MessagesDao.addMessage(
       chat: chat,
-      sender: me,
+      sender: me.value,
       message: textMessage..messageId = response,
     );
   }
@@ -39,7 +39,7 @@ class MessagesProvider extends GetxController {
 
     MessagesDao.addMessage(
       chat: chat,
-      sender: me,
+      sender: me.value,
       message: imageMessage,
     );
   }
@@ -54,7 +54,7 @@ class MessagesProvider extends GetxController {
 
     MessagesDao.addMessage(
       chat: chat,
-      sender: me,
+      sender: me.value,
       message: videoMessage,
     );
   }
@@ -69,7 +69,7 @@ class MessagesProvider extends GetxController {
 
     MessagesDao.addMessage(
       chat: chat,
-      sender: me,
+      sender: me.value,
       message: audioMessage,
     );
   }
@@ -84,7 +84,7 @@ class MessagesProvider extends GetxController {
 
     MessagesDao.addMessage(
       chat: chat,
-      sender: me,
+      sender: me.value,
       message: fileMessage,
     );
   }

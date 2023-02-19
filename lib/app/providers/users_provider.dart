@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import 'package:whatsapp_clone/app/api/user_api.dart';
 import 'package:whatsapp_clone/storage/database/daos/users_dao.dart';
 import 'package:whatsapp_clone/utils/extensions/my_extensions.dart';
@@ -7,27 +6,30 @@ import 'package:whatsapp_clone/utils/extensions/my_extensions.dart';
 import '../models/user.dart';
 
 class UsersProvider extends GetxController {
-  late final User? me;
+  late final Rx<User> me;
+
+  // static late Rx<ImageProvider> userImage;
+
   final users = RxList<Rx<User>>();
 
   /// returns a `copy` of the users list
   // RxList<Rx<User>> get users => RxList.of(_users);
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  Future<void> init() async {
-    final user = await UsersDao.getMyData();
-    Logger().w('User data: $user');
-    me = user;
-    return;
+  init() async {
+    me = (await UsersDao.getMyData())!.obs;
   }
 
   @override
   Future<void> onReady() async {
     super.onReady();
+    // me = (await UsersDao.getMyData())!.obs;
+
+    UsersDao.myDataStream().listen((user) {
+      /// (user = null) only when the user is logging out 
+      if (user != null) {
+        me.value = user;
+      }
+    });
 
     /// (the source of users data is the database)
     /// listen to users changes in the database
