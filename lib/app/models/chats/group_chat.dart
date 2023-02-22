@@ -4,10 +4,10 @@ import 'package:isar/isar.dart';
 import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/storage/database/models/message.dart';
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get_utils/get_utils.dart';
+import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
+import '../../../utils/constants/assest_path.dart';
 import '../user.dart';
 
 part '../../../storage/database/generated_code/group_chat.g.dart';
@@ -22,16 +22,18 @@ class GroupChat extends Chat {
     required super.createdAt,
     required super.usersIds,
   });
+    static const GROUP_NAME_KEY = 'groupName';
+
 
   factory GroupChat.fromChatDoc(QueryDocumentSnapshot chatDoc) {
     assert(chatDoc.exists);
     return GroupChat(
       id: chatDoc.id,
-      createdAt: chatDoc.getDateTime('createdAt')!,
+      createdAt: chatDoc.getDateTime(Chat.CREATED_AT_KEY)!,
       imageUrl: chatDoc['imageUrl'],
       name: chatDoc['groupName'],
       bio: chatDoc['bio'] ?? 'Some Bullshit Quote',
-      usersIds: chatDoc.getStringList('members'),
+      usersIds: chatDoc.getStringList(Chat.CHAT_MEMBERS_KEY),
     );
   }
 
@@ -40,7 +42,7 @@ class GroupChat extends Chat {
   @ignore //dont store this field in the database
   @override
   ImageProvider get imageProvider =>
-      (imageUrl.isBlank! ? const AssetImage(Assets.default_user_image) : NetworkImage(imageUrl!))
+      (Utils.isBlank(imageUrl) ? const AssetImage(Assets.DEFAULT_GROUP_IMAGE) : NetworkImage(imageUrl!))
           as ImageProvider;
 
   @ignore //dont store this field in the database

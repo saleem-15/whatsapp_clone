@@ -4,6 +4,7 @@ import 'package:isar/isar.dart';
 import 'package:whatsapp_clone/app/api/api.dart';
 
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
+import 'package:whatsapp_clone/app/models/messages/message.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/storage/database/models/message.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
@@ -23,7 +24,7 @@ class PrivateChat extends Chat {
 
     return PrivateChat()
       ..id = chatDoc.id
-      ..createdAt = (chatDoc['createdAt'] as Timestamp).toDate()
+      ..createdAt = chatDoc.getDateTime(Message.CREATED_AT_KEY)!
       ..user.value = user
 
       /// super type [Chat] variables
@@ -39,7 +40,7 @@ class PrivateChat extends Chat {
   @ignore
   @override
   ImageProvider get imageProvider => (imageUrl == null || imageUrl!.isEmpty
-      ? const AssetImage(Assets.default_user_image)
+      ? const AssetImage(Assets.DEFAULT_USER_IMAGE)
       : NetworkImage(imageUrl!)) as ImageProvider;
 
   @ignore

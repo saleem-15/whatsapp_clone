@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/api/api.dart';
-import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
+import 'package:whatsapp_clone/app/models/messages/message.dart';
 
 import '../../providers/users_provider.dart';
 import '../message_type_enum.dart';
 import 'file_message.dart';
 
-class ImageMessage extends MessageInterface {
+class ImageMessage extends Message {
   /// json fields names (to ensure that i always (send) and (recieve) the right field name)
   static const IMAGE_NAME_KEY = 'imageName';
   static const IMAGE_URL_KEY = 'imageUrl';
@@ -43,7 +43,7 @@ class ImageMessage extends MessageInterface {
   Map<String, dynamic> toMap() {
     return super.toMap()
       ..addAll({
-        MessageInterface.TEXT_KEY: text,
+        Message.TEXT_KEY: text,
         IMAGE_URL_KEY: imageUrl,
         IMAGE_NAME_KEY: imagePath,
         IMAGE_WIDTH_KEY: width,
@@ -57,13 +57,13 @@ class ImageMessage extends MessageInterface {
       isSent: false,
       isSeen: false,
       chatId: doc.id,
-      senderId: doc[MessageInterface.SENDER_ID_KEY],
-      senderName: doc[MessageInterface.SENDER_NAME_KEY],
-      senderImage: doc[MessageInterface.SENDER_image_KEY],
-      timeSent: doc.getDateTime(MessageInterface.CREATED_AT_KEY)!,
+      senderId: doc[Message.SENDER_ID_KEY],
+      senderName: doc[Message.SENDER_NAME_KEY],
+      senderImage: doc[Message.SENDER_image_KEY],
+      timeSent: doc.getDateTime(Message.CREATED_AT_KEY)!,
       imageUrl: doc[IMAGE_URL_KEY],
       imagePath: doc[IMAGE_NAME_KEY],
-      text: doc[MessageInterface.TEXT_KEY],
+      text: doc[Message.TEXT_KEY],
       height: doc[ImageMessage.IMAGE_HEIGHT_KEY],
       width: doc[IMAGE_WIDTH_KEY],
     )..messageId = doc.id;
@@ -101,19 +101,21 @@ class ImageMessage extends MessageInterface {
   }
 
   factory ImageMessage.fromNotificationPayload(Map<String, dynamic> map) {
-    return ImageMessage(
+    var x = ImageMessage(
       isSent: false,
       isSeen: false,
-      chatId: map[MessageInterface.CHAT_ID_KEY],
-      timeSent: map[MessageInterface.CREATED_AT_KEY],
-      senderId: map[MessageInterface.SENDER_ID_KEY],
-      senderName: map[MessageInterface.SENDER_NAME_KEY],
-      senderImage: map[MessageInterface.SENDER_image_KEY],
+      chatId: map[Message.CHAT_ID_KEY],
+      timeSent: DateTime.parse(map[Message.CREATED_AT_KEY]),
+      senderId: map[Message.SENDER_ID_KEY],
+      senderName: map[Message.SENDER_NAME_KEY],
+      senderImage: map[Message.SENDER_image_KEY],
       imageUrl: map[IMAGE_URL_KEY],
       imagePath: map[IMAGE_NAME_KEY],
-      text: map[MessageInterface.TEXT_KEY],
-      height: map[IMAGE_HEIGHT_KEY],
-      width: map[IMAGE_WIDTH_KEY],
-    );
+      text: map[Message.TEXT_KEY],
+      height: int.parse(map[IMAGE_HEIGHT_KEY]),
+      width: int.parse(map[IMAGE_WIDTH_KEY]),
+    )..messageId = map[Message.MESSAGE_ID_KEY];
+
+    return x;
   }
 }

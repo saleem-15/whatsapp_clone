@@ -4,6 +4,7 @@ publish_to: none
 description: A Chat app that provides all kind of functionality a messaging app would provide
 environment: 
   sdk: '>=2.17.6 <3.0.0'
+  # sdk: '>=2.19.0-0 <4.0.0'
 
 dependencies: 
   flutter: 
@@ -26,7 +27,7 @@ dependencies:
 
   #Notification
   # awesome_notifications_fcm: ^0.7.4+1
-  # awesome_notifications: ^0.7.4+1
+  awesome_notifications: ^0.7.4+1
 
   #Storage packages
   get_storage: ^2.0.3           # key-value pair storage
@@ -34,8 +35,8 @@ dependencies:
   isar_flutter_libs: ^3.0.5     # No-SQL database
   
   #image related packages
-  extended_image: ^6.2.1        #used in image preview screen (to interact with the image)
-  image_picker: ^0.8.6          #used to pick images (.....)          
+  extended_image: ^6.2.1        # used in image preview screen (to interact with the image)
+  image_picker: ^0.8.6          # used to pick images (.....)          
 
 
   #video related packages
@@ -72,6 +73,9 @@ dependencies:
   image_size_getter: ^2.1.2
   video_player: ^2.5.1
   lottie: ^2.2.0
+  flutter_svg: 
+  country_picker: ^2.0.19
+  mask_text_input_formatter: ^2.4.0
   
     
   #infinite_scroll_pagination: ^3.2.0  # used EVERY WHERE

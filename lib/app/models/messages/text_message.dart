@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
+import 'package:whatsapp_clone/app/models/messages/message.dart';
 
 import '../../providers/users_provider.dart';
 import '../message_type_enum.dart';
 
-class TextMessage extends MessageInterface {
+class TextMessage extends Message {
   TextMessage({
     required super.isSent,
     required super.isSeen,
@@ -63,14 +63,17 @@ class TextMessage extends MessageInterface {
       'Text Message(chatId: $chatId, timeSent: $timeSent, text: $text, senderName: $senderName)';
 
   factory TextMessage.fromNotificationPayload(Map<String, dynamic> map) {
-    return TextMessage(
+    var x = TextMessage(
       isSent: false,
       isSeen: false,
-      chatId: map['chatId'],
-      senderName: map[MessageInterface.SENDER_NAME_KEY],
-      timeSent: map[MessageInterface.CREATED_AT_KEY],
-      senderId: map[MessageInterface.SENDER_ID_KEY],
-      text: map[MessageInterface.TEXT_KEY],
-    );
+      senderImage: map[Message.SENDER_image_KEY],
+      chatId: map[Message.CHAT_ID_KEY],
+      senderName: map[Message.SENDER_NAME_KEY],
+      timeSent: DateTime.parse(map[Message.CREATED_AT_KEY]),
+      senderId: map[Message.SENDER_ID_KEY],
+      text: map[Message.TEXT_KEY],
+    )..messageId = map[Message.MESSAGE_ID_KEY];
+
+    return x;
   }
 }

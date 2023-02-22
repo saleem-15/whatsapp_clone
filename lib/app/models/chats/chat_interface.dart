@@ -16,6 +16,10 @@ abstract class Chat {
     required this.id,
   });
 
+  static const CHAT_TYPE_KEY = 'chatType';
+  static const CHAT_MEMBERS_KEY = 'members';
+  static const CREATED_AT_KEY = 'createdAt';
+
   ///its used when you dont want to pass parameters in constructor
   Chat.late();
 
@@ -44,6 +48,6 @@ abstract class Chat {
 
   @ignore
   ImageProvider get imageProvider =>
-      (imageUrl.isBlank! ? const AssetImage(Assets.default_user_image) : NetworkImage(imageUrl!))
+      (imageUrl.isBlank! ? const AssetImage(Assets.DEFAULT_USER_IMAGE) : NetworkImage(imageUrl!))
           as ImageProvider;
 }

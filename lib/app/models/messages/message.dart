@@ -13,16 +13,17 @@ import 'file_message.dart';
 import 'text_message.dart';
 import 'video_message.dart';
 
-abstract class MessageInterface {
+abstract class Message {
   static const SENDER_NAME_KEY = 'senderName';
   static const CHAT_ID_KEY = 'chatId';
   static const SENDER_ID_KEY = 'senderId';
   static const SENDER_image_KEY = 'senderImage';
   static const CREATED_AT_KEY = 'createdAt';
   static const TEXT_KEY = 'text';
+  static const MESSAGE_ID_KEY = 'messageId';
   static const MESSAGE_TYPE_KEY = 'type';
 
-  MessageInterface({
+  Message({
     required this.isSent,
     required this.isSeen,
     required this.chatId,
@@ -61,11 +62,11 @@ abstract class MessageInterface {
     };
   }
 
-  factory MessageInterface.toSend(String chatId, Map<String, dynamic> parameters) {
+  factory Message.toSend(String chatId, Map<String, dynamic> parameters) {
     throw UnimplementedError();
   }
 
-  factory MessageInterface.fromFirestoreDoc(DocumentSnapshot doc) {
+  factory Message.fromFirestoreDoc(DocumentSnapshot doc) {
     assert(doc.exists);
 
     switch (msgTypeEnumfromString(doc['type'])) {
@@ -92,7 +93,7 @@ abstract class MessageInterface {
         throw MessageException.invalidMessageType(doc);
     }
   }
-  factory MessageInterface.fromNotificationPayload(Map<String, dynamic> map) {
+  factory Message.fromNotificationPayload(Map<String, dynamic> map) {
     switch (msgTypeEnumfromString(map['type'])) {
       case MessageType.text:
         return TextMessage.fromNotificationPayload(map);
@@ -118,7 +119,7 @@ abstract class MessageInterface {
     }
   }
 
-  factory MessageInterface.fromDB(MessageDB message) {
+  factory Message.fromDB(MessageDB message) {
     final otherAtrributes = message.getSpecialMessageAttributes();
     switch (message.type) {
       case MessageType.text:

@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:whatsapp_clone/app/api/api.dart';
-import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
+import 'package:whatsapp_clone/app/models/messages/message.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
 import '../../providers/users_provider.dart';
 import '../message_type_enum.dart';
 
-class FileMessage extends MessageInterface {
+class FileMessage extends Message {
   /// json fields names (to ensure that i always (send) and (recieve) the right field name)
   static const FILE_NAME_KEY = 'fileName';
   static const FILE_URL_KEY = 'fileUrl';
@@ -76,13 +76,13 @@ class FileMessage extends MessageInterface {
       isSent: false,
       isSeen: false,
       chatId: doc.id,
-      senderId: doc[MessageInterface.SENDER_ID_KEY],
-      senderName: doc[MessageInterface.SENDER_NAME_KEY],
-      senderImage: doc[MessageInterface.SENDER_image_KEY],
+      senderId: doc[Message.SENDER_ID_KEY],
+      senderName: doc[Message.SENDER_NAME_KEY],
+      senderImage: doc[Message.SENDER_image_KEY],
       downloadUrl: doc[FILE_URL_KEY],
       fileName: doc[FILE_NAME_KEY],
       fileSizeInBytes: doc[FILE_SIZE_KEY],
-      timeSent: doc.getDateTime(MessageInterface.CREATED_AT_KEY)!,
+      timeSent: doc.getDateTime(Message.CREATED_AT_KEY)!,
     )..messageId = doc.id;
   }
 
@@ -102,17 +102,19 @@ class FileMessage extends MessageInterface {
         );
 
   factory FileMessage.fromNotificationPayload(Map<String, dynamic> map) {
-    return FileMessage(
+    var x = FileMessage(
       isSent: false,
       isSeen: false,
       chatId: map['chatId'],
-      timeSent: map[MessageInterface.CREATED_AT_KEY],
-      senderId: map[MessageInterface.SENDER_ID_KEY],
-      senderName: map[MessageInterface.SENDER_NAME_KEY],
-      senderImage: map[MessageInterface.SENDER_image_KEY],
+      timeSent: DateTime.parse(map[Message.CREATED_AT_KEY]),
+      senderId: map[Message.SENDER_ID_KEY],
+      senderName: map[Message.SENDER_NAME_KEY],
+      senderImage: map[Message.SENDER_image_KEY],
       downloadUrl: map[FILE_URL_KEY],
       fileName: map[FILE_NAME_KEY],
-      fileSizeInBytes: map[FILE_SIZE_KEY],
-    );
+      fileSizeInBytes: int.parse(map[FILE_SIZE_KEY]),
+    )..messageId = map[Message.MESSAGE_ID_KEY];
+
+    return x;
   }
 }

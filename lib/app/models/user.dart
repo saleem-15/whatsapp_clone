@@ -16,7 +16,7 @@ class User {
 
   @Index(unique: true, replace: true)
   late String uid;
-  
+
   late String name;
   late String phoneNumber;
   late String bio;
@@ -27,10 +27,9 @@ class User {
   static const user_image_url_key = 'imageUrl';
   static const user_name_key = 'name';
   static const user_phone_number_key = 'phoneNumber';
-  static const user_private_chats_key = 'chats';
   static const user_group_chats_key = 'groups';
   static const user_last_Updated_key = 'lastUpdated';
-  static const user_about_key = 'about';
+  static const user_bio_key = 'bio';
 
   ///--------------------------------------------------------------------
   ///this is for isar database
@@ -47,7 +46,7 @@ class User {
 
   @ignore
   ImageProvider get imageProvider => (imageUrl == null || imageUrl!.isBlank!
-      ? const AssetImage(Assets.default_user_image)
+      ? const AssetImage(Assets.DEFAULT_USER_IMAGE)
       : NetworkImage(imageUrl!)) as ImageProvider;
 
   factory User.fromDoc(dynamic doc) {
@@ -57,7 +56,7 @@ class User {
       phoneNumber: doc[user_phone_number_key] as String,
       imageUrl: doc[user_image_url_key],
       lastUpdated: (doc[user_last_Updated_key] as Timestamp).toDate(),
-      bio: doc[user_about_key],
+      bio: doc[user_bio_key],
     );
   }
 
@@ -74,7 +73,7 @@ class User {
 
       user_last_Updated_key: Timestamp.fromDate(lastUpdated),
 
-      user_about_key: bio,
+      user_bio_key: bio,
     };
   }
 

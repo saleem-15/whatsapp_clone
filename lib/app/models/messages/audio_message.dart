@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
-import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
+import 'package:whatsapp_clone/app/models/messages/message.dart';
 
 import '../../providers/users_provider.dart';
 import '../message_type_enum.dart';
 
-class AudioMessage extends MessageInterface {
+class AudioMessage extends Message {
   static const AUDIO_KEY = 'audioUrl';
   // static const AUDIO_FILE_NAME_KEY = 'fileName';
 
@@ -41,11 +41,11 @@ class AudioMessage extends MessageInterface {
       isSent: false,
       isSeen: false,
       chatId: doc.id,
-      senderId: doc[MessageInterface.SENDER_ID_KEY],
-      senderName: doc[MessageInterface.SENDER_NAME_KEY],
-      senderImage: doc[MessageInterface.SENDER_image_KEY],
+      senderId: doc[Message.SENDER_ID_KEY],
+      senderName: doc[Message.SENDER_NAME_KEY],
+      senderImage: doc[Message.SENDER_image_KEY],
       audioUrl: doc[AUDIO_KEY],
-      timeSent: doc.getDateTime(MessageInterface.CREATED_AT_KEY)!,
+      timeSent: doc.getDateTime(Message.CREATED_AT_KEY)!,
     )..messageId = doc.id;
 
     // Logger().d(x);
@@ -81,10 +81,10 @@ class AudioMessage extends MessageInterface {
       isSent: false,
       isSeen: false,
       chatId: map['chatId'],
-      timeSent: map[MessageInterface.CREATED_AT_KEY],
-      senderId: map[MessageInterface.SENDER_ID_KEY],
-      senderName: map[MessageInterface.SENDER_NAME_KEY],
-      senderImage: map[MessageInterface.SENDER_image_KEY],
+      timeSent: map[Message.CREATED_AT_KEY],
+      senderId: map[Message.SENDER_ID_KEY],
+      senderName: map[Message.SENDER_NAME_KEY],
+      senderImage: map[Message.SENDER_image_KEY],
       audioUrl: map[AUDIO_KEY],
     );
   }

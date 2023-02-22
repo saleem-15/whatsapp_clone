@@ -94,6 +94,11 @@ exports.sendNotification = functions.firestore
     const message = snap.data();
     const messageId = snap.id;
     const chatId = context.params.chatId;
+
+    /// Add the chatId to the message contents (chatId does not exist in the message document in firestore)
+    message['chatId'] = chatId;
+    message['messageId'] = messageId;
+
     // Fetch members from the chat
     return admin
       .firestore()
@@ -119,11 +124,15 @@ exports.sendNotification = functions.firestore
 
         // Convert all values in the `message` object to strings
         // because in payload all entries must be a string
+        //it will delete any property in the message object that has a value of null.
+
         for (const [key, value] of Object.entries(message)) {
           if (value instanceof admin.firestore.Timestamp) {
             message[key] = value.toDate().toISOString();
-          } else {
+          } else if (value !== null && value !== undefined) {
             message[key] = value.toString();
+          }else {
+            delete message[key];
           }
         }
         
@@ -168,12 +177,13 @@ exports.sendNotification = functions.firestore
 
             // Create the notification payload
             const payload = {
-              notification: {
-                title: senderName,
-                body: body,
-                click_action: 'FLUTTER_NOTIFICATION_CLICK',
-                clickAction: 'FLUTTER_NOTIFICATION_CLICK',
-              },
+              // notification: {
+              //   title: senderName,
+              //   body: body,
+              //   click_action: 'FLUTTER_NOTIFICATION_CLICK',
+              //   // clickAction: 'FLUTTER_NOTIFICATION_CLICK',
+              //   playSound: 'true',
+              // },
               data: message
             };
 
