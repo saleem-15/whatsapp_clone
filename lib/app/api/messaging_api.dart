@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/message_type_enum.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
-import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
+import 'package:whatsapp_clone/app/models/messages/message.dart';
 import 'package:whatsapp_clone/app/models/messages/text_message.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
@@ -29,7 +29,7 @@ class MessagingApi {
   }
 
   static CollectionReference messagesCollection(String chatId) =>
-      chatsCollection.doc(chatId).collection('messages').withConverter<MessageInterface>(
+      chatsCollection.doc(chatId).collection('messages').withConverter<Message>(
             fromFirestore: (snapshot, _) => fromFirestoreConverter(snapshot),
             toFirestore: (message, _) => message.toMap(),
           );
@@ -40,7 +40,7 @@ class MessagingApi {
     return messagesCollection(chatId).orderBy('createdAt', descending: true).snapshots();
   }
 
-  static MessageInterface fromFirestoreConverter(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  static Message fromFirestoreConverter(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     Logger().i(snapshot.data());
     switch (msgTypeEnumfromString(snapshot['type'])) {
       case MessageType.text:

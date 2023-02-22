@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
@@ -25,6 +26,7 @@ class UserApi {
 
   static StreamSubscription<DocumentSnapshot>? myDocumentListener;
   static late Stream<DocumentSnapshot> myDocumentStream;
+  static late DocumentSnapshot myDocument;
 
   static late bool isMyDocExists;
 
@@ -131,13 +133,17 @@ class UserApi {
     myDocumentListener = myDocumentStream.listen((document) async {
       // log('****************my document has changed****************');
 
+      /// cache my document in [myDocument] variable
+      myDocument = document;
+      
       final changedChats = await getChangesInChats(document);
 
       applyChanges(changedChats);
 
-      final String nameInDoc = document['name'];
-      final String phoneInDoc = document['phoneNumber'];
-      final String bioInDoc = document['about'];
+      final String nameInDoc = document[User.user_name_key];
+      final String phoneInDoc = document[User.user_phone_number_key];
+      final String bioInDoc = document[User.user_bio_key];
+
       final String? imageInDoc = document[User.user_image_url_key];
 
       final user = Get.find<UsersProvider>().me.value;
@@ -163,7 +169,6 @@ class UserApi {
     /// ******changes in groups******
     List<String> fetchedGroupChatIDsList = doc.getStringList('groups');
     final storedGroupsList = await GroupChatsDao.getAllGroupChatsIDs();
-    Logger().i('Stored Groups ID\'s: $storedGroupsList');
 
     final newGroups = fetchedGroupChatIDsList.where((item) => !storedGroupsList.contains(item)).toList();
     final removedGroups = storedGroupsList.where((item) => !fetchedGroupChatIDsList.contains(item)).toList();
@@ -173,8 +178,6 @@ class UserApi {
     /// contacts are stored as a map<userId,privateChatId> in firestore
     final fetchedContacts = doc.get('contacts') as Map;
     final storedContacts = await PrivateChatsDao.getContactsMap();
-
-    Logger().i('Stored Private Chats ID\'s: $storedContacts');
 
     Map<String, String> newContacts = {};
     Map<String, String> removedContacts = {};
@@ -196,9 +199,6 @@ class UserApi {
         removedContacts[contactId] = chatId;
       }
     });
-
-    Logger().wtf('New Contacts: \n$newContacts');
-    Logger().wtf('Removed Contacts: \n$removedContacts');
 
     return {
       'newContacts': newContacts,
@@ -226,6 +226,35 @@ class UserApi {
   static void stopWathcingMyDocChanges() {
     myDocumentListener?.cancel();
   }
+
+  ///used when the user has signed up,
+  ///to create a record for the user in the database
+  static Future<User> createUserDoc(String name, String phoneNumber) async {
+    /// ensure that the user sign in process is completed
+    /// by using loop with timer
+    while (auth.currentUser == null) {
+      await Future.delayed(const Duration(seconds: 1));
+    }
+
+    final user = User.normal(
+      name: name,
+      phoneNumber: phoneNumber,
+      imageUrl: null,
+      uid: FirebaseAuth.instance.currentUser!.uid,
+      bio: '',
+      lastUpdated: DateTime.now(),
+    );
+
+    await usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).set(
+          user.toMap()
+            ..addAll({
+              'groups': [],
+              'contacts': {},
+            }),
+        );
+
+    return user;
+  }
 }
 
 void applyChanges(Map<String, dynamic> changedChats) {
@@ -233,7 +262,8 @@ void applyChanges(Map<String, dynamic> changedChats) {
   final newContacts = changedChats['newContacts'] as Map;
 
   if (newContacts.isNotEmpty) {
-    Logger().i('new Private Chats ID\'s: $newContacts');
+    Logger().i('New Contacts: \n$newContacts');
+
     Get.find<ContactsProvider>().fetchMultipleNewContacts(newContacts.cast());
   }
 
@@ -241,7 +271,8 @@ void applyChanges(Map<String, dynamic> changedChats) {
   final deletedContacts = changedChats['removedContacts'] as Map;
 
   if (deletedContacts.isNotEmpty) {
-    Logger().i('removed Private Chats ID\'s: $deletedContacts');
+    Logger().i('Removed Contacts: \n$deletedContacts');
+
     Get.find<ContactsProvider>().deleteMultipleContacts(deletedContacts.cast());
   }
 

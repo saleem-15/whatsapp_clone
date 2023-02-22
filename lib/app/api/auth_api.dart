@@ -14,8 +14,6 @@ import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
 import 'api.dart';
 import 'user_api.dart';
 
-/// it returnes true if signup process is successful
-
 class AuthApi {
   AuthApi._();
 
@@ -45,7 +43,7 @@ class AuthApi {
     }
 
     await verifyPhone(phoneNumber);
-    UsersDao.setMyData(await _createUserDoc(name, phoneNumber));
+    UsersDao.setMyData(await UserApi.createUserDoc(name, phoneNumber));
     MySharedPref.setIsMyDocExists(true);
   }
 
@@ -126,36 +124,6 @@ class AuthApi {
           log("Timout");
         },
       );
-
-  ///used when the user has signed up,
-  ///to create a record for the user in the database
-  static Future<User> _createUserDoc(String name, String phoneNumber) async {
-    /// ensure that the user sign in process is completed
-    /// by using loop with timer
-    while (FirebaseAuth.instance.currentUser == null) {
-      await Future.delayed(const Duration(seconds: 1));
-    }
-
-    final user = User.normal(
-      name: name,
-      phoneNumber: phoneNumber,
-      imageUrl: null,
-      uid: FirebaseAuth.instance.currentUser!.uid,
-      bio: '',
-      lastUpdated: DateTime.now(),
-    );
-
-    await usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).set(
-          user.toMap()
-            ..addAll({
-              'groups': [],
-              'myContacts': [],
-              'chats': [],
-            }),
-        );
-
-    return user;
-  }
 
   /// returnes true if the sent code is verified, Otherwise returnes false
   static Future<bool> verifyTheSentCode(String code) async {

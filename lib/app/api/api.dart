@@ -8,8 +8,6 @@ import 'package:get/get.dart';
 
 import '../providers/users_provider.dart';
 
-// class Api{
-
 final FirebaseAuth auth = FirebaseAuth.instance;
 final FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -19,6 +17,7 @@ final chatsCollection = db.collection('chats');
 String get myUid => Get.find<UsersProvider>().me.value.uid;
 DocumentReference get myUserDocument => usersCollection.doc(myUid);
 
+//------------------------- Extensions for firebase -------------------------
 extension CollectionExtensions on CollectionReference {
   /// gets multiple documents,
   /// it finishes when all the queires are done
@@ -47,6 +46,10 @@ extension MyExtension on DocumentSnapshot {
 
   List<String> getStringList(String name) {
     return List.castFrom<dynamic, String>(get(name));
+  }
+
+  Map<A, B> getMap<A, B>(String name) {
+    return Map.castFrom<dynamic, dynamic, A, B>(get(name));
   }
 
   DateTime? getDateTime(String field) {
