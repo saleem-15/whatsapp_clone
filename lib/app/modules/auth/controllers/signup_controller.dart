@@ -1,17 +1,22 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/app/api/auth_api.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
-
-import '../../../api/auth_api.dart';
+import 'package:country_picker/country_picker.dart';
 
 class SignupController extends GetxController {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>(debugLabel: 'sign up global key');
+  var formKey = GlobalKey<FormState>(debugLabel: 'sign up global key');
 
-  final phoneNumberFieledController = TextEditingController();
+  final phoneNumberFieldController = TextEditingController();
   final userNameController = TextEditingController();
 
-  String get phoneNumber => phoneNumberFieledController.text.trim();
+  /// default country is palestine
+  final phoneNumberCountry = Rx<Country>(CountryService().findByCode('Ps')!);
+
+  String? phoneNumber;
   String get userName => userNameController.text.trim();
 
   RxBool isButtonDisable = true.obs;
@@ -29,7 +34,7 @@ class SignupController extends GetxController {
     if (!isValid) {
       return;
     }
-
+    log(phoneNumber!);
     isWaitingResponse(true);
     await AuthApi.signUpService('+$phoneNumber', userName);
     isWaitingResponse(false);
@@ -44,25 +49,13 @@ class SignupController extends GetxController {
   }
 
   void _autoDisableLoginButton() {
-    phoneNumberFieledController.addListener(() {
-      if (phoneNumberFieledController.text.trim().isEmpty) {
+    phoneNumberFieldController.addListener(() {
+      if (phoneNumberFieldController.text.trim().isEmpty) {
         isButtonDisable(true);
         return;
       }
       isButtonDisable(false);
     });
-  }
-
-  String? phoneNumberFieldValidator(String? value) {
-    if (value.isBlank!) {
-      return 'required';
-    }
-
-    if (!value!.isPhoneNumber) {
-      return 'Invalid phone number';
-    }
-
-    return null;
   }
 
   String? userNameValidator(String? value) {
@@ -75,5 +68,9 @@ class SignupController extends GetxController {
     }
 
     return null;
+  }
+
+  void onPhoneNumberChanged(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
   }
 }

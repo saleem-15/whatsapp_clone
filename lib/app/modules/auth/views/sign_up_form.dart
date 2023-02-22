@@ -1,7 +1,10 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
 import 'package:whatsapp_clone/app/modules/auth/controllers/signup_controller.dart';
 import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
@@ -60,24 +63,17 @@ class SignUpForm extends GetView<SignupController> {
           key: controller.formKey,
           child: Column(
             children: [
-              TextFormField(
-                controller: controller.phoneNumberFieledController,
-                keyboardType: TextInputType.phone,
-                textInputAction: TextInputAction.next,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(12),
-                ],
-                decoration: const InputDecoration(
-                  hintText: 'Phone Number',
-                  prefixIcon: Icon(Icons.phone),
-                ),
-                validator: controller.phoneNumberFieldValidator,
+              PhoneNumberField(
+                key: const Key('Sign_up_phone_field'),
+                textController: controller.phoneNumberFieldController,
+                onPhoneNumberChanged: controller.onPhoneNumberChanged,
+                phoneNumberCountry: controller.phoneNumberCountry,
               ),
               SizedBox(
                 height: 15.h,
               ),
               TextFormField(
+                key: const Key('Sign_up_name_field'),
                 controller: controller.userNameController,
                 keyboardType: TextInputType.name,
                 textInputAction: TextInputAction.done,
@@ -131,5 +127,117 @@ class SignUpForm extends GetView<SignupController> {
         ),
       ],
     );
+  }
+}
+
+class PhoneNumberField extends StatelessWidget {
+  const PhoneNumberField({
+    super.key,
+    required this.textController,
+    required this.onPhoneNumberChanged,
+    required this.phoneNumberCountry,
+    this.textInputAction = TextInputAction.done,
+  });
+
+  final TextEditingController textController;
+  final Rx<Country> phoneNumberCountry;
+  final TextInputAction textInputAction;
+
+  static final phoneNumberFormatter = MaskTextInputFormatter(
+    mask: '###-###-#####',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+
+  final void Function(String phoneNumber) onPhoneNumberChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: textController,
+      onChanged: (_) => onPhoneNumberChanged(phoneNumber),
+      keyboardType: TextInputType.phone,
+      textInputAction: textInputAction,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(12),
+        phoneNumberFormatter,
+      ],
+      decoration: InputDecoration(
+        hintText: 'Phone Number',
+
+        /// country (flag,code) & down Arrow
+        prefixIcon: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 10.sp,
+            ),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(5.r),
+                onTap: onPhoneFieldTapped,
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.arrow_drop_down,
+                    ),
+                    Obx(
+                      () => Text(
+                        phoneNumberCountry.value.flagEmoji,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Obx(
+              () => Text(
+                '  +${phoneNumberCountry.value.phoneCode}',
+              ),
+            ),
+            SizedBox(
+              width: 5.sp,
+            ),
+          ],
+        ),
+      ),
+      validator: phoneNumberFieldValidator,
+    );
+  }
+
+  String get phoneNumber {
+    /// country international code + (unformatted) phone number from the text field
+    return '${phoneNumberCountry.value.phoneCode}${phoneNumberFormatter.getUnmaskedText()}';
+  }
+
+  void onPhoneFieldTapped() {
+    showCountryPicker(
+      context: Get.context!,
+      countryListTheme: CountryListThemeData(
+        bottomSheetHeight: 500.h,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(25.r),
+          topRight: Radius.circular(25.r),
+        ),
+      ),
+      showPhoneCode: true,
+      onSelect: (Country country) {
+        onPhoneNumberChanged(phoneNumber);
+        phoneNumberCountry.value = country;
+      },
+    );
+  }
+
+  String? phoneNumberFieldValidator(String? value) {
+    if (value.isBlank!) {
+      return 'required';
+    }
+
+    if (!value!.isPhoneNumber) {
+      return 'Invalid phone number';
+    }
+
+    return null;
   }
 }

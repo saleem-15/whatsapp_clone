@@ -8,6 +8,7 @@ import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/utils/constants/assest_path.dart';
 
 import '../controllers/signin_controller.dart';
+import '../views/sign_up_form.dart';
 
 class SigninScreen extends StatelessWidget {
   SigninScreen({Key? key})
@@ -83,19 +84,11 @@ class SigninScreen extends StatelessWidget {
                     ),
                     Form(
                       key: controller.formKey,
-                      child: TextFormField(
-                        controller: controller.phoneNumberFieledController,
-                        keyboardType: TextInputType.phone,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(12),
-                        ],
-                        decoration: const InputDecoration(
-                          hintText: 'Phone Number',
-                          prefixIcon: Icon(Icons.phone),
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: controller.phoneNumberFieldValidator,
+                      child: PhoneNumberField(
+                        key: const Key('Sign_in_phone_field'),
+                        textController: controller.phoneNumberFieldController,
+                        onPhoneNumberChanged: controller.onPhoneNumberChanged,
+                        phoneNumberCountry: controller.phoneNumberCountry,
                       ),
                     ),
                     SizedBox(
