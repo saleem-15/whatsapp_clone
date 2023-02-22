@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +18,7 @@ import 'app/providers/chats_provider.dart';
 import 'app/providers/groups_provider.dart';
 import 'app/providers/messages_provider.dart';
 import 'app/providers/contacts_provider.dart';
-import 'fcm_helper.dart';
+import 'utils/notifications/fcm_helper.dart';
 import 'storage/my_shared_pref.dart';
 import 'config/theme/my_theme.dart';
 
@@ -31,16 +30,20 @@ Future<void> main() async {
 
   await Firebase.initializeApp();
 
-  await MyDataBase.openDatabase();
-  await MyDataBase.clearDatabase();
 
-  // await UsersDao.addUser(User.normal(
-  //   uid: 'pn993AKenlMhLOnaqLDR6BAlxXp1',
-  //   name: 'emulater',
-  //   phoneNumber: '+970567244417',
-  //   imageUrl: null,
+  await MyDataBase.openDatabase();
+
+  // await MyDataBase.clearDatabase();
+
+  // await resetApp();
+
+  // await UsersDao.setMyData(User.normal(
+  //   uid: 'tUtOnV9Zp8QvU9xI7CHxGGD5XjC3',
+  //   name: 'Saleem',
+  //   phoneNumber: '+970567244416',
+  //   imageUrl: 'https://cloud.ctbuh.org/people/color/10909-giovanni-vigano.jpg',
   //   lastUpdated: DateTime.now(),
-  //   bio: 'my about',
+  //   bio: '',
   // ));
 
   await initControllers();
@@ -57,7 +60,7 @@ Future<void> main() async {
 Future<void> initControllers() async {
   final authController = AuthController(
     onAuthorized: () async {
-      Logger().wtf('is Authorized: ${FirebaseAuth.instance.currentUser != null}');
+      Logger().wtf('is Authorized: ${firebase_auth.FirebaseAuth.instance.currentUser != null}');
 
       await Get.putAsync(
         () async {
@@ -69,10 +72,11 @@ Future<void> initControllers() async {
 
       UserApi.wathcMyDocChanges();
       await FcmHelper.initFcm();
+      Logger().wtf('fcm initilized');
       FcmHelper.setupInteractedMessage();
     },
     onUnAuthorized: () {
-      Logger().wtf('is Authorized: ${FirebaseAuth.instance.currentUser != null}');
+      Logger().wtf('is Authorized: ${firebase_auth.FirebaseAuth.instance.currentUser != null}');
 
       Get.delete<UsersProvider>();
       UserApi.stopWathcingMyDocChanges();
@@ -132,6 +136,7 @@ class Main extends StatelessWidget {
           stream: firebase_auth.FirebaseAuth.instance.authStateChanges(),
           builder: (context, AsyncSnapshot<firebase_auth.User?> snapshot) {
             /// if user == null => the user is not Authenticated
+            // return SignUpScreen();
             if (snapshot.data == null) {
               return SignUpScreen();
             }

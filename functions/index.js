@@ -91,11 +91,13 @@ admin.initializeApp();
 exports.sendNotification = functions.firestore
   .document('chats/{chatId}/messages/{messageId}')
   .onCreate((snap, context) => {
+
     const message = snap.data();
     const messageId = snap.id;
     const chatId = context.params.chatId;
 
-    /// Add the chatId to the message contents (chatId does not exist in the message document in firestore)
+    /// Add the (chatId,messageId) to the message contents
+    /// (chatId does not exist in the message document in firestore)
     message['chatId'] = chatId;
     message['messageId'] = messageId;
 
@@ -108,7 +110,6 @@ exports.sendNotification = functions.firestore
       .then(doc => {
         const members = doc.data().members;
         const senderId = message.senderId;
-        const senderName = message.senderName;
         const messageType = message.type;
 
         console.log('message id=======>', messageId);
@@ -125,7 +126,6 @@ exports.sendNotification = functions.firestore
         // Convert all values in the `message` object to strings
         // because in payload all entries must be a string
         //it will delete any property in the message object that has a value of null.
-
         for (const [key, value] of Object.entries(message)) {
           if (value instanceof admin.firestore.Timestamp) {
             message[key] = value.toDate().toISOString();
@@ -162,6 +162,8 @@ exports.sendNotification = functions.firestore
         // Filter out the sender from the members list
         const filteredMembers = members.filter(id => id !== senderId);
 
+        console.log('users that are notified about the message:' , messageId , '\n' ,filteredMembers)
+
         // Fetch FCM tokens for all members except the sender
         return admin
           .firestore()
@@ -181,7 +183,7 @@ exports.sendNotification = functions.firestore
               //   title: senderName,
               //   body: body,
               //   click_action: 'FLUTTER_NOTIFICATION_CLICK',
-              //   // clickAction: 'FLUTTER_NOTIFICATION_CLICK',
+              // clickAction: 'FLUTTER_NOTIFICATION_CLICK',
               //   playSound: 'true',
               // },
               data: message

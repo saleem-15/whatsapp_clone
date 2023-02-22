@@ -13,22 +13,16 @@ import 'package:whatsapp_clone/storage/database/database.dart';
 import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
 import 'awesome_notifications_helper.dart';
-import 'storage/database/daos/messages_dao.dart';
+import '../../storage/database/daos/messages_dao.dart';
 
 class FcmHelper {
-  // prevent making instance
   FcmHelper._();
 
-  // FCM Messaging
   static late FirebaseMessaging messaging;
 
   /// this function will initialize firebase and fcm instance
   static Future<void> initFcm() async {
-    while (!MySharedPref.getIsMyDocExists) {
-      await Future.delayed(const Duration(seconds: 10));
-    }
-
-    await AwesomeNotificationsHelper.init();
+    // await AwesomeNotificationsHelper.init();
 
     try {
       // initialize fcm and firebase core
@@ -38,7 +32,7 @@ class FcmHelper {
       messaging = FirebaseMessaging.instance;
 
       // notification settings handler
-      await _setupFcmNotificationSettings();
+      // await _setupFcmNotificationSettings();
 
       // generate token if it not already generated and store it on shared pref
       await _generateFcmToken();
@@ -64,31 +58,31 @@ class FcmHelper {
     }
   }
 
-  ///handle fcm notification settings (sound,badge..etc)
-  static Future<void> _setupFcmNotificationSettings() async {
-    //show notification with sound and badge
-    messaging.setForegroundNotificationPresentationOptions(
-      alert: true,
-      sound: true,
-      badge: true,
-    );
-
-    //NotificationSettings settings
-    await messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-      provisional: true,
-    );
-  }
-
   /// generate and save fcm token if its not already generated (generate only for 1 time)
   static Future<void> _generateFcmToken() async {
+    messaging.onTokenRefresh.listen((newToken) {
+      Logger().e(newToken);
+
+      /// if the token did not change
+
+      if (MySharedPref.getFcmToken == newToken) {
+        return;
+      }
+
+      MySharedPref.setFcmToken(newToken);
+      UserApi.setUserFcmToken(newToken);
+    });
+
     try {
       var token = await messaging.getToken();
-      if (token != null) {
+      final storedToken = MySharedPref.getFcmToken;
+      Logger().e(token);
+      bool isNewToken = storedToken != token;
+      log('isNewToken: $isNewToken');
+
+      if (token != null && isNewToken) {
         MySharedPref.setFcmToken(token);
-        _sendFcmTokenToServer(token);
+        UserApi.setUserFcmToken(token);
       } else {
         // retry generating token
         await Future.delayed(const Duration(seconds: 5));
@@ -99,29 +93,17 @@ class FcmHelper {
     }
   }
 
-  /// this method will be triggered when the app generate fcm
-  /// token successfully
-  static _sendFcmTokenToServer(String fcmToken) {
-    UserApi.setUserFcmToken(fcmToken);
-  }
-
   // Without this annotaion the code may not work correctly
   // for details go to:  https://stackoverflow.com/a/67083337
   @pragma('vm:entry-point')
   static Future<void> _fcmBackgroundHandler(RemoteMessage remoteMessage) async {
     // If you're going to use other Firebase services in the background, such as Firestore,
     // make sure you call `Firebase.initializeApp()` before using other Firebase services.
-
-    try {
-      await MyDataBase.openDatabase();
-      final msg = Message.fromNotificationPayload(remoteMessage.data);
-      await MessagesDao.addMsg(msg);
-    } on Exception catch (e) {
-      Logger().e(e);
-    }
-
-    log("Handling a background message:");
+    log("Handling a background message");
     _logNotification(remoteMessage);
+
+    await _saveMessageToDatabse(remoteMessage);
+    
     // _handleMessage(remoteMessage);
 
     showMessageNotification(remoteMessage);
@@ -168,6 +150,12 @@ class FcmHelper {
     Logger().d('Got a message in the foreground!');
     _logNotification(remoteMessage);
 
+    await _saveMessageToDatabse(remoteMessage);
+
+    showMessageNotification(remoteMessage);
+  }
+
+  static Future<void> _saveMessageToDatabse(RemoteMessage remoteMessage) async {
     try {
       await MyDataBase.openDatabase();
       final msg = Message.fromNotificationPayload(remoteMessage.data);
@@ -175,15 +163,6 @@ class FcmHelper {
     } on Exception catch (e) {
       Logger().e(e);
     }
-
-    showMessageNotification(remoteMessage);
-
-    // AwesomeNotificationsHelper.showNotification(
-    //   id: 1,
-    //   title: remoteMessage.notification?.title ?? 'Title',
-    //   body: remoteMessage.notification?.body ?? 'Body',
-    //   payload: remoteMessage.data.cast(),
-    // );
   }
 
   // It is assumed that all messages contain a data field with the key 'type'
