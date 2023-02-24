@@ -6,6 +6,7 @@ environment:
   sdk: '>=2.17.6 <3.0.0'
   # sdk: '>=2.19.0-0 <4.0.0'
 
+
 dependencies: 
   flutter: 
     sdk: flutter
@@ -55,13 +56,14 @@ dependencies:
   underline_indicator: ^0.0.4     # used in the home screen tabbar
   permission_handler: ^10.2.0     
   flutter_contacts: ^1.1.5+1      # Api to your phone contacts
-  pinput: ^2.2.16                 # OTP field UI 
+  pinput: ^2.2.31                 # OTP field UI 
   url_launcher: ^6.1.7            # lanches links/opens files
   flutter_link_previewer: ^3.2.0  # used in text message bubble (to show preview for links)
   flutter_linkify: ^5.0.2         # used to highlight a url in a text
   uuid: ^3.0.7                    # Random Id generator
   pretty_qr_code: ^2.0.3          # generates a QR code       
   mobile_scanner: ^2.1.0          # reads Qr code
+  another_flutter_splash_screen: ^1.1.4 # custom splash screen 
   intl: ^0.17.0
   sliver_header_delegate: ^0.0.5
   flutter_staggered_grid_view: ^0.6.2
@@ -82,6 +84,7 @@ dependencies:
   #flutter_chat_ui: ^1.6.6
 
 
+  flutter_native_splash: ^2.2.18
 
 
 dev_dependencies: 
@@ -94,16 +97,30 @@ dev_dependencies:
   
   # it shows a photo of (your design) under the actual screen
   # (helps in programming the UI)
-  pixel_perfect: ^1.1.1
-    
+  # pixel_perfect: ^1.1.1
+
+  # flutter_launcher_icons: # change app icon
+  # configuration must be in a file with the name "flutter_launcher_icons.yaml" 
+
+
+  # change_app_package_name: # change package name
+  # package url: https://pub.dev/packages/change_app_package_name
+  # run this command to rename the package name (flutter pub run change_app_package_name:main com.sal15.package_name)
+
+
+  # rename_app: # rename app
+  # package url: https://pub.dev/packages/rename_app
+  # run this command to rename the app (flutter pub run rename_app:main all="App name")
 
 flutter: 
   uses-material-design: true
 
+
+
   assets:
     - assets/
     - assets/icons/
+    - assets/images/
     - assets/lottie/
     
-
 

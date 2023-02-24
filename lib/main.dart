@@ -5,12 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:get/get.dart';
+import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
 import 'package:whatsapp_clone/app/modules/auth/controllers/auth_controller.dart';
 import 'package:whatsapp_clone/app/modules/auth/screens/signup_screen.dart';
 import 'package:whatsapp_clone/app/modules/home/views/home_screen.dart';
 import 'package:whatsapp_clone/app/providers/users_provider.dart';
 import 'package:whatsapp_clone/storage/database/database.dart';
+import 'package:whatsapp_clone/utils/ui/custom_snackbar.dart';
 
 import 'app/api/user_api.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
@@ -23,36 +25,38 @@ import 'storage/my_shared_pref.dart';
 import 'config/theme/my_theme.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // // await UsersDao.setMyData(User.normal(
+  // //   uid: 'tUtOnV9Zp8QvU9xI7CHxGGD5XjC3',
+  // //   name: 'Saleem',
+  // //   phoneNumber: '+970567244416',
+  // //   imageUrl: 'https://cloud.ctbuh.org/people/color/10909-giovanni-vigano.jpg',
+  // //   lastUpdated: DateTime.now(),
+  // //   bio: '',
+  // // ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+  );
+
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   await MySharedPref.init();
   MySharedPref.setIsMyDocExists(true);
 
   await Firebase.initializeApp();
 
-
-  await MyDataBase.openDatabase();
-
-  // await MyDataBase.clearDatabase();
-
-  // await resetApp();
-
-  // await UsersDao.setMyData(User.normal(
-  //   uid: 'tUtOnV9Zp8QvU9xI7CHxGGD5XjC3',
-  //   name: 'Saleem',
-  //   phoneNumber: '+970567244416',
-  //   imageUrl: 'https://cloud.ctbuh.org/people/color/10909-giovanni-vigano.jpg',
-  //   lastUpdated: DateTime.now(),
-  //   bio: '',
-  // ));
+  try {
+    await MyDataBase.openDatabase();
+  } on IsarError catch (e) {
+    CustomSnackBar.showCustomErrorSnackBar(
+      message: e.message,
+      duration: const Duration(seconds: 10),
+    );
+  }
 
   await initControllers();
 
-  // MyContacts.listenToContacts();
-
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-  );
+  // FlutterNativeSplash.remove();
 
   runApp(const Main());
 }
@@ -101,26 +105,10 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return GetMaterialApp(
-    //   getPages: AppPages.routes,
-    //   debugShowCheckedModeBanner: false,
-    //   home: ScreenUtilInit(
-    //     builder: (context, child) => Theme(
-    //       data: MyTheme.getThemeData(),
-    //       child: Directionality(
-    //         textDirection: TextDirection.ltr,
-    //         child: PixelPerfect.extended(
-    //           child: const SigninScreen(),
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
-
     return ScreenUtilInit(
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        title: "whatsapp",
+        title: "Chatty",
         getPages: AppPages.routes,
         builder: (context, widget) {
           return Theme(
@@ -132,22 +120,101 @@ class Main extends StatelessWidget {
             ),
           );
         },
-        home: StreamBuilder(
-          stream: firebase_auth.FirebaseAuth.instance.authStateChanges(),
-          builder: (context, AsyncSnapshot<firebase_auth.User?> snapshot) {
-            /// if user == null => the user is not Authenticated
-            // return SignUpScreen();
-            if (snapshot.data == null) {
-              return SignUpScreen();
-            }
+        home: const App(),
+        //    FlutterSplashScreen(
+        //     setNextScreenAsyncCallback: () async {
+        //       await initApp();
+        //       return const App();
+        //     },
+        //     defaultNextScreen: const App(),
 
-            return HomeScreen();
-          },
-        ),
+        //     ///splash screen scaffold color
+        //     backgroundColor: Colors.white,
+        //     splashScreenBody: const SplashScreen(),
+        //   ),
       ),
     );
   }
 }
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: firebase_auth.FirebaseAuth.instance.authStateChanges(),
+      builder: (context, AsyncSnapshot<firebase_auth.User?> snapshot) {
+        /// if user == null => the user is not Authenticated
+        // return SignUpScreen();
+        if (snapshot.data == null) {
+          return SignUpScreen();
+        }
+
+        return HomeScreen();
+      },
+    );
+  }
+}
+
+// void main(){
+//   runApp(MaterialApp(
+//     home: MyApp(),
+//   ));
+// }
+
+// class MyApp extends StatefulWidget {
+//   @override
+//   _MyAppState createState() => _MyAppState();
+// }
+
+// class _MyAppState extends State<MyApp> {
+
+//   Future<Widget> loadFromFuture() async {
+
+//   // <fetch data from server. ex. login>
+
+//      return Future.value(AfterSplash());
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return  SplashScreen(
+//       navigateAfterFuture: loadFromFuture(),
+//       title: const Text('Welcome In SplashScreen',
+//       style: TextStyle(
+//         fontWeight: FontWeight.bold,
+//         fontSize: 20.0
+//       ),),
+//       image: Image.network('https://i.imgur.com/TyCSG9A.png'),
+//       backgroundColor: Colors.white,
+//       styleTextUnderTheLoader: const TextStyle(),
+//       photoSize: 100.0,
+//       onClick: ()=>print("Flutter Egypt"),
+//       loaderColor: Colors.red
+//     );
+//   }
+// }
+
+// class AfterSplash extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//       title: const Text("Welcome In SplashScreen Package"),
+//       automaticallyImplyLeading: false
+//       ),
+//       body: const Center(
+//         child: Text("Done!",
+//         style: TextStyle(
+//           fontWeight: FontWeight.bold,
+//           fontSize: 30.0
+//         ),),
+
+//       ),
+//     );
+//   }
+// }
 
 /// clears all the stored data & signs out (used when developing the app)
 Future<void> resetApp() async {

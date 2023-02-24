@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:797200239476:android:27052df53a40b2fda5fa21",
+        "mobilesdk_app_id": "1:797200239476:android:432194078f6b92e9a5fa21",
         "android_client_info": {
-          "package_name": "com.sal15.whatsapp_clone"
+          "package_name": "com.sal15.chatty"
         }
       },
       "oauth_client": [
         {
-          "client_id": "797200239476-b0g7hfc5a70d6mubprsh5ctqmnhpad34.apps.googleusercontent.com",
+          "client_id": "797200239476-om3qosc6druii02m865a8pj67v9kq2fa.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.sal15.whatsapp_clone",
+            "package_name": "com.sal15.chatty",
             "certificate_hash": "81f0d1c8d111c22ccf05359d355f985dae456d69"
           }
         },
