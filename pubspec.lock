@@ -409,6 +409,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  firebase_crashlytics:
+    dependency: "direct main"
+    description:
+      name: firebase_crashlytics
+      sha256: "816bbb920316c8fe257b460b8856b01e274e867a729961bf7a3be6322cdf13e1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.15"
+  firebase_crashlytics_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_crashlytics_platform_interface
+      sha256: "120e47b9bac3654848d1bdc60b8027f3574b53ee0b81b1a2e5e76ddaa58f6645"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.15"
   firebase_messaging:
     dependency: "direct main"
     description:
@@ -592,6 +608,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutterfire:
+    dependency: "direct main"
+    description:
+      name: flutterfire
+      sha256: "1529c5f7341c47d25d9fd687b3897d8fed7364704319c90e71666b7fff89a1b0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   font_awesome_flutter:
     dependency: "direct main"
     description:
