@@ -16,6 +16,7 @@ class FileMessage extends Message {
   static const FILE_Path_KEY = 'filePath';
 
   FileMessage({
+    super.databaseId,
     required super.isSent,
     required super.isSeen,
     required super.chatId,

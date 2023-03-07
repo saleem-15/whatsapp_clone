@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'package:whatsapp_clone/config/theme/colors.dart';
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
+import 'package:whatsapp_clone/utils/constants/assests.dart';
 
 import '../controllers/qr_screen_controller.dart';
 

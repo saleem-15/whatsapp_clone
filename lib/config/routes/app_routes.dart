@@ -33,6 +33,7 @@ abstract class Routes {
 
   static const SELECT_NEW_GROUP_MEMBERS = _Paths.SELECT_NEW_GROUP_MEMBERS;
 
+  static const QR_CODE_SCREEN = _Paths.QR_CODE_SCREEN;
   /// Arguments:
   /// ```dart
   ///  List<User> selectedUsers
@@ -41,8 +42,10 @@ abstract class Routes {
 }
 
 abstract class _Paths {
+
   _Paths._();
   static const HOME = '/home';
+  static const QR_CODE_SCREEN = '/Qr-code-screen';
   static const SIGNUP = '/SIGNUP';
   static const SIGN_IN = '/SIGN_IN';
   static const OTP_SCREEN = '/otp-screen';

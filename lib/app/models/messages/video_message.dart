@@ -4,6 +4,7 @@ import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/message.dart';
 import 'package:whatsapp_clone/app/providers/users_provider.dart';
+import 'package:whatsapp_clone/storage/files_manager.dart';
 
 import '../message_type_enum.dart';
 
@@ -15,6 +16,7 @@ class VideoMessage extends Message {
   static const VIDEO_HEIGHT_KEY = 'height';
 
   VideoMessage({
+    super.databaseId,
     required super.isSent,
     required super.isSeen,
     required super.chatId,
@@ -27,7 +29,7 @@ class VideoMessage extends Message {
     required this.videoPath,
     int? height,
     int? width,
-  })  : assert(videoUrl != null),
+  })  : assert(videoUrl != null || videoPath != null),
         height = height!,
         width = width!,
         super(type: MessageType.video);
@@ -37,8 +39,19 @@ class VideoMessage extends Message {
   late final int width;
   late final int height;
 
+  /// if the message has been recieved now => it has a [videoUrl].
+  ///
+  /// if I sent the message now => [videoUrl] is null.
   String? videoUrl;
+
+  /// the file path that the video `should be stored at`.
+  ///
+  /// `Note: the file may not exist`
+  /// 
+  ///  `when downloading the video, the video should be saved in this path` 
   String videoPath;
+
+
   String? text;
 
   double get aspectRatio => width / height;
@@ -60,29 +73,41 @@ class VideoMessage extends Message {
 
   @override
   factory VideoMessage.fromDoc(DocumentSnapshot doc) {
+    var chatId = doc.id;
+    var timeSent = doc.getDateTime('createdAt')!;
+
+    /// the file path that the video should be stored at
+    var filePath = FileManager.generateMediaFileName(FileType.video, chatId, timeSent);
     return VideoMessage(
       isSent: false,
       isSeen: false,
-      chatId: doc.id,
+      chatId: chatId,
       senderId: doc['senderId'],
       senderName: doc['senderName'],
       senderImage: doc['senderImage'],
       videoUrl: doc[VIDEO_URL_KEY],
       videoPath: doc[VIDEO_NAME_KEY],
       text: doc['text'],
-      timeSent: doc.getDateTime('createdAt')!,
+      timeSent: timeSent,
       width: doc[VIDEO_WIDTH_KEY],
       height: doc[VIDEO_HEIGHT_KEY],
-    )..messageId = doc.id;
+    )
+      ..messageId = doc.id
+      ..videoPath = filePath;
   }
 
   factory VideoMessage.fromNotificationPayload(Map<String, dynamic> map) {
+    var chatId = map['chatId'];
+    var timeSent = DateTime.parse(map[Message.CREATED_AT_KEY]);
+
+    /// the file path that the video should be stored at
+    var filePath = FileManager.generateMediaFileName(FileType.video, chatId, timeSent);
     var x = VideoMessage(
       isSent: false,
       isSeen: false,
-      chatId: map['chatId'],
+      chatId: chatId,
       senderName: map[Message.SENDER_NAME_KEY],
-      timeSent: DateTime.parse(map[Message.CREATED_AT_KEY]),
+      timeSent: timeSent,
       senderId: map[Message.SENDER_ID_KEY],
       text: map[Message.TEXT_KEY],
       videoPath: map[VIDEO_NAME_KEY],
@@ -90,7 +115,9 @@ class VideoMessage extends Message {
       height: int.parse(map[VIDEO_HEIGHT_KEY]),
       width: int.parse(map[VIDEO_WIDTH_KEY]),
       senderImage: map[Message.SENDER_image_KEY],
-    )..messageId = map[Message.MESSAGE_ID_KEY];
+    )
+      ..messageId = map[Message.MESSAGE_ID_KEY]
+      ..videoPath = filePath;
 
     return x;
   }

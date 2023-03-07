@@ -1,0 +1,9 @@
+# flutter_native_splash-development.yaml
+flutter_native_splash:
+  image: assets/icons/chat.png
+  color: "#ffffff"
+
+
+  android_12:
+    image: assets/icons/chat.png
+    icon_background_color: "#ffffff"

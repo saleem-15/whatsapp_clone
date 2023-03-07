@@ -15,8 +15,9 @@ class UsersProvider extends GetxController {
   /// returns a `copy` of the users list
   // RxList<Rx<User>> get users => RxList.of(_users);
 
-  init() async {
+  Future<void> init() async {
     me = (await UsersDao.getMyData())!.obs;
+    return;
   }
 
   @override
@@ -25,7 +26,7 @@ class UsersProvider extends GetxController {
     // me = (await UsersDao.getMyData())!.obs;
 
     UsersDao.myDataStream().listen((user) {
-      /// (user = null) only when the user is logging out 
+      /// (user = null) only when the user is logging out
       if (user != null) {
         me.value = user;
       }

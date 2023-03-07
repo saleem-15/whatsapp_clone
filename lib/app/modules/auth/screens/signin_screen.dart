@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
+import 'package:whatsapp_clone/utils/constants/assests.dart';
 
 import '../controllers/signin_controller.dart';
 import '../views/sign_up_form.dart';

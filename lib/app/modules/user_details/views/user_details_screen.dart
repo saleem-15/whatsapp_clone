@@ -76,9 +76,12 @@ class ChatDetailsScreen extends StatelessWidget {
               ),
 
               /// Chat image
-              CircleAvatar(
-                foregroundImage: controller.chatImage,
-                radius: 50.r,
+              Hero(
+                tag: controller.chat.id,
+                child: CircleAvatar(
+                  foregroundImage: controller.chatImage,
+                  radius: 50.r,
+                ),
               ),
               SizedBox(
                 height: 10.sp,

@@ -65,13 +65,13 @@ Image Message Bubble ${displayedSize.toString()}''');
                 SizedBox.fromSize(
                   size: displayedSize,
                   child: Hero(
-                    tag: message.imageUrl!,
+                    tag: message.databaseId,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(borderRadius),
                       child: SavedNetworkImage(
                         chatId: message.chatId,
                         imageFilePath: message.imagePath,
-                        imageUrl: message.imageUrl!,
+                        imageUrl: message.imageUrl,
                         timeSent: message.timeSent,
                         onImageDownloaded: (image) => controller.onImageDownloaded(message, image),
                       ),

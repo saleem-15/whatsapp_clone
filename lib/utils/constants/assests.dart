@@ -12,11 +12,11 @@ class Assets {
   static const SEARCH_ICON = 'assets/icons/ic_search.png';
   static const SEARCH_ICON2 = 'assets/icons/ic_search2.png';
 
-  ///lottie 
+  ///lottie
   static const loading = 'assets/lottie/loading.json';
   static const circular_loading = 'assets/lottie/circular_loading.json';
 }
 
-  // static const chat_background_dark = 'assets/chat_background_black.jpg';
-  // static const chat_background_dark_blue = 'assets/chat_background_dark_blue.png';
-  // static const chat_background_light = 'assets/chat_background_light.png';
+// static const chat_background_dark = 'assets/chat_background_black.jpg';
+// static const chat_background_dark_blue = 'assets/chat_background_dark_blue.png';
+// static const chat_background_light = 'assets/chat_background_light.png';

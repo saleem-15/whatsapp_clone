@@ -4,16 +4,18 @@ import 'package:get/get.dart';
 
 import 'package:underline_indicator/underline_indicator.dart';
 import 'package:whatsapp_clone/app/modules/home/views/status_view.dart';
-import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon.dart';
 import 'package:whatsapp_clone/app/shared_widgets/gradient_widgets/gradient_icon_button.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
 import 'package:whatsapp_clone/config/theme/light_theme_colors.dart';
 import 'package:whatsapp_clone/config/theme/my_styles.dart';
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
+import 'package:whatsapp_clone/utils/constants/assests.dart';
 
+import '../../../shared_widgets/gradient_widgets/gradient_icon.dart';
 import '../../user_chats/screens/user_chats_tab.dart';
 import '../controllers/home_controller.dart';
 import 'calls_veiw.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key}) : controller = Get.put(HomeController());
@@ -92,7 +94,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           title: isSearchMode
               ? null
               : const Text(
-                  'WhatsUp',
+                  'Chatty',
                 ),
           actions: [
             /// search (icon button/field)
@@ -111,7 +113,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   backgroundColor: MyColors.LightGreen,
                   backgroundSize: 35.sp,
                   onPressed: () => showMoreButtonPopupMenu(context),
-                  // onPressed: controller.onSettingsOptionSelected,
                 ),
               ),
 
@@ -146,8 +147,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                 SizedBox(
                   width: 10.sp,
                 ),
-              const GradientIcon(
+              GradientIcon(
                 assetIconPath: Assets.SEARCH_ICON,
+                iconSize: 16.sp,
               ),
 
               /// TextField

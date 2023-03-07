@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
+import 'package:logger/logger.dart';
 import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/storage/database/models/message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 
-import '../../../utils/constants/assest_path.dart';
+import '../../../utils/constants/assests.dart';
 import '../user.dart';
 
 part '../../../storage/database/generated_code/group_chat.g.dart';
@@ -22,18 +23,20 @@ class GroupChat extends Chat {
     required super.createdAt,
     required super.usersIds,
   });
-    static const GROUP_NAME_KEY = 'groupName';
+  static const GROUP_NAME_KEY = 'groupName';
 
+  factory GroupChat.fromChatDoc(QueryDocumentSnapshot groupDoc) {
+    assert(groupDoc.exists);
 
-  factory GroupChat.fromChatDoc(QueryDocumentSnapshot chatDoc) {
-    assert(chatDoc.exists);
+    Logger().w(groupDoc.exists);
+
     return GroupChat(
-      id: chatDoc.id,
-      createdAt: chatDoc.getDateTime(Chat.CREATED_AT_KEY)!,
-      imageUrl: chatDoc['imageUrl'],
-      name: chatDoc['groupName'],
-      bio: chatDoc['bio'] ?? 'Some Bullshit Quote',
-      usersIds: chatDoc.getStringList(Chat.CHAT_MEMBERS_KEY),
+      id: groupDoc.id,
+      createdAt: groupDoc.getDateTime(Chat.CREATED_AT_KEY)!,
+      imageUrl: groupDoc['imageUrl'],
+      name: groupDoc['groupName'],
+      bio: groupDoc['bio'] ?? 'Some Bullshit Quote',
+      usersIds: groupDoc.getStringList(Chat.CHAT_MEMBERS_KEY),
     );
   }
 
@@ -42,7 +45,7 @@ class GroupChat extends Chat {
   @ignore //dont store this field in the database
   @override
   ImageProvider get imageProvider =>
-      (Utils.isBlank(imageUrl) ? const AssetImage(Assets.DEFAULT_GROUP_IMAGE) : NetworkImage(imageUrl!))
+      (Utils.isBlank(imageUrl) ? const AssetImage(Assets.CHAT_IMAGE) : NetworkImage(imageUrl!))
           as ImageProvider;
 
   @ignore //dont store this field in the database

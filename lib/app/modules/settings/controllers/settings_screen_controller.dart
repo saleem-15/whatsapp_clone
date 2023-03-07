@@ -23,7 +23,7 @@ class SettingsScreenController extends GetxController {
   }
 
   void onQrIconPressed() {
-    Get.to(QRScreen());
+    Get.toNamed(Routes.QR_CODE_SCREEN);
   }
 
   void onAccountTilePressed() {

@@ -110,7 +110,7 @@ class FileMessageBubble extends GetView<ChatScreenController> {
                                 Text(
                                   '${message.formattedSize}  ${message.fileType.toUpperCase()}',
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.caption!.copyWith(
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                         fontSize: 12.sp,
                                       ),
                                 ),
@@ -142,6 +142,20 @@ class FileMessageBubble extends GetView<ChatScreenController> {
                       style: MessageBubbleSettings.timeSentTextStyle,
                     ),
                   ),
+                  SizedBox(
+                    width: 5.sp,
+                  ),
+
+                  // Align(
+                  //   alignment: const Alignment(0, 1),
+                  //   child: Icon(
+                  //     message.isSeen ?
+                  //     // FontAwesomeIcons.clock,
+                  //     // Icons.done_all_rounded,
+                  //     Icons.done,
+                  //     size: 16.sp,
+                  //   ),
+                  // ),
                 ],
               ),
             ),

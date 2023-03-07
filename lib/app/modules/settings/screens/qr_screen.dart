@@ -11,8 +11,8 @@ import 'package:whatsapp_clone/config/theme/light_theme_colors.dart';
 
 import '../controllers/qr_screen_controller.dart';
 
-class QRScreen extends StatelessWidget {
-  QRScreen({Key? key})
+class QRCodeScreen extends StatelessWidget {
+  QRCodeScreen({Key? key})
       : controller = Get.put(QRScreenController()),
         super(key: key);
 

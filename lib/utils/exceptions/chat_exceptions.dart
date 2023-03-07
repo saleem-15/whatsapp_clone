@@ -13,8 +13,8 @@ class ChatException extends BaseException {
   ExceptionType exceptionType;
 
   ///throws a custom exception from type [ChatException]
-  static void chatAlreadyExists() {
-    throw ChatException._(
+  static ChatException chatAlreadyExists() {
+   return  ChatException._(
       msg: 'Chat Already Exists',
       exceptionType: ExceptionType.chatAlreadyExists,
     );

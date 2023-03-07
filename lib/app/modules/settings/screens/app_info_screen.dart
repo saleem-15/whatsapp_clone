@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whatsapp_clone/config/theme/my_styles.dart';
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
+import 'package:whatsapp_clone/utils/constants/assests.dart';
 
 class AppInfoScreen extends StatelessWidget {
   const AppInfoScreen({super.key});

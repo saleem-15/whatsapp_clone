@@ -12,9 +12,9 @@ import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/utils/exceptions/message_exceptions.dart';
 
 import '../../../app/models/messages/file_message.dart';
-import '../../../app/models/messages/message_interface.dart';
+import '../../../app/models/messages/message.dart';
 
-part '../generated_code/message.g.dart';
+part 'message.g.dart';
 
 @Collection(accessor: 'messages')
 class MessageDB {
@@ -23,8 +23,11 @@ class MessageDB {
 
   late final String chatId;
 
-  @Index(unique: true,replace: true)
-  late final String messageId;
+  @Index(unique: true, replace: true)
+
+  ///This id is assigned from firbase
+  ///so it will be null untill firebase respnds with the id value
+  String? messageId;
 
   ///* This field helps to identify the message type
   @enumerated
@@ -64,7 +67,7 @@ class MessageDB {
     return jsonDecode(specialMessageAttributes!);
   }
 
-  factory MessageDB.fromMessageInterface(MessageInterface message) {
+  factory MessageDB.fromMessageInterface(Message message) {
     switch (message.type) {
       case MessageType.text:
         message as TextMessage;
@@ -93,8 +96,8 @@ class MessageDB {
 
           //
           ..fileURl = message.imageUrl
-          
-          ..contentFilePath = message.imagePath  ..setSpecialMessageAttributes({
+          ..contentFilePath = message.imagePath
+          ..setSpecialMessageAttributes({
             ImageMessage.IMAGE_WIDTH_KEY: message.width,
             ImageMessage.IMAGE_HEIGHT_KEY: message.height,
           });

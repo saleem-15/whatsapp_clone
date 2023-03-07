@@ -53,24 +53,17 @@ class GroupDetailsController extends GetxController {
     /// check if there is a name
     if (groupName.isEmpty) {
       CustomSnackBar.showCustomSnackBar(
-        message: "Enter the name of the group!",
+        message: "Enter the name of the group",
       );
 
       return;
     }
 
-    /// check if there is an image
-    if (groupImageFile == null) {
-      CustomSnackBar.showCustomSnackBar(
-        message: "Add an image for the group!",
-      );
-
-      return;
-    }
-
-    await createGroupChat(groupName, selectedUsersIds, groupImageFile);
-
-    // await Get.find<GroupChatsProvider>().reFetchChats();
+    await createGroupChat(
+      groupName: groupName,
+      groupMembersIds: selectedUsersIds,
+      groupImage: groupImageFile,
+    );
 
     Get.offAllNamed(Routes.HOME);
   }

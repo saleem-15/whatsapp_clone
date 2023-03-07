@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:whatsapp_clone/app/api/user_api.dart';
 import 'package:whatsapp_clone/app/api/chats_creater_api.dart';
@@ -15,6 +17,20 @@ class QRScreenController extends GetxController {
   late ImageProvider userImage;
 
   late String userPhoneNumber;
+
+  String get encodeQrCodeData {
+    return Get.find<UsersProvider>().me.value.uid;
+    return json.encode({
+      'userId': Get.find<UsersProvider>().me.value.uid,
+      'userName': userName,
+    });
+  }
+
+//   Map decodeQrCodeData(String data) {
+// jsonDecode(source)
+
+//     return json.decode(data);
+//   }
 
   @override
   void onInit() {
@@ -58,7 +74,8 @@ class QRScreenController extends GetxController {
 
       /// if you already  chat already exists
     } on ChatException catch (e) {
-      log(e.toString());
+      // log(e.toString());
+      Logger().e(e);
       CustomSnackBar.showCustomErrorSnackBar(
         message: 'The user is already in your contacts',
       );

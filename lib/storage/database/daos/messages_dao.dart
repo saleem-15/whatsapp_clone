@@ -1,7 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
-import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
+import 'package:whatsapp_clone/app/models/messages/message.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/storage/database/daos/chats_dao.dart';
 import 'package:whatsapp_clone/storage/database/daos/users_dao.dart';
@@ -17,7 +17,7 @@ class MessagesDao {
   static Future<void> addMessage({
     required Chat chat,
     required User sender,
-    required MessageInterface message,
+    required Message message,
   }) async {
     final msg = MessageDB.fromMessageInterface(message);
     msg.sender.value = sender;
@@ -34,12 +34,12 @@ class MessagesDao {
   }
 
   /// inserts a new message, Consider using [addMessage] method (its faster)
-  static Future<void> addMsg(MessageInterface message) async {
-    Logger().w('add message (DB)');
+  static Future<void> addMsg(Message message) async {
+    // Logger().w('add message (DB)');
     User? sender = await UsersDao.getUserByMyID(message.senderId);
-    Logger().w('user fetched: $sender');
+    // Logger().w('user fetched: $sender');
     final chat = (await ChatsDao.getChatByMyId(message.chatId))!;
-    Logger().w('chat fetched: $chat');
+    // Logger().w('chat fetched: $chat');
 
     return addMessage(chat: chat, sender: sender!, message: message);
   }
@@ -47,7 +47,7 @@ class MessagesDao {
   ///pass the message with its updated file url\
   ///only used For updating the message download url\
   ///`WARNING: If it was used for any thing else unpredictable problems will arise`
-  static void updateDownloadUrl(MessageInterface message, {bool silent = true}) {
+  static void updateDownloadUrl(Message message, {bool silent = true}) {
     final msg = MessageDB.fromMessageInterface(message);
 
     isar.writeTxnSync(silent: silent, () {
@@ -56,7 +56,7 @@ class MessagesDao {
     });
   }
 
-  static Future<void> addMultipleMessages(Chat chat, List<MessageInterface> messages) async {
+  static Future<void> addMultipleMessages(Chat chat, List<Message> messages) async {
     final msgs = messages.map((e) => MessageDB.fromMessageInterface(e)).toList();
 
     await isar.writeTxn(() async {
@@ -110,18 +110,6 @@ class MessagesDao {
     return isar.messages.filter().chatIdEqualTo(chatId).findAll();
   }
 
-  // static Stream<List<MessageDB>> chatMessagesStream() {
-  // static void chatMessagesStream() {
-  //   // return
-  //    isar.messages.where().chatIdProperty().watch();
-  // }
-
-  // static Future<List<int>> getAllMessagesIDs() async {
-  //   final messages = await getAllChatMessages();
-
-  //   /// return only the ids
-  //   return messages.map((e) => e.id).toList();
-  // }
   static Future<List<int>> getAllChatMessagesIDs(String chatId) async {
     final messages = await getAllChatMessages(chatId);
 
@@ -129,14 +117,18 @@ class MessagesDao {
     return messages.map((e) => e.id).toList();
   }
 
-  static Future<Stream<List<MessageInterface>>> getChatMessagesStream(String chatId) async {
-    final chat = await ChatsDao.getChatByMyId(chatId);
+  static Stream<List<Message>> getChatMessagesStream(Chat chat) {
+    return chat.messages
+        .filter()
+        .sortByTimeSentDesc()
+        .watch(fireImmediately: true)
+        .map((List<MessageDB> messagesDB) {
+      final List<Message> msgs = [];
 
-    return chat!.messages.filter().watch(fireImmediately: true).map((List<MessageDB> messageDB) {
-      final List<MessageInterface> msgs = [];
+      Logger().wtf(messagesDB.length);
 
-      for (var message in messageDB) {
-        msgs.add(MessageInterface.fromDB(message));
+      for (var message in messagesDB) {
+        msgs.add(Message.fromDB(message));
       }
 
       return msgs;

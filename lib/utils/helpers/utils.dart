@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
+  // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:io';
 
@@ -110,9 +110,16 @@ class Utils {
 //   return Size(width, height);
 // }
 
- static Future<Size> getImageSize(File imageFile) async {
+  static Future<Size> getImageSize(File imageFile) async {
     final size = ImageSizeGetter.getSize(FileInput(imageFile));
     return size;
   }
 
+  ///checls if the string is `null` or `empty` or `its only space`
+  static bool isBlank(String? x) {
+    if (x == null || x.trim().isEmpty) {
+      return true;
+    }
+    return false;
+  }
 }

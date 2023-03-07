@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../models/message.dart';
+part of 'message.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -123,7 +123,12 @@ int _messageDBEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.messageId.length * 3;
+  {
+    final value = object.messageId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.specialMessageAttributes;
     if (value != null) {
@@ -170,7 +175,7 @@ MessageDB _messageDBDeserialize(
   object.id = id;
   object.isSeen = reader.readBool(offsets[3]);
   object.isSent = reader.readBool(offsets[4]);
-  object.messageId = reader.readString(offsets[5]);
+  object.messageId = reader.readStringOrNull(offsets[5]);
   object.specialMessageAttributes = reader.readStringOrNull(offsets[6]);
   object.text = reader.readStringOrNull(offsets[7]);
   object.timeSent = reader.readDateTime(offsets[8]);
@@ -197,7 +202,7 @@ P _messageDBDeserializeProp<P>(
     case 4:
       return (reader.readBool(offset)) as P;
     case 5:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
@@ -241,38 +246,38 @@ void _messageDBAttach(IsarCollection<dynamic> col, Id id, MessageDB object) {
 }
 
 extension MessageDBByIndex on IsarCollection<MessageDB> {
-  Future<MessageDB?> getByMessageId(String messageId) {
+  Future<MessageDB?> getByMessageId(String? messageId) {
     return getByIndex(r'messageId', [messageId]);
   }
 
-  MessageDB? getByMessageIdSync(String messageId) {
+  MessageDB? getByMessageIdSync(String? messageId) {
     return getByIndexSync(r'messageId', [messageId]);
   }
 
-  Future<bool> deleteByMessageId(String messageId) {
+  Future<bool> deleteByMessageId(String? messageId) {
     return deleteByIndex(r'messageId', [messageId]);
   }
 
-  bool deleteByMessageIdSync(String messageId) {
+  bool deleteByMessageIdSync(String? messageId) {
     return deleteByIndexSync(r'messageId', [messageId]);
   }
 
-  Future<List<MessageDB?>> getAllByMessageId(List<String> messageIdValues) {
+  Future<List<MessageDB?>> getAllByMessageId(List<String?> messageIdValues) {
     final values = messageIdValues.map((e) => [e]).toList();
     return getAllByIndex(r'messageId', values);
   }
 
-  List<MessageDB?> getAllByMessageIdSync(List<String> messageIdValues) {
+  List<MessageDB?> getAllByMessageIdSync(List<String?> messageIdValues) {
     final values = messageIdValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'messageId', values);
   }
 
-  Future<int> deleteAllByMessageId(List<String> messageIdValues) {
+  Future<int> deleteAllByMessageId(List<String?> messageIdValues) {
     final values = messageIdValues.map((e) => [e]).toList();
     return deleteAllByIndex(r'messageId', values);
   }
 
-  int deleteAllByMessageIdSync(List<String> messageIdValues) {
+  int deleteAllByMessageIdSync(List<String?> messageIdValues) {
     final values = messageIdValues.map((e) => [e]).toList();
     return deleteAllByIndexSync(r'messageId', values);
   }
@@ -371,8 +376,28 @@ extension MessageDBQueryWhere
     });
   }
 
+  QueryBuilder<MessageDB, MessageDB, QAfterWhereClause> messageIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'messageId',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterWhereClause> messageIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'messageId',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
   QueryBuilder<MessageDB, MessageDB, QAfterWhereClause> messageIdEqualTo(
-      String messageId) {
+      String? messageId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'messageId',
@@ -382,7 +407,7 @@ extension MessageDBQueryWhere
   }
 
   QueryBuilder<MessageDB, MessageDB, QAfterWhereClause> messageIdNotEqualTo(
-      String messageId) {
+      String? messageId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -923,8 +948,25 @@ extension MessageDBQueryFilter
     });
   }
 
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'messageId',
+      ));
+    });
+  }
+
+  QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
+      messageIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'messageId',
+      ));
+    });
+  }
+
   QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -938,7 +980,7 @@ extension MessageDBQueryFilter
 
   QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition>
       messageIdGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -953,7 +995,7 @@ extension MessageDBQueryFilter
   }
 
   QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -968,8 +1010,8 @@ extension MessageDBQueryFilter
   }
 
   QueryBuilder<MessageDB, MessageDB, QAfterFilterCondition> messageIdBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -1853,7 +1895,7 @@ extension MessageDBQueryProperty
     });
   }
 
-  QueryBuilder<MessageDB, String, QQueryOperations> messageIdProperty() {
+  QueryBuilder<MessageDB, String?, QQueryOperations> messageIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'messageId');
     });

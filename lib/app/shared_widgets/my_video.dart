@@ -19,7 +19,9 @@ class NetworkOrLocalVideo extends StatefulWidget {
     this.borderRadius = BorderRadius.zero,
   }) : super(key: key);
 
-  final String videoUrl;
+  /// vidoe url is null if it the user has just sent the video
+  /// and the video is not finished uploading. 
+  final String? videoUrl;
 
   final String videoFilePath;
 
@@ -28,7 +30,7 @@ class NetworkOrLocalVideo extends StatefulWidget {
   final String chatId;
   final BorderRadius? borderRadius;
 
-  final Function(File image) onVideoDownloaded;
+  final void Function(File image) onVideoDownloaded;
 
   @override
   State<NetworkOrLocalVideo> createState() => _NetworkOrLocalVideoState();
@@ -69,6 +71,8 @@ class _NetworkOrLocalVideoState extends State<NetworkOrLocalVideo> {
   ///
   /// if it was not saved it will be downloaded and saved.
   Future<void> getVideo() async {
+    
+
     final videoFile = File(widget.videoFilePath);
     final isFileExists = await videoFile.exists();
 
@@ -86,7 +90,7 @@ class _NetworkOrLocalVideoState extends State<NetworkOrLocalVideo> {
 
   Future<void> downloadVideo() async {
     await FileManager.downloadFile(
-      downloadUrl: widget.videoUrl,
+      downloadUrl: widget.videoUrl!,
 
       ///store the video in the provided path
       filePath: widget.videoFilePath,

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart' hide User;
 
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/storage/database/database.dart';
+import 'package:whatsapp_clone/storage/my_shared_pref.dart';
 
 import '../../../../config/routes/app_pages.dart';
 
@@ -47,6 +48,7 @@ class AuthController extends GetxController {
   Future<void> logout([bool navigateToSignInPage = true]) async {
     await FirebaseAuth.instance.signOut();
     await MyDataBase.clearDatabase();
+    await MySharedPref.clearAllData();
 
     if (navigateToSignInPage) {
       Get.offAllNamed(Routes.SIGN_IN);

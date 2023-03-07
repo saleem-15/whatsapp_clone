@@ -12,6 +12,7 @@ class AudioMessage extends Message {
   // static const AUDIO_FILE_NAME_KEY = 'fileName';
 
   AudioMessage({
+    super.databaseId,
     required super.isSent,
     required super.isSeen,
     required super.chatId,

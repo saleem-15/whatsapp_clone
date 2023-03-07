@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:whatsapp_clone/app/modules/addNewGroup/views/group_details_screen.dart';
+import 'package:whatsapp_clone/app/modules/add_new_group/views/group_details_screen.dart';
 
-import '../../app/modules/addNewGroup/views/select_group_members_screen.dart';
+import '../../app/modules/add_new_group/views/select_group_members_screen.dart';
 import '../../app/modules/auth/screens/otp_screen.dart';
 import '../../app/modules/auth/screens/signin_screen.dart';
 import '../../app/modules/auth/screens/signup_screen.dart';
@@ -12,6 +12,7 @@ import '../../app/modules/settings/screens/app_info_screen.dart';
 import '../../app/modules/settings/screens/help_screen.dart';
 import '../../app/modules/settings/screens/privacy_policy_screen.dart';
 import '../../app/modules/settings/screens/profile_screen.dart';
+import '../../app/modules/settings/screens/qr_screen.dart';
 import '../../app/modules/settings/screens/settings_screen.dart';
 import '../../app/modules/settings/screens/terms_screen.dart';
 import '../../app/modules/user_details/views/user_details_screen.dart';
@@ -77,6 +78,10 @@ class AppPages {
     GetPage(
       name: _Paths.APP_INFO_SCREEN,
       page: () => const AppInfoScreen(),
+    ),
+    GetPage(
+      name: _Paths.QR_CODE_SCREEN,
+      page: () =>  QRCodeScreen(),
     ),
     GetPage(
       name: _Paths.CHAT_DETAILS_SCREEN,

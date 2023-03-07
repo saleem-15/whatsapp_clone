@@ -32,32 +32,32 @@ class Messages extends GetView<ChatScreenController> {
             children: [
               Builder(
                 builder: (context) {
+                  Key key = Key('${message.databaseId}');
                   switch (message.type) {
                     case MessageType.text:
                       return MessageBubble(
-                        // key: Key(message.timeSent.),
+                        key: key,
                         message: message as TextMessage,
                       );
                     case MessageType.image:
                       message as ImageMessage;
                       return ImageMessageBubble(
-                        key: Key(message.imageUrl ?? message.imagePath),
+                        key: key,
                         message: message,
                       );
 
                     case MessageType.video:
-                    
                       message as VideoMessage;
                       return VideoMessageBubble(
-                        key: Key(message.videoUrl ?? message.videoPath),
+                        key: key,
                         message: message,
-                        video: message.videoUrl!,
+                        // video: message.videoUrl,
                       );
 
                     case MessageType.audio:
                       message as AudioMessage;
                       return AudioMessageBubble(
-                        key: Key(message.audioUrl ?? message.audioPath!),
+                        key: key,
                         isMyMessage: message.isMyMessage,
                         audioPath: message.audioUrl!,
                         timeSent: Utils.formatDate(message.timeSent),

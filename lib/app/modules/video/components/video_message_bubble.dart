@@ -8,6 +8,7 @@ import 'package:logger/logger.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/modules/chat/controllers/chat_screen_controller.dart';
 import 'package:whatsapp_clone/app/shared_widgets/my_video.dart';
+import 'package:whatsapp_clone/storage/files_manager.dart';
 import 'package:whatsapp_clone/utils/helpers/message_bubble_settings.dart';
 
 import '../../chat/components/messages/media_message_size.dart';
@@ -15,11 +16,9 @@ import '../../chat/components/messages/media_message_size.dart';
 class VideoMessageBubble extends StatefulWidget {
   const VideoMessageBubble({
     Key? key,
-    required this.video,
     required this.message,
   }) : super(key: key);
 
-  final String video;
   final VideoMessage message;
 
   @override
@@ -60,19 +59,19 @@ class _VideoMessageBubbleState extends State<VideoMessageBubble> {
           SizedBox.fromSize(
             size: displayedSize,
             child: GestureDetector(
-              onTap: () => controller.onViedeoPressed(widget.message),
+              onTap: () => controller.onVideoPressed(widget.message),
               child: Stack(
                 fit: StackFit.passthrough,
                 children: [
                   ///video
                   Hero(
-                    tag: widget.message.videoUrl!,
+                    tag: widget.message.databaseId,
                     child: NetworkOrLocalVideo(
                       borderRadius: MessageBubbleSettings.allCornersRoundedBorder,
                       chatId: widget.message.chatId,
                       aspectRatio: widget.message.aspectRatio,
                       videoFilePath: widget.message.videoPath,
-                      videoUrl: widget.message.videoUrl!,
+                      videoUrl: widget.message.videoUrl,
                       onVideoDownloaded: (video) => controller.onvideoDownloaded(widget.message, video),
                     ),
                   ),

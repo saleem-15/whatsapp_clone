@@ -121,10 +121,13 @@ class UsersDao {
     return getUser(userPhone);
   }
 
-  static Stream<User?> myDataStream() {
+  static Stream<User?> myDataStream([bool fireImmediately = false]) {
     /// phone number is used as the database id
     final userPhone = int.parse(MySharedPref.getUserPhoneNumber!);
 
-    return isar.users.watchObject(userPhone);
+    return isar.users.watchObject(
+      userPhone,
+      fireImmediately: fireImmediately,
+    );
   }
 }

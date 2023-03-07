@@ -16,4 +16,12 @@ extension MyListExtensions<T> on List<T> {
       addAll(values);
     }
   }
+
+  ///checks if the string is `empty` or `null` or is only `space`
+  bool isBlank(String? x) {
+    if (x == null || x.trim().isEmpty) {
+      return true;
+    }
+    return false;
+  }
 }

@@ -15,14 +15,29 @@ class SavedNetworkImage extends StatefulWidget {
     required this.onImageDownloaded,
   }) : super(key: key);
 
+  //  const SavedNetworkImage({
+  //   super.key,
+  //   required this.imageUrl,
+  //   required this.imageFilePath,
+  //   required this.chatId,
+  //   required this.timeSent,
+  //   required this.onImageDownloaded,
+  // }) : assert(
+  //         imageUrl != null || imageFilePath != null,
+  //         'imageUrl and imageFilePath cant be both null',
+  //       );
+
   /// the url used to download the image if it wasn't saved in [imageFilePath]
-  final String imageUrl;
+  /// 
+  /// Note: it should be null `ONLY` if the current user is uploading the image  
+  final String? imageUrl;
 
   /// the file path that the image should be stored in.\
   /// if the file does not exist in this path the image will be
   /// downloaded and stored in it.
   final String imageFilePath;
   final String chatId;
+  
   final DateTime timeSent;
 
   /// -called when the image is completed downloading\
@@ -68,7 +83,7 @@ class _SavedNetworkImageState extends State<SavedNetworkImage> {
 
   Future<void> downloadImage() async {
     await FileManager.downloadFile(
-      downloadUrl: widget.imageUrl,
+      downloadUrl: widget.imageUrl!,
 
       ///store the image in the provided path
       filePath: widget.imageFilePath,

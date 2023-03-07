@@ -1,13 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 import 'package:whatsapp_clone/app/modules/settings/controllers/qr_screen_controller.dart';
 import 'package:whatsapp_clone/config/theme/my_styles.dart';
-
-import '../../../providers/users_provider.dart';
 
 class MyQRCodeTap extends StatelessWidget {
   const MyQRCodeTap({
@@ -26,11 +23,9 @@ class MyQRCodeTap extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Spacer(),
-            Obx(
-              () => CircleAvatar(
-                backgroundImage: controller.userImage,
-                radius: 50.r,
-              ),
+            CircleAvatar(
+              backgroundImage: controller.userImage,
+              radius: 50.r,
             ),
             SizedBox(height: 20.sp),
             Text(
@@ -49,7 +44,7 @@ class MyQRCodeTap extends StatelessWidget {
               // image: const AssetImage(Assets.illustraion),
               typeNumber: 3,
               size: 200.sp,
-              data: Get.find<UsersProvider>().me.value.uid,
+              data: controller.encodeQrCodeData,
               errorCorrectLevel: QrErrorCorrectLevel.M,
               roundEdges: true,
             ),

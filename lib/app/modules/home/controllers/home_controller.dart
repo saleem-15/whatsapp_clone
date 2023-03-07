@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
-import 'package:whatsapp_clone/fcm_helper.dart';
 
 class HomeController extends GetxController {
   final searchController = TextEditingController();
@@ -11,7 +10,7 @@ class HomeController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    
+
     // await FcmHelper.setupInteractedMessage();
   }
 
@@ -29,10 +28,11 @@ class HomeController extends GetxController {
   ///  from the pop up menu that appears when clicking `more icon button`
   Future<void> onSettingsOptionSelected() async {
     /// this line makes sure that the page will open
-    /// if its deleted the page will not open
+    /// if this line is deleted the page will not open
     /// I searched on the internet about it and this is what i found:
     /// "I think this happens because flutter is closing the PopupMenuButton
-    /// automatically and because navigation happens to fast, it closes the new route instead of the menuButton."
+    /// automatically and because navigation happens too fast,
+    /// it closes the new route instead of the menuButton pop up."
     await Future.delayed(const Duration(milliseconds: 1));
 
     Get.toNamed(Routes.SETTINGS_SCREEN, preventDuplicates: false);

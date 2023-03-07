@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:isar/isar.dart';
 
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
+import 'package:whatsapp_clone/utils/constants/assests.dart';
 
 part 'user.g.dart';
 

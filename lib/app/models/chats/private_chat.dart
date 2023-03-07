@@ -7,7 +7,7 @@ import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/message.dart';
 import 'package:whatsapp_clone/app/models/user.dart';
 import 'package:whatsapp_clone/storage/database/models/message.dart';
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
+import 'package:whatsapp_clone/utils/constants/assests.dart';
 
 part '../../../storage/database/generated_code/private_chat.g.dart';
 
@@ -20,6 +20,9 @@ class PrivateChat extends Chat {
     required QueryDocumentSnapshot chatDoc,
     required QueryDocumentSnapshot userDoc,
   }) {
+    assert(userDoc.exists);
+    assert(chatDoc.exists);
+    
     final user = User.fromDoc(userDoc);
 
     return PrivateChat()

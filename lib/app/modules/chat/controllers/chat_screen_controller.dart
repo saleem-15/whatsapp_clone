@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,10 +9,9 @@ import 'package:video_player/video_player.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
-import 'package:whatsapp_clone/app/models/messages/message_interface.dart';
+import 'package:whatsapp_clone/app/models/messages/message.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
-import 'package:whatsapp_clone/app/api/messaging_api.dart';
 import 'package:whatsapp_clone/app/modules/image/screens/image_viewer_screen.dart';
 import 'package:whatsapp_clone/app/providers/messages_provider.dart';
 import 'package:whatsapp_clone/config/routes/app_pages.dart';
@@ -24,7 +22,7 @@ import 'chat_text_field_controller.dart';
 
 class ChatScreenController extends GetxController {
   late final Chat chat;
-  final messagesList = RxList<MessageInterface>();
+  final messagesList = RxList<Message>();
 
   MessagesProvider get messagesProvider => Get.find<MessagesProvider>();
 
@@ -37,26 +35,11 @@ class ChatScreenController extends GetxController {
 
     chat = Get.arguments;
 
-    messagesProvider.getMessagesStream(chat.id);
-
-    _getMessagesStream().listen((event) {
-      Logger().i('num of masseges: ${event.length}');
-
-      messagesList.value = event;
-    });
-  }
-
-  Stream<List<MessageInterface>> _getMessagesStream() {
-    return MessagingApi.getMessagesStream(chat.id).map((event) {
-      final messageDocs = event.docs;
-
-      final List<MessageInterface> messages = [];
-
-      for (QueryDocumentSnapshot messageDoc in messageDocs) {
-        messages.add(MessageInterface.fromFirestoreDoc(messageDoc));
-      }
-
-      return messages;
+    /// get the messages list stram from the [MessagesProvider]
+    messagesProvider.getMessagesStream(chat).listen((messages) {
+      //   Logger().i('num of masseges: ${event.length}');
+      log('messages has changed  ${messages.length}');
+      messagesList.value = messages;
     });
   }
 
@@ -109,7 +92,8 @@ class ChatScreenController extends GetxController {
     // );
   }
 
-  onViedeoPressed(VideoMessage videoMessage) async {
+  /// called when a video message is pressed
+  void onVideoPressed(VideoMessage videoMessage) async {
     final isVideoLoaded = await FileManager.isFileSaved(videoMessage.videoPath);
     if (!isVideoLoaded) {
       return;
@@ -128,8 +112,6 @@ class ChatScreenController extends GetxController {
         'videoMessage': videoMessage,
       },
     );
-
-    // Get.put
   }
 
   Future<void> sendImage(File imageFile, String? message) async {

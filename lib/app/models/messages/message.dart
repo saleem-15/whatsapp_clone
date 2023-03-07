@@ -32,14 +32,21 @@ abstract class Message {
     required this.senderName,
     required this.timeSent,
     required this.type,
-  });
+    int? databaseId,
+  }) {
+    if (databaseId != null) {
+      this.databaseId = databaseId;
+    }
+  }
 
   ///These 2 fields are used when I am the message sender
   bool isSent = false;
   bool isSeen = false;
+  late int databaseId;
 
-  /// the Backend generated ID
-  late final String messageId;
+  /// the Backend generated ID,
+  /// its null at first (untill firebase responds with its value)
+  String? messageId;
   final String chatId;
   final MessageType type;
   final DateTime timeSent;
@@ -124,6 +131,7 @@ abstract class Message {
     switch (message.type) {
       case MessageType.text:
         return TextMessage(
+          databaseId: message.id,
           chatId: message.chatId,
           text: message.text!,
           timeSent: message.timeSent,
@@ -135,8 +143,10 @@ abstract class Message {
         )..messageId = message.messageId;
       case MessageType.image:
         return ImageMessage(
+          databaseId: message.id,
+
           chatId: message.chatId,
-          text: message.text!,
+          text: message.text,
           timeSent: message.timeSent,
           //
           isSeen: message.isSeen,
@@ -146,15 +156,16 @@ abstract class Message {
           senderName: message.sender.value!.name,
           senderImage: message.sender.value!.imageUrl,
           //
-          imageUrl: message.fileURl!,
+          imageUrl: message.fileURl,
           imagePath: message.contentFilePath!,
           height: otherAtrributes![ImageMessage.IMAGE_HEIGHT_KEY],
           width: otherAtrributes[ImageMessage.IMAGE_WIDTH_KEY],
         )..messageId = message.messageId;
       case MessageType.video:
         return VideoMessage(
+          databaseId: message.id,
           chatId: message.chatId,
-          text: message.text!,
+          text: message.text,
           timeSent: message.timeSent,
           //
           isSeen: message.isSeen,
@@ -164,13 +175,15 @@ abstract class Message {
           senderName: message.sender.value!.name,
           senderImage: message.sender.value!.imageUrl,
           //
-          videoUrl: message.fileURl!,
+          videoUrl: message.fileURl,
           videoPath: message.contentFilePath!,
           width: otherAtrributes![VideoMessage.VIDEO_WIDTH_KEY],
           height: otherAtrributes[VideoMessage.VIDEO_HEIGHT_KEY],
         )..messageId = message.messageId;
       case MessageType.file:
         return FileMessage(
+          databaseId: message.id,
+
           chatId: message.chatId,
           timeSent: message.timeSent,
           //
@@ -188,6 +201,8 @@ abstract class Message {
         )..messageId = message.messageId;
       case MessageType.audio:
         return AudioMessage(
+          databaseId: message.id,
+
           chatId: message.chatId,
           timeSent: message.timeSent,
           //

@@ -36,10 +36,6 @@ class MessagingApi {
 
 //-------------------------------------------------------------------------------------
 
-  static Stream<QuerySnapshot> getMessagesStream(String chatId) {
-    return messagesCollection(chatId).orderBy('createdAt', descending: true).snapshots();
-  }
-
   static Message fromFirestoreConverter(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     Logger().i(snapshot.data());
     switch (msgTypeEnumfromString(snapshot['type'])) {

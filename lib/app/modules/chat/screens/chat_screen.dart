@@ -31,33 +31,26 @@ class ChatScreen extends StatelessWidget {
         title: InkWell(
           borderRadius: BorderRadius.circular(3.sp),
           onTap: controller.onAppBarPressed,
-          child: SizedBox(
-            child: Row(
-              children: [
-                Hero(
-                  tag: controller.chat.id,
-                  child: CircleAvatar(
-                    backgroundImage: controller.chat.imageProvider,
-                    maxRadius: 20,
-                  ),
+          child: Row(
+            children: [
+              Hero(
+                tag: controller.chat.id,
+                child: CircleAvatar(
+                  backgroundImage: controller.chat.imageProvider,
+                  maxRadius: 20,
                 ),
-                const SizedBox(
-                  width: 15,
+              ),
+              const SizedBox(
+                width: 15,
+              ),
+              Expanded(
+                child: Text(
+                  controller.chat.name,
+                  overflow: TextOverflow.fade,
+                  style: Theme.of(context).textTheme.bodyText2,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      controller.chat.name,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                    const SizedBox(
-                      height: 3,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         actions: [

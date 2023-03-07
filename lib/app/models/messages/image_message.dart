@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/messages/message.dart';
 
+import '../../../storage/files_manager.dart';
 import '../../providers/users_provider.dart';
 import '../message_type_enum.dart';
 import 'file_message.dart';
@@ -15,6 +16,7 @@ class ImageMessage extends Message {
   static const IMAGE_HEIGHT_KEY = 'height';
 
   ImageMessage({
+    super.databaseId,
     required super.isSent,
     required super.isSeen,
     required super.chatId,
@@ -27,8 +29,7 @@ class ImageMessage extends Message {
     required this.height,
     required this.width,
     required this.imagePath,
-  })  : assert(imageUrl != null),
-        super(type: MessageType.image);
+  }) : super(type: MessageType.image);
 
   String? imageUrl;
   String imagePath;
@@ -53,20 +54,31 @@ class ImageMessage extends Message {
 
   @override
   factory ImageMessage.fromDoc(DocumentSnapshot doc) {
+    var chatId = doc.id;
+    var timeSent = doc.getDateTime(Message.CREATED_AT_KEY)!;
+
+    /// the file path that the video should be stored at
+    var filePath = FileManager.generateMediaFileName(
+      FileType.image,
+      chatId,
+      timeSent,
+    );
     return ImageMessage(
       isSent: false,
       isSeen: false,
-      chatId: doc.id,
+      chatId: chatId,
       senderId: doc[Message.SENDER_ID_KEY],
       senderName: doc[Message.SENDER_NAME_KEY],
       senderImage: doc[Message.SENDER_image_KEY],
-      timeSent: doc.getDateTime(Message.CREATED_AT_KEY)!,
+      timeSent: timeSent,
       imageUrl: doc[IMAGE_URL_KEY],
       imagePath: doc[IMAGE_NAME_KEY],
       text: doc[Message.TEXT_KEY],
       height: doc[ImageMessage.IMAGE_HEIGHT_KEY],
       width: doc[IMAGE_WIDTH_KEY],
-    )..messageId = doc.id;
+    )
+      ..messageId = doc.id
+      ..imagePath = filePath;
   }
 
   ImageMessage.toSend({
@@ -101,16 +113,26 @@ class ImageMessage extends Message {
   }
 
   factory ImageMessage.fromNotificationPayload(Map<String, dynamic> map) {
+    var chatId = map[Message.CHAT_ID_KEY];
+    var timeSent = DateTime.parse(map[Message.CREATED_AT_KEY]);
+
+    /// the file path that the video should be stored at
+    var filePath = FileManager.generateMediaFileName(
+      FileType.image,
+      chatId,
+      timeSent,
+    );
+
     var x = ImageMessage(
       isSent: false,
       isSeen: false,
-      chatId: map[Message.CHAT_ID_KEY],
-      timeSent: DateTime.parse(map[Message.CREATED_AT_KEY]),
+      chatId: chatId,
+      timeSent: timeSent,
       senderId: map[Message.SENDER_ID_KEY],
       senderName: map[Message.SENDER_NAME_KEY],
       senderImage: map[Message.SENDER_image_KEY],
       imageUrl: map[IMAGE_URL_KEY],
-      imagePath: map[IMAGE_NAME_KEY],
+      imagePath: filePath,
       text: map[Message.TEXT_KEY],
       height: int.parse(map[IMAGE_HEIGHT_KEY]),
       width: int.parse(map[IMAGE_WIDTH_KEY]),

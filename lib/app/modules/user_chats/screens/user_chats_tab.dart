@@ -6,7 +6,7 @@ import 'package:whatsapp_clone/app/modules/user_chats/controllers/chats_view_con
 import 'package:whatsapp_clone/app/modules/user_chats/components/chat_tile.dart';
 import 'package:whatsapp_clone/app/shared_widgets/searchable_list.dart';
 import 'package:whatsapp_clone/config/theme/colors.dart';
-import 'package:whatsapp_clone/utils/constants/assest_path.dart';
+import 'package:whatsapp_clone/utils/constants/assests.dart';
 
 class ChatsTapView extends StatelessWidget {
   ChatsTapView({super.key}) : controller = Get.put(ChatsViewController());

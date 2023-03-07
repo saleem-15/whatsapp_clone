@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/messages/message.dart';
 
 import '../../providers/users_provider.dart';
@@ -15,6 +16,7 @@ class TextMessage extends Message {
     super.senderImage,
     required super.senderId,
     required this.text,
+    super.databaseId,
   }) : super(type: MessageType.text);
 
   String text;
@@ -37,7 +39,7 @@ class TextMessage extends Message {
       senderName: doc['senderName'],
       senderImage: doc['senderImage'],
       text: doc['text'],
-      timeSent: (doc['createdAt'] as Timestamp).toDate(),
+      timeSent: doc.getDateTime('createdAt')!,
     )..messageId = doc.id;
   }
 

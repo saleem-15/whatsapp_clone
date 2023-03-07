@@ -106,7 +106,6 @@ class ChatsApi {
   /// `output`:list of private chat docs
   static Future<List<PrivateChat>> fetchContacts({required Map<String, String> contacts}) async {
     if (contacts.isEmpty) {
-      assert(false);
       return [];
     }
 

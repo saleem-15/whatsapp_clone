@@ -67,7 +67,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
               dialogBackgroundColor: Colors.black54,
               iconTheme: Theme.of(context).iconTheme.copyWith(color: Colors.white)),
           child: Hero(
-            tag: widget.videoMessage.videoUrl!,
+            tag: widget.videoMessage.databaseId,
             child: Material(
               color: Colors.transparent,
               child: Chewie(

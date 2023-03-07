@@ -60,37 +60,41 @@ class FcmHelper {
 
   /// generate and save fcm token if its not already generated (generate only for 1 time)
   static Future<void> _generateFcmToken() async {
+    final storedToken = MySharedPref.getFcmToken;
+
+    if (storedToken == null) {
+      final token = await messaging.getToken();
+
+      MySharedPref.setFcmToken(token!);
+      UserApi.setUserFcmToken(token);
+    }
+
     messaging.onTokenRefresh.listen((newToken) {
       Logger().e(newToken);
-
-      /// if the token did not change
-
-      if (MySharedPref.getFcmToken == newToken) {
-        return;
-      }
-
       MySharedPref.setFcmToken(newToken);
       UserApi.setUserFcmToken(newToken);
     });
 
-    try {
-      var token = await messaging.getToken();
-      final storedToken = MySharedPref.getFcmToken;
-      Logger().e(token);
-      bool isNewToken = storedToken != token;
-      log('isNewToken: $isNewToken');
+    // try {
+    //   var token = await messaging.getToken();
+    //   final storedToken = MySharedPref.getFcmToken;
+    //   Logger().e(token);
+    //   bool isNewToken = storedToken != token;
+    //   log('isNewToken: $isNewToken');
 
-      if (token != null && isNewToken) {
-        MySharedPref.setFcmToken(token);
-        UserApi.setUserFcmToken(token);
-      } else {
-        // retry generating token
-        await Future.delayed(const Duration(seconds: 5));
-        _generateFcmToken();
-      }
-    } on FirebaseException catch (error) {
-      Logger().e(error);
-    }
+    //   if (token != null && isNewToken) {
+    //     MySharedPref.setFcmToken(token);
+    //     UserApi.setUserFcmToken(token);
+    //   } else {
+    //     // retry generating token
+    //     await Future.delayed(const Duration(seconds: 5));
+    //     _generateFcmToken();
+    //   }
+    // } on FirebaseException catch (error) {
+    //   Logger().e(error);
+
+    //   FirebaseCrashlytics.instance.recordError(error, error.stackTrace);
+    // }
   }
 
   // Without this annotaion the code may not work correctly
@@ -103,7 +107,7 @@ class FcmHelper {
     _logNotification(remoteMessage);
 
     await _saveMessageToDatabse(remoteMessage);
-    
+
     // _handleMessage(remoteMessage);
 
     showMessageNotification(remoteMessage);
