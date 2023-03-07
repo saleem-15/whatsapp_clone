@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
-import 'package:logger/logger.dart';
 import 'package:whatsapp_clone/app/api/api.dart';
 import 'package:whatsapp_clone/app/models/chats/chat_interface.dart';
 import 'package:whatsapp_clone/storage/database/models/message.dart';
@@ -27,8 +26,6 @@ class GroupChat extends Chat {
 
   factory GroupChat.fromChatDoc(QueryDocumentSnapshot groupDoc) {
     assert(groupDoc.exists);
-
-    Logger().w(groupDoc.exists);
 
     return GroupChat(
       id: groupDoc.id,

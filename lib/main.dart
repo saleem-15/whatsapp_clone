@@ -47,13 +47,7 @@ Future<void> main() async {
 
   await Firebase.initializeApp();
 
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-
-  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+  initFirebaseCrashlytics();
 
   try {
     await MyDataBase.openDatabase();
@@ -69,6 +63,16 @@ Future<void> main() async {
   // FlutterNativeSplash.remove();
 
   runApp(const Main());
+}
+
+void initFirebaseCrashlytics() {
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
 }
 
 Future<void> initControllers() async {

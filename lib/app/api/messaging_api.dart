@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
 import 'package:whatsapp_clone/app/models/message_type_enum.dart';
 import 'package:whatsapp_clone/app/models/messages/file_message.dart';
 import 'package:whatsapp_clone/app/models/messages/image_message.dart';
@@ -11,22 +10,12 @@ import 'package:whatsapp_clone/app/models/messages/message.dart';
 import 'package:whatsapp_clone/app/models/messages/text_message.dart';
 import 'package:whatsapp_clone/app/models/messages/video_message.dart';
 import 'package:whatsapp_clone/app/models/messages/audio_message.dart';
-import 'package:whatsapp_clone/app/providers/users_provider.dart';
 import 'package:whatsapp_clone/utils/helpers/utils.dart';
 import 'package:logger/logger.dart';
 import 'api.dart';
 
 class MessagingApi {
   MessagingApi._();
-
-  static late final String senderName;
-  static late final String? senderImage;
-
-  static void init() {
-    final user = Get.find<UsersProvider>().me;
-    senderName = user.value.name;
-    senderImage = user.value.imageUrl;
-  }
 
   static CollectionReference messagesCollection(String chatId) =>
       chatsCollection.doc(chatId).collection('messages').withConverter<Message>(

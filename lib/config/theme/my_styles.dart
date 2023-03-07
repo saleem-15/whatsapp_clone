@@ -204,6 +204,7 @@ class MyStyles {
         hintStyle: getTextTheme().caption!.copyWith(
               color: LightThemeColors.headlinesTextColor.withOpacity(.3),
             ),
+            
         contentPadding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 0.sp),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20.r),

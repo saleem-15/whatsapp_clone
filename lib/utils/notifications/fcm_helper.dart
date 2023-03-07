@@ -22,7 +22,7 @@ class FcmHelper {
 
   /// this function will initialize firebase and fcm instance
   static Future<void> initFcm() async {
-    // await AwesomeNotificationsHelper.init();
+    await AwesomeNotificationsHelper.init();
 
     try {
       // initialize fcm and firebase core
@@ -145,6 +145,8 @@ class FcmHelper {
       id: 1,
       title: remoteMessage.notification?.title ?? title,
       body: remoteMessage.notification?.body ?? body,
+      channelKey: NotificationChannels.chatChannelKey,
+      // groupKey: NotificationChannels.chatChannelGroupKey,
       payload: remoteMessage.data.cast(),
     );
   }

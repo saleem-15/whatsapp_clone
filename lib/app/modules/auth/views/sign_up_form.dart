@@ -19,7 +19,7 @@ class SignUpForm extends GetView<SignupController> {
         const Spacer(),
         Text(
           'Sign up for free',
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.bold,
               ),
@@ -37,14 +37,14 @@ class SignUpForm extends GetView<SignupController> {
                   children: <TextSpan>[
                     TextSpan(
                       text: 'Phone Number',
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             color: Theme.of(context).hintColor,
                             fontSize: 30.sp,
                           ),
                     ),
                     TextSpan(
                       text: '*',
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             color: MyColors.red,
                             fontSize: 30.sp,
                           ),
@@ -104,7 +104,7 @@ class SignUpForm extends GetView<SignupController> {
             children: [
               Text(
                 'Already have an account?  ',
-                style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: Theme.of(context).hintColor,
                       fontSize: 12.sp,
                     ),
@@ -113,7 +113,7 @@ class SignUpForm extends GetView<SignupController> {
                 onTap: controller.goToLogIn,
                 child: Text(
                   'Sign in',
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: Theme.of(context).primaryColor,
                         fontSize: 12.sp,
                       ),

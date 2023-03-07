@@ -2,6 +2,7 @@ import 'base_exception.dart';
 
 enum ExceptionType {
   chatAlreadyExists,
+  chatDoesNotExists,
 }
 
 class ChatException extends BaseException {
@@ -14,9 +15,17 @@ class ChatException extends BaseException {
 
   ///throws a custom exception from type [ChatException]
   static ChatException chatAlreadyExists() {
-   return  ChatException._(
+    return ChatException._(
       msg: 'Chat Already Exists',
       exceptionType: ExceptionType.chatAlreadyExists,
+    );
+  }
+
+  ///throws a custom exception from type [ChatException]
+  static ChatException chatDoesNotExists() {
+    return ChatException._(
+      msg: 'Chat Does Not Exists',
+      exceptionType: ExceptionType.chatDoesNotExists,
     );
   }
 

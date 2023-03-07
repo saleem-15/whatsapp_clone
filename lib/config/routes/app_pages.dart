@@ -81,7 +81,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.QR_CODE_SCREEN,
-      page: () =>  QRCodeScreen(),
+      page: () => QRCodeScreen(),
     ),
     GetPage(
       name: _Paths.CHAT_DETAILS_SCREEN,

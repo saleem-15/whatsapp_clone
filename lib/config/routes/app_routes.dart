@@ -25,7 +25,7 @@ abstract class Routes {
   /// [VideoMessage] & [VideoPlayerController] for the video
   static const VIDEO_VIEWER_SCREEN = _Paths.VIDEO_VIEWER_SCREEN;
 
-  ///YOU HAVE TO PASS [Chat] ARGUMENT Ass (argument)
+  ///Requires: [Chat] as arguments
   static const CHAT_SCREEN = _Paths.CHAT_SCREEN;
 
   /// Arguments: chat object as arguments
@@ -34,6 +34,7 @@ abstract class Routes {
   static const SELECT_NEW_GROUP_MEMBERS = _Paths.SELECT_NEW_GROUP_MEMBERS;
 
   static const QR_CODE_SCREEN = _Paths.QR_CODE_SCREEN;
+
   /// Arguments:
   /// ```dart
   ///  List<User> selectedUsers
@@ -42,7 +43,6 @@ abstract class Routes {
 }
 
 abstract class _Paths {
-
   _Paths._();
   static const HOME = '/home';
   static const QR_CODE_SCREEN = '/Qr-code-screen';
